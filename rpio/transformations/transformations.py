@@ -6,10 +6,12 @@
 # * RAP R&D concepts can not be copied and/or distributed without the express
 # * permission of Bert Van Acker
 # **********************************************************************************
+import os
 from os import mkdir
 from os.path import exists, dirname, join, isfile
 import jinja2
 from rpio.utils.auxiliary import *
+import datetime
 
 #-----------------------------------------------------------------------------------
 #-----------------------------------AUXILIARY---------------------------------------
@@ -132,8 +134,15 @@ def swc2code_py(system=None,path="output/generated"):
 
 
         # 4. Generate config.yaml file from AADL processes
+
+        #determine the IP address of the platform running the process
+        _IP = "localhost"
+        for processor in managingSystem.processors:
+            if processor.runs_rap_backbone:
+                _IP=processor.IP
+
         with open(join(swcFolder, "config.yaml"), 'w') as f:
-            f.write(templateConfig.render(swc=process))
+            f.write(templateConfig.render(swc=process,IP=_IP))
 
         # 5. Generate messages for standalone components
         with open(join(swcFolder, "messages.py"), 'w') as f:
@@ -146,6 +155,8 @@ def swc2code_py(system=None,path="output/generated"):
         # 7. Add Docker file if swc does not exist
         if not swcExists:
             _AddDockerFile(cmpName=process.name, path=swcFolder)
+
+
 
 def message2code_py(system=None,path="output/generated/messages"):
     """Function to generate python code from messages modeled within the AADL Intermediate Language
@@ -268,3 +279,105 @@ def robochart2aadlmessages(maplek=None,path="output/generated/messages"):
         f.write(template.render(types=maplek.types))
 
 
+def swc2dockerCompose(system=None,path="output/generated/docker"):
+    """Function to generate docker compose for the given system deployment
+
+    :param [system]: [Managing or managed system model part of the adaptive systen within aadlil,either managing or managed system], defaults to [None]
+    :type [system]: [system (aadlil)](, optional)
+
+    :param [path]: [Adaptive system model within aadlil], defaults to ["output/generated/launch"]
+    :type [path]: [string](, optional)
+
+    ...
+    :return: [Functions returns nothing]
+    :rtype: [None]
+    """
+    if not exists(path):
+        mkdir(path)
+
+    # Initialize the Templates engine.
+    this_folder = dirname(__file__)
+    jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(this_folder), trim_blocks=True, lstrip_blocks=True)
+
+    # Load the template
+    template = jinja_env.get_template('templates/swc_docker_compose.template')
+
+    # Extract all processors of the managing system
+    for processor in system.processors:
+
+        processorPath = join(path, processor.name)
+        if not exists(processorPath):
+            mkdir(processorPath)
+
+        with open(join(processorPath, "compose.yaml"), 'w') as f:
+            f.write(template.render(processor=processor))
+
+
+def update_robosapiensIO_ini(system=None,path="output/generated/docker"):
+    """Function to update the robosapiensIO configuration
+
+    :param [system]: [Managing or managed system model part of the adaptive systen within aadlil,either managing or managed system], defaults to [None]
+    :type [system]: [system (aadlil)](, optional)
+
+    :param [path]: [robosapiensIO.ini], defaults to ["output/generated/launch"]
+    :type [path]: [string](, optional)
+
+    ...
+    :return: [Functions returns nothing]
+    :rtype: [None]
+    """
+    if path is None:
+        path = os.getcwd()
+    else:
+        if not exists(path):
+            mkdir(path)
+
+    # Initialize the Templates engine.
+    this_folder = dirname(__file__)
+    jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(this_folder), trim_blocks=True, lstrip_blocks=True)
+
+    # Load the template
+    template = jinja_env.get_template('templates/robosapiensIO_ini.template')
+
+    current_timestamp = datetime.datetime.now()
+    formatted_timestamp = current_timestamp.strftime('%Y-%m-%d %H:%M:%S')
+    managingSystem = system.systems[0]
+    managedSystem = system.systems[1]
+
+    with open(join(path, "robosapiensIO.ini"), 'w') as f:
+        f.write(template.render(name=system.name,description=system.description, timestamp=formatted_timestamp.__str__(),managingSystem=managingSystem,managedSystem=managedSystem))
+
+
+def add_backbone_config(system=None,path='Resources'):
+    """Function to add the RoboSAPIENS Adaptive Platform backbone configuration to the repository
+
+    :param [system]: [Managing or managed system model part of the adaptive systen within aadlil,either managing or managed system], defaults to [None]
+    :type [system]: [system (aadlil)](, optional)
+
+    :param [path]: [robosapiensIO.ini], defaults to ["output/generated/launch"]
+    :type [path]: [string](, optional)
+
+    ...
+    :return: [Functions returns nothing]
+    :rtype: [None]
+    """
+
+    if path is None:
+        path = os.getcwd()
+    else:
+        if not exists(path):
+            mkdir(path)
+
+    # Initialize the Templates engine.
+    this_folder = dirname(__file__)
+    jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(this_folder), trim_blocks=True, lstrip_blocks=True)
+
+    # Load the templates
+    template_mqtt = jinja_env.get_template('templates/mqtt_config.template')
+    template_redis = jinja_env.get_template('templates/redis_config.template')
+
+    with open(join(path, "acl.conf"), 'w') as f:
+        f.write(template_mqtt.render(system=system))
+
+    with open(join(path, "redis.conf"), 'w') as f:
+        f.write(template_redis.render(system=system))

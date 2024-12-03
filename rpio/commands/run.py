@@ -15,7 +15,7 @@
 import click
 import os
 import subprocess
-from rpio.pyLauncher.pyLauncher import launch,launch_main
+from rpio.pyLauncher.pyLauncher import launch,launch_main, launch_docker_compose
 
 @click.group()
 @click.pass_context
@@ -26,7 +26,8 @@ def runCmds():
 @click.option('--verbose','-v', is_flag=True,default=False,help='Enable debug information.')
 @click.option('--platform','-p', default='none', help='Specify on which platform you want to run the adaptive application, based on the AADL deployment.')
 @click.option('--launchfile', is_flag=True,default=False,help='Specify the use of the launchfile to run the adaptive application.')
-def run(verbose,platform,launchfile):
+@click.option('--docker', is_flag=True,default=False,help='Specify the use of docker to run the adaptive application.')
+def run(verbose,platform,launchfile,docker):
     """Run standalone RoboSAPIENS Adaptive Platform application package."""
     if verbose:print("Run command under construction...")
 
@@ -46,6 +47,12 @@ def run(verbose,platform,launchfile):
             if verbose:print("Executing the adaptive application using the provided main file for platform {}".format(platform))
             try:
                 launch_main('Resources/main_'+platform+'.py')
+            except:
+                print("FAIL - Launching the standalone robosapiensIO application failed")
+        elif docker:
+            if verbose: print("Executing the adaptive application using the provided docker compose file for platform {}".format(platform))
+            try:
+                launch_docker_compose(path='Realization/ManagingSystem/Platform/' + platform)
             except:
                 print("FAIL - Launching the standalone robosapiensIO application failed")
         else:

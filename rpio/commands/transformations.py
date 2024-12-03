@@ -96,4 +96,14 @@ def transformation(verbose,roboarch2aadl,aadl2aadlil,aadlil2code):
             current_folder_path, current_folder_name = os.path.split(os.getcwd())
             swc2main(system=design.systems[0],package=current_folder_name,prefix=None,path="Resources")
         except:
-            if verbose: print("ERROR: Code could not be generated, no design loaded.")
+            if verbose: print("ERROR: Platform(s) main file could not be generated.")
+
+        # 4. GENERATE PLATFORM DOCKER COMPOSE
+        try:
+            swc2dockerCompose(system=design.systems[0], path="Realization/ManagingSystem/Platform")
+            add_backbone_config(system=design, path="Resources")
+        except:
+            if verbose: print("ERROR: Platform(s) docker compose file could not be generated.")
+
+        # 8. update the roboSapiensIO.ini file based on the generation
+        update_robosapiensIO_ini(system=design, path=None)

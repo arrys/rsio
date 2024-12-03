@@ -162,14 +162,14 @@ def HelloWorld():
     # XEON PROCESSOR CONNTECTION
     MIPSCapacity = characteristic(name="MIPSCapacity",value=1000.0,dataType="MIPS")
     I1 = port(name="I1",type="event data")
-    laptop_xeon1 = processor(name="xeon1",propertyList=[MIPSCapacity],featureList=[I1])
-    #laptop_xeon2 = processor(name="xeon2", propertyList=[MIPSCapacity], featureList=[I1])
+    laptop_xeon1 = processor(name="xeon1",propertyList=[MIPSCapacity],featureList=[I1],IP="192.168.0.116")
+    laptop_xeon1.runs_rap_backbone= True    #RUNS THE RoboSAPIENS Adaptive Platform backbone
 
 
     # XEON PROCESSOR CONNTECTION
     MIPSCapacity = characteristic(name="MIPSCapacity",value=2000.0,dataType="MIPS")
     I2 = port(name="I2",type="event data")
-    RPI = processor(name="Raspberry Pi 4B",propertyList=[MIPSCapacity],featureList=[I2])
+    RPI = processor(name="Raspberry Pi 4B",propertyList=[MIPSCapacity],featureList=[I2],IP="192.168.0.100")
 
     # WIFI CONNTECTION
     BandWidthCapacity = characteristic(name="BandWidthCapacity",value=100.0,dataType="Mbytesps")
@@ -204,11 +204,11 @@ def HelloWorld():
     legitimate.formalism = "python"
     execute.formalism = "python"
 
-    monitor.containerization = False
-    analysis.containerization = False
-    plan.containerization = False
-    legitimate.containerization = False
-    execute.containerization = False
+    monitor.containerization = True
+    analysis.containerization = True
+    plan.containerization = True
+    legitimate.containerization = True
+    execute.containerization = True
 
 
     return adaptiveSystem

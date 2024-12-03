@@ -267,7 +267,7 @@ class data(feature):
 
 class processor(namedObject):
 
-    def __init__(self,name='tbd', description='tbd', verbose=False,featureList = None,propertyList = None, bindingList=None):
+    def __init__(self,name='tbd', description='tbd', verbose=False,featureList = None,propertyList = None, bindingList=None,IP="localhost"):
         super().__init__(name=name,description = description,verbose=verbose)
 
         if featureList is not None:
@@ -282,6 +282,8 @@ class processor(namedObject):
             self._bindingList = bindingList
         else:
             self._bindingList = []
+        self._IP = IP
+        self.rap_backbone = False
 
 
     def addFeature(self, feature):
@@ -299,6 +301,23 @@ class processor(namedObject):
     @property
     def processorBinding(self):
         return self._bindingList
+
+    @property
+    def IP(self):
+        return self._IP
+
+    @IP.setter
+    def IP(self,ip):
+        self._IP = ip
+
+    @property
+    def runs_rap_backbone(self):
+        return self.rap_backbone
+
+    @runs_rap_backbone.setter
+    def runs_rap_backbone(self, flag):
+        self.rap_backbone = flag
+
 
 
 class memory(namedObject):

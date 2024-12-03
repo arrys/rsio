@@ -52,7 +52,7 @@ def platform(verbose,check,set,name,force):
     if set:
 
         #NORMAL FLOW, USE AADL INFO FOR SETTING UP THE ENVIRONMENT
-        if name is not "none":
+        if name != "none":
 
             # fetch configuration of platform
             platformConfig = "Realization/ManagingSystem/Platform/"+name+"/config.yaml"
