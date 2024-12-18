@@ -62,7 +62,7 @@ def transformation(verbose,roboarch2aadl,aadl2aadlil,aadlil2code):
 
 
     if aadlil2code:
-        if verbose: print("WARNING: AADL2AADLIL transformation is under development.")
+        if verbose: print("WARNING: AADLIL2CODE transformation is under development.")
 
         # 1. LOAD THE AADL INTERMEDUATE LANGUAGE
         try:
@@ -106,4 +106,7 @@ def transformation(verbose,roboarch2aadl,aadl2aadlil,aadlil2code):
             if verbose: print("ERROR: Platform(s) docker compose file could not be generated.")
 
         # 8. update the roboSapiensIO.ini file based on the generation
-        update_robosapiensIO_ini(system=design, path=None)
+        try:
+            update_robosapiensIO_ini(system=design, path=None)
+        except:
+            if verbose: print("ERROR: robosapiensIO.ini file could not be updated.")

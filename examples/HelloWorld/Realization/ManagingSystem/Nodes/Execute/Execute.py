@@ -47,7 +47,8 @@ class Execute(Node):
 
         #<!-- cc_code_executer END--!>
 
-        self.publish_event(event_key='spin_config',message=_Direction)    # LINK <outport> spin_config
+        # TODO: Put desired publish event inside user code and uncomment!!
+        #self.publish_event(event_key='spin_config',message=_Direction)    # LINK <outport> spin_config
 
     def register_callbacks(self):
         self.register_event_callback(event_key='new_plan', callback=self.executer)        # LINK <inport> new_plan

@@ -1,5 +1,5 @@
-Beginner: CLI tools
-===================
+Command Line tool (rpio)
+========================
 
 .. toctree::
    :maxdepth: 1

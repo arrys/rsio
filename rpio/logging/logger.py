@@ -48,13 +48,13 @@ class Logger(object):
 
         #set logging file
         if path is None:
-            systemLog = os.getcwd()+"/resources/sys.log"
+            systemLog = os.getcwd()+"/Resources/sys.log"
         else:
-            systemLog = path+"/resources/sys.log"
+            systemLog = path+"/Resources/sys.log"
 
         #setup logger
         self._syslogger=setup_logger(name="systemLog",log_file=systemLog,level=logging.INFO)
-        self.syslog(msg="Logger configured", level="INFO")
+        #self.syslog(msg="Logger configured", level="INFO")
 
     @property
     def name(self):

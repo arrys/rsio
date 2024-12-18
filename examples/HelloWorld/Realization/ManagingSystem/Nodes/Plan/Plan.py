@@ -16,8 +16,12 @@ except (ValueError, ImportError):
 
 #<!-- cc_include START--!>
 from fractions import Fraction
-from lidarocclusion.masks import BoolLidarMask
-from lidarocclusion.sliding_lidar_masks import sliding_lidar_mask, sliding_prob_lidar_mask
+try:
+    from .lidarocclusion.masks import BoolLidarMask
+    from .lidarocclusion.sliding_lidar_masks import sliding_lidar_mask, sliding_prob_lidar_mask
+except (ValueError, ImportError):
+    from lidarocclusion.masks import BoolLidarMask
+    from lidarocclusion.sliding_lidar_masks import sliding_lidar_mask, sliding_prob_lidar_mask
 from typing import List, Tuple, Dict
 import traceback
 import json
@@ -176,6 +180,7 @@ class Plan(Node):
 
         _success = self.knowledge.write(cls=_NewPlanMessage)
         _success = self.knowledge.write(cls=_Direction)
+        # TODO: Put desired publish event inside user code and uncomment!!
 
     def register_callbacks(self):
         self.register_event_callback(event_key='anomaly', callback=self.planner)     # LINK <eventTrigger> anomaly

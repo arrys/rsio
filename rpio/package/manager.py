@@ -152,10 +152,12 @@ class PackageManager(object):
             Path(self.standalonePath+"/"+self._packageName).mkdir(parents=True, exist_ok=True)
             prefix = self.standalonePath+"/"+self._packageName+'/'
             self._addFile(file="robosapiensIO.ini",name=self._packageName, path=prefix)
+            self._addFile(file="__init__.py", name=self._packageName, path=prefix)
             logfilepath = prefix+"/Resources"
         else:
             prefix=""
             self._addFile(file="robosapiensIO.ini",name=self._packageName)
+            self._addFile(file="__init__.py", name=self._packageName)
             logfilepath = self._directory + "/Resources"
 
         self._mkdir_custom(prefix + "Documentation")
@@ -166,12 +168,6 @@ class PackageManager(object):
         self._mkdir_custom(prefix + "Realization/ManagingSystem/Documentation")
         self._mkdir_custom(prefix + "Realization/ManagingSystem/Binaries")
         self._mkdir_custom(prefix + "Realization/ManagingSystem/Nodes")
-        #self._mkdir_custom(prefix + "Realization/ManagingSystem/02_Nodes/00_Monitor")
-        #self._mkdir_custom(prefix + "Realization/ManagingSystem/02_Nodes/01_Analysis")
-        #self._mkdir_custom(prefix + "Realization/ManagingSystem/02_Nodes/02_Plan")
-        #self._mkdir_custom(prefix + "Realization/ManagingSystem/02_Nodes/03_Legitimize")
-        #self._mkdir_custom(prefix + "Realization/ManagingSystem/02_Nodes/04_Execute")
-        #self._mkdir_custom(prefix + "Realization/ManagingSystem/02_Nodes/05_AdaptationOrchestration")
         self._mkdir_custom(prefix + "Realization/ManagingSystem/Messages")
         self._mkdir_custom(prefix + "Realization/ManagingSystem/Platform")
         self._mkdir_custom(prefix + "Realization/ManagingSystem/Actions")
@@ -185,6 +181,11 @@ class PackageManager(object):
         self._mkdir_custom(prefix + "Realization/ManagedSystem/Platform")
         self._mkdir_custom(prefix + "Realization/ManagedSystem/Actions")
         self._mkdir_custom(prefix + "Realization/ManagedSystem/Workflows")
+        # top-level workflows
+        self._mkdir_custom(prefix + "Workflows")
+        self._addFile(file="AADL2CODE.py", path=prefix + "Workflows/")
+        self._addFile(file="ROBOCHART2AADL.py", path=prefix + "Workflows/")
+        # temporary folder and resources
         self._mkdir_custom(prefix + "Resources")
 
         # add system log file
@@ -218,6 +219,8 @@ class PackageManager(object):
 
         # --- custom file content ---
 
+        if "__init__.py" in file:
+            f.write("")
 
         if "readme" in file:
             f.write("Placeholder")
@@ -229,6 +232,10 @@ class PackageManager(object):
             f.write("[RoboSAPIENSIO]\n")
             f.write('name = '+name+'\n')
             f.write('description = " Add project description"\n')
+            f.write('\n')
+            f.write("[PACKAGE]\n")
+            f.write("name = "+name+"\n")
+            f.write('prefix =  \n')
 
 
         if "run.py" in file:
@@ -239,6 +246,55 @@ class PackageManager(object):
 
         if "deploy.py" in file:
             f.write("print('WARNING: Deploy action not implemented yet!')")
+
+        if "AADL2CODE.py" in file:
+            f.write("# **********************************************************************************\n")
+            f.write("# * Copyright (C) 2024-present Bert Van Acker (B.MKR) <bert.vanacker@uantwerpen.be>\n")
+            f.write("# *\n")
+            f.write("# * This file is part of the roboarch R&D project.\n")
+            f.write("# *\n")
+            f.write("# * RAP R&D concepts can not be copied and/or distributed without the express\n")
+            f.write("# * permission of Bert Van Acker\n")
+            f.write("# **********************************************************************************\n")
+            f.write("from rpio.workflow.tasks import *\n")
+            f.write("from rpio.workflow.executer import Executer_GUI\n")
+            f.write("\n")
+            f.write("# 1 . define the tasks\n")
+            f.write("tasks = {\n")
+            f.write('    "Generate custom messages": t_generate_messages,\n')
+            f.write('    "Generate swc code skeletons": t_generate_swc_skeletons,\n')
+            f.write('    "Generate swc launch files": t_generate_swc_launch,\n')
+            f.write('    "Generate main file": t_generate_main,\n')
+            f.write('    "Generate docker compose files": t_generate_docker,\n')
+            f.write('    "Update robosapiensIO.ini file": t_update_robosapiensIO_ini\n')
+            f.write("}\n")
+            f.write("\n")
+            f.write("# 2. Launch the graphical executer\n")
+            f.write('app = Executer_GUI(tasks=tasks,name="AADL2CODE")\n')
+            f.write("app.root.mainloop()\n")
+
+        if "ROBOCHART2AADL.py" in file:
+            f.write("# **********************************************************************************\n")
+            f.write("# * Copyright (C) 2024-present Bert Van Acker (B.MKR) <bert.vanacker@uantwerpen.be>\n")
+            f.write("# *\n")
+            f.write("# * This file is part of the roboarch R&D project.\n")
+            f.write("# *\n")
+            f.write("# * RAP R&D concepts can not be copied and/or distributed without the express\n")
+            f.write("# * permission of Bert Van Acker\n")
+            f.write("# **********************************************************************************\n")
+            f.write("from rpio.workflow.tasks import *\n")
+            f.write("from rpio.workflow.executer import Executer_GUI\n")
+            f.write("\n")
+            f.write("\n")
+            f.write("# 1 . define the tasks\n")
+            f.write("tasks = {\n")
+            f.write('    "Generate AADL messages": t_robochart_to_messages,\n')
+            f.write('    "Generate AADL Logical Architecture": t_robochart_to_logical\n')
+            f.write("}\n")
+            f.write("\n")
+            f.write("# 2. Launch the graphical executer\n")
+            f.write('app = Executer_GUI(tasks=tasks,name="ROBOCHART2AADL")\n')
+            f.write("app.root.mainloop()\n")
 
         # --- close file ---
         f.close()

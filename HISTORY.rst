@@ -67,3 +67,37 @@ robosapiensIO Preview
 ~~~~~~~~~~~~~~~~~~
 
 * AADLIL metamodel package added
+
+0.3.11 (2024-12-03)
+~~~~~~~~~~~~~~~~~~
+
+* Added deployment strategies {native python, virtual enviornment python, docker containerization}
+* Updated rpio CLI ( run, platform, transformations)
+* ADDED physical architecture and deployment to AADLIL
+* robosapiensIO backbone generation (containerized)
+
+0.3.19 (2024-12-05)
+~~~~~~~~~~~~~~~~~~
+
+* Updated the run and transformation command (CLI)
+* Added template files (TESTING)
+* Updated requirements.txt for all nodes
+
+0.3.20 (2024-12-05)
+~~~~~~~~~~~~~~~~~~
+
+* Update swc2main
+* swc2code updated (user todo added)
+
+0.3.21 (2024-12-10)
+~~~~~~~~~~~~~~~~~~
+
+* Update the client library to read from configs
+* write-knowledge based on messages
+
+0.3.24 (2024-12-12)
+~~~~~~~~~~~~~~~~~~
+
+* Updated package generation to contain ROBOCHART2AADL transformation
+* Changed rpio.exe to rpio-cli.exe (integration along with system-level pypi install)
+

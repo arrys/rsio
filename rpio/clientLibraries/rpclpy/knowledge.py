@@ -19,18 +19,33 @@ class KnowledgeManager:
         else:
             self.local_store = {}
 
-    def write(self, key, value):
+    def write(self, cls, value = True):
         """
-        Store a key-value pair in the knowledge base. If the value is a dictionary, it will be serialized.
+        Store a cls in the knowledge base. If the value is a dictionary, it will be serialized.
         :param key: The key for storing the data
         :param value: The value to store (can be a dict, str, int, etc.)
         """
-        if isinstance(value, dict):
-            value = json.dumps(value)  # Serialize the dictionary to a JSON string
-        if self.storage_type == 'global':
-            self.redis_client.set(key, value)
+        if isinstance(cls, str):
+            if self.storage_type == 'global':
+                self.redis_client.set(cls, value)
+            else:
+                self.local_store[cls] = value
         else:
-            self.local_store[key] = value
+            # Convert the class instance to a dictionary
+            class_dict = {}
+            for key, value in cls.__dict__.items():
+
+                # Remove leading underscore for protected attributes
+                public_key = key.lstrip('_')
+
+                # Add the attribute to the dictionary
+                class_dict[public_key] = value
+
+            value = json.dumps(class_dict)  # Serialize the dictionary to a JSON string
+            if self.storage_type == 'global':
+                self.redis_client.set(cls.name, value)
+            else:
+                self.local_store[cls.name] = value
 
     def read(self, key, queueSize = 1):
         """

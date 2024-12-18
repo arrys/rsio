@@ -9,4 +9,4 @@
    :file: features.csv
    :header-rows: 1
    :class: longtable
-   :widths: 15, 10, 30, 30, 30, 30, 30
+   :widths: 15, 10, 30, 30, 30, 30, 30, 30

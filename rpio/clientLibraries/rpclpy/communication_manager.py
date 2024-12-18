@@ -6,7 +6,7 @@ from paho.mqtt.enums import CallbackAPIVersion
 # import rclpy  # Commented out for now
 # from rclpy.node import Node  # Commented out for now
 
-class EventHandler:
+class CommunicationManager:
     def __init__(self, config, knowledge, logger):
         self.config = config
         self.knowledge = knowledge
@@ -16,11 +16,24 @@ class EventHandler:
         # self.ros2_node = None  # Commented out for now
         self.redis_thread = None  # Redis thread for listening
         self.event_callbacks = {}  # Store callbacks for MQTT, Redis
-
+        self.mqtt_subscribe_topics = []
+        self.mqtt_publish_topics = []
         # MQTT and Redis topics/keys from config
-        
-        self.mqtt_subscribe_topics = self.config.get("mqtt_subscribe_topics", [])
-        self.mqtt_publish_topics = self.config.get("mqtt_publish_topics", [])
+
+        # Get the subscribe topics from the config file
+        if 'eventIn' in config and 'properties' in config['eventIn']:
+            properties = config['eventIn']['properties']
+            for item in properties:
+                if 'property' in item and 'name' in item['property']:
+                    self.mqtt_subscribe_topics.append(item['property']['name'])
+
+        # Get publish topic list from the config file 
+        if 'eventOut' in config and 'properties' in config['eventIn']:
+            properties = config['eventOut']['properties']
+            for item in properties:
+                if 'property' in item and 'name' in item['property']:
+                    self.mqtt_publish_topics.append(item['property']['name'])
+
         self.redis_keys = self.config.get("redis_keys", [])
 
         # self.ros2_subscribe_topics = self.config.get("ros2_subscribe_topics", [])  # Commented out for now
@@ -91,9 +104,6 @@ class EventHandler:
         topic = message.topic
         self.logger.info(f"Received MQTT message: {payload} on topic: {topic}")
         
-        # Store the message in knowledge
-        self.knowledge.write(topic, payload)
-
         # Trigger any registered callbacks for this topic
         self.trigger_callbacks(topic, payload)
 

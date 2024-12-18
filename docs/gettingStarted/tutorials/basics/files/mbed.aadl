@@ -1,0 +1,19 @@
+property set mbed is
+	with SEI;
+
+  -- property to model the compute units
+  Clock_Frequency : aadlreal units mbed::Processor_Speed_Units applies to (processor, memory, bus, device);
+  Data_Width : aadlinteger units Size_Units applies to (processor, memory, bus, device, access connection);
+  Operations_Per_Second : aadlinteger applies to (processor, memory, bus, device);
+  Data_Size : aadlinteger units Size_Units applies to (processor, memory, bus, device, access connection);
+  BandWidthCapacity: aadlreal  units Data_Rate_Units applies to (bus, virtual bus, system);
+  Non_Volatile : aadlboolean applies to (memory);
+  IP_Address : aadlstring applies to (system,processor,device);
+  
+  -- Speed in clock frequency
+  Processor_Speed_Units: type units (Hz, kHz => Hz * 1000, MHz => kHz * 1000, GHz => MHz * 1000);
+
+  
+  
+
+end mbed;

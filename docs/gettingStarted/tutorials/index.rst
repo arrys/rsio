@@ -21,6 +21,7 @@ Tutorials
 
     basics/Beginner-basics
     CLI/Beginner-CLI-Tools
+    workflows/index_workflows
 
 Validation matrix
 ~~~~~~~~~~~~~~~~~~
@@ -36,7 +37,7 @@ Examples
 ~~~~~~~~~
 
 .. note::
-   No examples available now
+   No community examples available now
 
 Publications
 ---------
