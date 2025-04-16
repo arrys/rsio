@@ -40,6 +40,11 @@ test = [
 doc = [
     "sphinx",
 ]
+dev = [
+    "ruff",
+    "invoke",
+    "pyinstaller",
+]
 
 [project.urls]
 source = "https://github.com/BertVanAcker/rpio"
@@ -53,6 +58,7 @@ hio = "rpio.__main__:main"
 dev-dependencies = [
     "ruff",
     "invoke",
+    "pyinstaller",
 ]
 extra-index-url = ["https://pip:glpat-aq2VpazxthkoqZ9b3bDz@git.rys.one/api/v4/groups/phd/-/packages/pypi/simple"]
 
