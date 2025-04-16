@@ -1,12 +1,3 @@
-# **********************************************************************************
-# * Copyright (C) 2024-present Bert Van Acker (B.MKR) <bert.vanacker@uantwerpen.be>
-# *
-# * This file is part of the roboarch R&D project.
-# *
-# * RAP R&D concepts can not be copied and/or distributed without the express
-# * permission of Bert Van Acker
-# **********************************************************************************
-
 import click
 
 from rpio.commands.version import versionCmds
@@ -19,8 +10,15 @@ from rpio.commands.deploy import deployCmds
 from rpio.commands.transformations import transformationCmds
 from rpio.commands.platform import platformCmds
 
-cli=click.CommandCollection(sources=[versionCmds,packageCmds,transformationCmds,runCmds,buildCmds,deployCmds,platformCmds],help="robosapiensIO command line tool")
+cli = click.CommandCollection(
+    sources=[versionCmds, packageCmds, transformationCmds, runCmds, buildCmds, deployCmds, platformCmds],
+    help="robosapiensIO command line tool"
+)
 
 
-if __name__ == '__main__':
+def main():
     cli()
+
+
+if __name__ == "__main__":
+    main()
