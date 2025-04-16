@@ -3,13 +3,18 @@ import threading
 import os
 import io
 import zipfile
-from subprocess import Popen, CREATE_NEW_CONSOLE
 import subprocess
 import xml.etree.ElementTree as ET
 import paho.mqtt.client as mqtt
 import yaml
 import redis
 import importlib
+from subprocess import Popen
+# Only windoze supports CREATE_NEW_CONSOLE
+try:
+    from subprocess import CREATE_NEW_CONSOLE
+except ImportError:
+    pass
 
 
 def getCustomCode(text,tag):

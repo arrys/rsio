@@ -11,7 +11,7 @@ from pathlib import Path
 
 class PackageManager(object):
 
-    def __init__(self, name='PackageManager',description='Build-in package manager',verbose=False):
+    def __init__(self, name='PackageManager',description='Built-in package manager',verbose=False):
         """Initialize a Package Manager component.
 
                 Parameters
@@ -113,8 +113,7 @@ class PackageManager(object):
                 except:
                     raise Exception("ERROR: "+self._packageName+" package could not be created!")
 
-
-    def check(self,path=None):
+    def check(self, path: str | Path = None) -> bool:
         """Check rpIO package.
 
             Parameters
@@ -132,17 +131,12 @@ class PackageManager(object):
             >> isHybridIOPackage = pm.check(path="path/to/rpio/package")
 
         """
-        validPackage = True
-        if path is None:
-            if self._verbose: print("DEBUG: checking "+self._packageName+" package...")
-            validPackage = os.path.isfile("robosapiensIO.ini")
-            #TODO: add other checks
-        else:
-            if self._verbose: print("DEBUG: checking "+self._packageName+" package in "+self._directory+"/"+path+"...")
-            validPackage = os.path.isfile(path+"/robosapiensIO.ini")
-            # TODO: add other checks
-
-        return validPackage
+        path = path if path else Path.cwd()
+        package_path = path if isinstance(path, Path) else Path(path)
+        if self._verbose: print(f"DEBUG: checking {self._packageName} package in {package_path}...")
+        is_valid_package = (package_path / "robosapiensIO.ini").is_file()
+        # TODO: add other checks
+        return is_valid_package
 
     def _checkEmptyDir(self):
         """Function to determine if directory is empty."""
