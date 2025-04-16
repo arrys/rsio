@@ -3,7 +3,7 @@ robosapiensIO backend with Docker Tutorial
 ==========================================
 
 **Goal:** This tutorial will walk you through the steps to set up the robosapiensIO backend using Docker and Docker Compose.
-This can be used when manually running (e.g.using main.py) self-adaptive applications instead of the generated docker containers or for experimenting purpose.
+This can be used when manually running (e.g. using main.py) self-adaptive applications instead of the generated docker containers or for experimenting purpose.
 
 **Tutorial level:** Beginner
 
