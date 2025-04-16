@@ -25,3 +25,10 @@ class VerificationMethods:
 class MonitorType:
     RUNTIME = "runtime"
     POSTPROCESSING = "postprocessing"
+
+class StepStatus:
+    PENDING = "Pending"
+    RUNNING = "Running"
+    PASSED = "Passed"
+    FAILED = "Failed"
+

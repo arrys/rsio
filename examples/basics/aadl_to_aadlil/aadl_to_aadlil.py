@@ -10,7 +10,7 @@ from rpio.parsers.parsers import *
 from rpio.metamodels.aadl2_IL import *
 
 # 1. Setup the AADL parser
-parser = AADL_parser(logicalArchitecture='input/logicalArchitecture.aadl',physicalArchitecture='input/physicalArchitecture',messages='input/messages.aadl')
+parser = AADL_parser(logicalArchitecture='input/logicalArchitecture.aadl',physicalArchitecture='input/PhysicalArchitecture.aadl',messages='input/messages.aadl')
 
 # 2. parse the aadl models and store in AADLIL
 s = parser.aadl2aadlIl()

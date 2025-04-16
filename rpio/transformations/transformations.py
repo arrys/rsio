@@ -23,7 +23,7 @@ def _AddRequirementsFile(file="requirements.txt", path=None):
     f = open(path + "/" + file, "a")
 
     # --- custom file content ---
-    f.write("robosapiensio==0.3.9\n")
+    f.write("robosapiensio==0.3.19\n")
     f.write("jsonpickle==3.3.0\n")
     f.write("paho-mqtt==2.1.0\n")
     f.write("PyYAML==6.0.2\n")
@@ -248,7 +248,7 @@ def swc2main(system=None,package="",prefix=None,path="output/generated/main"):
     # Extract all processors of the managing system
     for processor in system.processors:
         with open(join(path, "main_"+processor.name+".py"), 'w') as f:
-            f.write(template.render(processor=processor,package=package,prefix="examples"))
+            f.write(template.render(processor=processor,package=package,prefix=prefix))
 
 def robochart2aadlmessages(maplek=None,path="output/generated/messages"):
     """Function to generate AADL messages from robochart models
@@ -277,6 +277,37 @@ def robochart2aadlmessages(maplek=None,path="output/generated/messages"):
     # Extract all processes from AADL system model
     with open(join(path, "messages.aadl"), 'w') as f:
         f.write(template.render(types=maplek.types))
+
+def robochart2logical(parsed=None,path="output/generated/LogicalArchitecture"):
+    """Function to generate AADL logical architecture from robochart models
+
+    :param [MAPLEK]: [MAPLE-K components within robochart], defaults to [None]
+    :type [MAPLEK]: [maplek (robochart)](, optional)
+
+    :param [path]: [path to the output folder], defaults to ["output/generated/messages"]
+    :type [path]: [string](, optional)
+
+    ...
+    :return: [Functions returns nothing]
+    :rtype: [None]
+    """
+
+    if not exists(path):
+        mkdir(path)
+
+    # Initialize the Templates engine.
+    this_folder = dirname(__file__)
+    jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(this_folder), trim_blocks=True, lstrip_blocks=True)
+
+    # Load the template
+    template = jinja_env.get_template('templates/aadl_logical.template')
+
+    # Prepare the parsed models for code generation
+    elements = [parsed.monitor_model,parsed.analysis_model,parsed.plan_model,parsed.legitimate_model,parsed.execute_model,parsed.knowledge_model]
+
+    # Extract all processes from AADL system model
+    with open(join(path, "LogicalArchitecture.aadl"), 'w') as f:
+        f.write(template.render(elements=elements))
 
 
 def swc2dockerCompose(system=None,path="output/generated/docker"):
@@ -313,7 +344,7 @@ def swc2dockerCompose(system=None,path="output/generated/docker"):
             f.write(template.render(processor=processor))
 
 
-def update_robosapiensIO_ini(system=None,path="output/generated/docker"):
+def update_robosapiensIO_ini(system=None,package="",prefix ="",path="output/generated/docker"):
     """Function to update the robosapiensIO configuration
 
     :param [system]: [Managing or managed system model part of the adaptive systen within aadlil,either managing or managed system], defaults to [None]
@@ -345,7 +376,7 @@ def update_robosapiensIO_ini(system=None,path="output/generated/docker"):
     managedSystem = system.systems[1]
 
     with open(join(path, "robosapiensIO.ini"), 'w') as f:
-        f.write(template.render(name=system.name,description=system.description, timestamp=formatted_timestamp.__str__(),managingSystem=managingSystem,managedSystem=managedSystem))
+        f.write(template.render(system=system,package=package,prefix=prefix, timestamp=formatted_timestamp.__str__(),managingSystem=managingSystem,managedSystem=managedSystem))
 
 
 def add_backbone_config(system=None,path='Resources'):

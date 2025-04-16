@@ -39,7 +39,8 @@ def launch_docker_compose(path='/'):
             :return: [Functions returns nothing]
             :rtype: [None]
         """
-    cdCommand = ["cd", path]
-    call(cdCommand)
-    dockerCommand = ["docker compose up --build -d"]    #-d runs in detached mode
-    call(dockerCommand)
+    try:
+        process = subprocess.Popen(f"docker compose up --build".split(), cwd=path,stdout=subprocess.PIPE)
+        return True
+    except:
+        return False

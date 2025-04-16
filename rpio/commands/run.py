@@ -43,25 +43,26 @@ def run(verbose,platform,launchfile,docker):
         except:
             print("FAIL - Running standalone robosapiensIO application failed")
     else:
-        if not launchfile:
-            if verbose:print("Executing the adaptive application using the provided main file for platform {}".format(platform))
-            try:
-                launch_main('Resources/main_'+platform+'.py')
-            except:
-                print("FAIL - Launching the standalone robosapiensIO application failed")
-        elif docker:
+        if docker:
             if verbose: print("Executing the adaptive application using the provided docker compose file for platform {}".format(platform))
             try:
                 launch_docker_compose(path='Realization/ManagingSystem/Platform/' + platform)
             except:
                 print("FAIL - Launching the standalone robosapiensIO application failed")
-        else:
+        elif launchfile:
             if verbose: print(
                 "Executing the adaptive application using the provided launch file for platform {}".format(platform))
             try:
                 launch('Realization/ManagingSystem/Platform/' + platform + '/launch.xml')
             except:
                 print("FAIL - Launching the standalone robosapiensIO application failed")
+        else:
+            if verbose:print("Executing the adaptive application using the provided main file for platform {}".format(platform))
+            try:
+                launch_main('Resources/main_'+platform+'.py')
+            except:
+                print("FAIL - Launching the standalone robosapiensIO application failed")
+
 
 
 

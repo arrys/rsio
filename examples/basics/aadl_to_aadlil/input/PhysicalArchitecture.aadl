@@ -35,6 +35,19 @@ public
 			t2: bus access WLAN <-> firmware.BusAccess1;
       
   	end turtlebot_compute.impl;
+
+
+  	-- Companion computer executing the MAPLE-K loop
+	system companion_compute
+		features
+			BusAccess1: requires bus access HardwareParts::wifi;
+
+	end companion_compute;
+
+	system implementation companion_compute.singleCore
+    subcomponents
+      MissionProcessor1: processor HardwareParts::Xeon.solo;
+  	end companion_compute.singleCore;
   	
   	-- TURTLEBOT FIRMWARE DEVICE
   	system turtlebot_firmware
@@ -60,20 +73,7 @@ public
       MissionProcessor: processor HardwareParts::Cortex_A72.quadcore;
       
   	end RPI.impl;
-	
-	
-	-- Companion computer executing the MAPLE-K loop
-	system companion_compute
-		features
-			BusAccess1: requires bus access HardwareParts::wifi;
-		
-	end companion_compute;
-	
-	system implementation companion_compute.singleCore
-    subcomponents
-      MissionProcessor1: processor HardwareParts::Xeon.solo;
-      
-  	end companion_compute.singleCore;
+
 	
 	
 	

@@ -9,6 +9,7 @@ import xml.etree.ElementTree as ET
 import paho.mqtt.client as mqtt
 import yaml
 import redis
+import importlib
 
 
 def getCustomCode(text,tag):
@@ -33,7 +34,8 @@ def run_command(command):
         stdout, stderr = process.communicate()
         print(process.stdout)
     except subprocess.CalledProcessError as e:
-        print(f"Command: {command}\nError: {e.stderr.decode('utf-8')}")
+        print(f"Failed to run command. Error: {e}")     #decode('utf-8') possible source of exe being flagged as virus
+        #print(f"Command: {command}\nError: {e.stderr.decode('utf-8')}")
 
 
 def execute_commands(commands):
@@ -372,3 +374,10 @@ def check_mqtt(broker="localhost", port=1883, timeout=30,config=None):
         print(f"Could not connect to MQTT broker: {e}")
 
     return client.reachable
+
+def check_package_installation(package="robosapiensio"):
+    try:
+        importlib.import_module(package)
+        return True
+    except ImportError:
+        return False

@@ -76,12 +76,13 @@ class {{swc.name}}(Node):
         {% endif %}
         {% endfor %}
         {# {{ EVENTS TO BE SEND FROM OUTPUT EVENT OR EVENT DATA }} #}
+        # TODO: Put desired publish event inside user code and uncomment!!
         {% for feature in thread.features %}
         {% if feature.featureType == 'outport'%}
         {% if 'data event' in feature.type%}
-        self.publish_event(event_key='{{feature.name}}',message=_{{feature.message.name}})    # LINK <outport> {{feature.name}}
+        #self.publish_event(event_key='{{feature.name}}',message=_{{feature.message.name}})    # LINK <outport> {{feature.name}}
         {% elif 'event' in feature.type%}
-        self.publish_event(event_key='{{feature.name}}')    # LINK <outport> {{feature.name}}
+        #self.publish_event(event_key='{{feature.name}}')    # LINK <outport> {{feature.name}}
         {% endif %}
         {% endif %}
         {% endfor %}

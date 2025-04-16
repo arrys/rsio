@@ -1,0 +1,34 @@
+property set rpio is
+
+	-- property to model rpio specific elements
+	 formalism : rpio::Supported_SWC_Formalisms applies to (process);
+ 	 Containerized : aadlboolean applies to (process);
+ 	 
+ 	 -- robosapiensio backend configuration
+  	Redis_port: aadlinteger applies to (system);
+  	MQTT_port: aadlinteger applies to (system);
+  	Redis_Database: aadlinteger applies to (system);
+  	Storage_type : rpio::Redis_storage_type applies to (system);
+  	Quality_of_Service : rpio::QoS applies to (system);
+  	
+  	-- port properties on system level between managed and managing system
+  	Port_Protocol : rpio::Protocol applies to (port); 
+  	Port_Dataformat : rpio::Data_Format applies to (port);
+  	Port_MQTT_Override_Topic: aadlboolean applies to (port);
+  	Port_MQTT_Topic: aadlstring applies to (port);
+  	Port_Websocket_Port: aadlinteger applies to (port);
+  	Port_Frequency: aadlreal units rpio::Processor_Speed_Units applies to (port);
+  	Port_Dispatch_Protocol: rpio::Dispatch_Protocol applies to (port);
+  	
+    -- enumerates
+    Supported_SWC_Formalisms: type enumeration (Python,C,Cpp,Rust);
+    QoS : type enumeration (AtMostOnce, AtLeastOnce, ExactlyOnce);
+    Redis_storage_type: type enumeration (global, local);
+    Protocol : type enumeration (MQTT, Redis, WebSocket, HTTP, CoAP); -- Communication protocol
+    Data_Format : type enumeration (JSON, Binary, XML, Message); -- Data format of messages
+    Processor_Speed_Units: type units (Hz, kHz => Hz * 1000, MHz => kHz * 1000, GHz => MHz * 1000);
+    Dispatch_Protocol : type enumeration (Sporadic, Periodic); 
+  	
+  	
+  	
+end rpio;
