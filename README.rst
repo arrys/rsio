@@ -33,3 +33,12 @@ Without installing
 .. code-block:: bash
 
     uv run python -m rpio
+
+By building an executable
+-------------------------
+
+To manually build ``rpio.exe``, execute the following command in the terminal:
+
+.. code-block:: bash
+
+    uvx pyinstaller src/rpio/__main__.py --onefile -n rpio
