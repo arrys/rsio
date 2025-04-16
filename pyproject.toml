@@ -1,0 +1,64 @@
+[build-system]
+requires = ["setuptools", "wheel", "uv_build"]
+build-backend = "uv_build"
+
+[project]
+name = "rpio"
+version = "0.3.24"
+description = "robosapiensIO - your gateway to trustworthy self-adaptive robotics."
+authors = [
+    {name = "Arkadiusz Michał Ryś", email = "Arkadiusz.Michal.Rys@gmail.com"},
+	{name = "Bert Van Acker", email = "Bert.VanAcker@uantwerpen.be"},
+	{name = "Sahar Nasimi Nezhad", email = "Sahar.NasimiNezhad@uantwerpen.be"},
+]
+readme = "README.rst"
+requires-python = ">=3.12"
+classifiers = [
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Development Status :: 2 - Pre-Alpha",
+    "Intended Audience :: Developers",
+    "Natural Language :: English",
+]
+license = {file = "LICENSE"}
+keywords = ["robotics", "trustworthiness", "self-adaptive", "model-based"]
+
+dependencies = [
+    "jinja2>=3.1.4",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest",
+]
+doc = [
+    "sphinx",
+]
+
+[project.urls]
+source = "https://github.com/BertVanAcker/rpio"
+Homepage = "https://rpio.readthedocs.io/en/latest/index.html"
+
+[project.scripts]
+rpio = "rpio.__main__:main"
+hio = "rpio.__main__:main"
+
+[tool.uv]
+dev-dependencies = [
+    "ruff",
+    "invoke",
+]
+extra-index-url = ["https://pip:glpat-aq2VpazxthkoqZ9b3bDz@git.rys.one/api/v4/groups/phd/-/packages/pypi/simple"]
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+include = ["rpio", "rpio.*"]
+
+[tool.setuptools.package-data]
+rpio = [
+    "transformations/templates/*.template",
+	"parsers/robochart/*.tx",
+]
