@@ -43,15 +43,19 @@ services:
         context: ./../../Nodes/{{node.name}}
         dockerfile: ./Dockerfile
     container_name: C_{{node.name}}
+    {% if processor.runs_rap_backbone == True %}
     depends_on:
         emqx-enterprise:
             condition: service_healthy
     environment:
       - BROKER=emqx
   {% endif %}
+  {% endif %}
 
   {% endfor %}
 
+{% if processor.runs_rap_backbone == True %}
 networks:
   emqx-net:
     name: emqx-net
+{% endif %}
