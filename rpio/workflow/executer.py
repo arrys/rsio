@@ -24,23 +24,24 @@ class Executer_GUI:
     STATUS_ICONS = {
         StepStatus.PENDING: "●",  # Grayed-out dot
         StepStatus.RUNNING: "⏳",  # Hourglass for running
-        StepStatus.PASSED: "✔️",   # Checkmark for passed
+        StepStatus.PASSED: "✔",   # Checkmark for passed
         StepStatus.FAILED: "❌"    # Cross for failed
     }
 
-    def __init__(self, tasks,name):
+    def __init__(self, tasks, name):
         self.logger = Logger(name="Custom logger", path="../", verbose=False)
         self.name = name
         self.tasks = tasks
         self.root = tk.Tk()
-        self.root.title("Workflow "+name+" Status")
-        self.root.geometry("500x400")
-        self.root.configure(bg="#1e1e1e")  # Dark background for a polished look
+        self.root.title("Workflow " + name + " Status")
+        self.root.geometry("600x500")
+        self.root.configure(bg="#1e1e1e")
         self.task_widgets = {}
+        self.task_checkboxes = {}
         self.create_gui()
 
     def create_gui(self):
-        title = tk.Label(self.root, text="Workflow "+self.name+" Status", font=("Helvetica", 16, "bold"), bg="#1e1e1e", fg="white")
+        title = tk.Label(self.root, text="Workflow " + self.name + " Status", font=("Helvetica", 16, "bold"), bg="#1e1e1e", fg="white")
         title.pack(pady=10)
 
         self.status_frame = tk.Frame(self.root, bg="#1e1e1e")
@@ -48,6 +49,19 @@ class Executer_GUI:
 
         for task_name in self.tasks:
             self.add_task(task_name)
+
+        select_all_button = tk.Button(
+            self.root,
+            text="Select All",
+            command=self.select_all_tasks,
+            font=("Arial", 12, "bold"),
+            bg="#32cd32",
+            fg="white",
+            bd=0,
+            padx=10,
+            pady=5
+        )
+        select_all_button.pack(pady=10)
 
         self.start_button = tk.Button(
             self.root,
@@ -63,9 +77,22 @@ class Executer_GUI:
         self.start_button.pack(pady=20)
 
     def add_task(self, task_name):
-        # Task label with status icon
+        frame = tk.Frame(self.status_frame, bg="#1e1e1e")
+        frame.pack(fill="x", pady=2)
+
+        var = tk.BooleanVar(value=False)
+        checkbox = tk.Checkbutton(
+            frame,
+            text="",
+            variable=var,
+            bg="#1e1e1e",
+            activebackground="#1e1e1e",
+            highlightthickness=0
+        )
+        checkbox.pack(side="left", padx=10)
+
         task_label = tk.Label(
-            self.status_frame,
+            frame,
             text=f"{self.STATUS_ICONS[StepStatus.PENDING]} {task_name}",
             font=("Arial", 12),
             fg=self.STATUS_COLORS[StepStatus.PENDING],
@@ -74,18 +101,25 @@ class Executer_GUI:
             padx=10,
             pady=5
         )
-        task_label.pack(fill="x", pady=2)
+        task_label.pack(side="left", fill="x")
 
-        # Store task label for updating later
         self.task_widgets[task_name] = task_label
+        self.task_checkboxes[task_name] = var
+
+    def select_all_tasks(self):
+        for var in self.task_checkboxes.values():
+            var.set(True)
 
     def start_workflow(self):
         self.start_button.config(state=tk.DISABLED)
-        self.logger.syslog(msg="Workflow --"+self.name+"-- started")
+        self.logger.syslog(msg="Workflow --" + self.name + "-- started")
         Thread(target=self.run_tasks).start()
 
     def run_tasks(self):
         for task_name, func in self.tasks.items():
+            if not self.task_checkboxes[task_name].get():
+                continue
+
             self.update_status(task_name, StepStatus.RUNNING)
             try:
                 result = func()

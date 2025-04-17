@@ -101,3 +101,18 @@ robosapiensIO Preview
 * Updated package generation to contain ROBOCHART2AADL transformation
 * Changed rpio.exe to rpio-cli.exe (integration along with system-level pypi install)
 
+0.4.0 (2025-04-16)
+~~~~~~~~~~~~~~~~~~
+* Seprate inter and intra component communication manager
+* Add time-stamp to messgaes in communication and knowledge manager
+* Add random uique-id in event messages
+* Support faster communication protocols_redis 
+* Support faster communication protocols_rabbitMQ
+* Support faster communication protocols_UDP
+* Support faster communication protocols_TCP/IP
+* Support faster knowledge handing protocols_memcached
+* Support faster knowledge handing protocols_kafka
+* Support read/write knowledge using standard messages
+* Support faster logging protocol in logging and tracking_redis
+* Integrate first version of the trustworthiness checker (MQTT)
+* Support faster communication for the trustworthiness checker (MQTT)
