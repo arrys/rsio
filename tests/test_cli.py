@@ -1,6 +1,6 @@
 from click.testing import CliRunner
 from rpio.__main__ import cli
-from utils import TemporaryPath
+from tests.utils import TemporaryPath
 
 def test_cli_launch():
     """"""

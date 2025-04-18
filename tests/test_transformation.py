@@ -10,7 +10,7 @@ def test_aadl_to_aadlil_transformation():
     package_manager = rpio.package.manager.PackageManager()
     package_name = "package"
     # TODO Needs better testing with better package input
-    with TemporaryTemplatedPath(Path("data/ntnu-package.zip"), package_name) as package_path:
+    with TemporaryTemplatedPath(Path(__file__).resolve().parent / Path("data/ntnu-package.zip"), package_name) as package_path:
         package_manager.create(package_name, standalone=True)
         # aadl -> aadlil
         rpio.parsers.parsers.AADL_parser(
