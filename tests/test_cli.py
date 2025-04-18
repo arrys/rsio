@@ -38,3 +38,10 @@ def test_cli_transformation():
     # TODO The roboarch2aadl transformation is not implemented at the moment
     result = runner.invoke(cli, [command, "--roboarch2aadl"])
     assert result.exit_code == 0  # TODO This should not be 0
+
+def test_cli_version():
+    """"""
+    command = "version"
+    runner = CliRunner()
+    result = runner.invoke(cli, [command])
+    assert  "rpio v" in result.output

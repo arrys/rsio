@@ -1,5 +1,6 @@
 import click
-
+import tomllib
+from pathlib import Path
 
 @click.group()
 @click.pass_context
@@ -10,4 +11,7 @@ def version_commands():
 @version_commands.command()
 def version():
     """Display the current version."""
-    click.echo("rpio v0.3.24") # TODO Get from pyproject
+    # TODO Check if this works on an installed package
+    data = tomllib.loads((Path(__file__).resolve().parent.parent.parent.parent / Path("pyproject.toml")).read_text())
+    project_version = data.get("project", {}).get("version", "0.0.0")
+    click.echo(f"rpio v{project_version}")
