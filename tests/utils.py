@@ -11,7 +11,7 @@ class TemporaryTemplatedPath:
 
     def __enter__(self):
         if not self.template_file_path:
-            return self.extraction_path
+            return self.extraction_path.resolve()
         elif self.template_file_path.suffix == ".git":
             shutil.copytree(self.template_file_path, self.extraction_path)
         elif self.template_file_path.suffix == ".zip":
@@ -19,12 +19,12 @@ class TemporaryTemplatedPath:
                 zip_file.extractall(self.extraction_path)
         else:
             raise ValueError(f"Unexpected extension '{self.template_file_path.suffix}'.")
-        return self.extraction_path
+        return self.extraction_path.resolve()
 
     def __exit__(self, exc_type, exc_value, traceback):
         if self.remove_after_completion:
             try:
-                shutil.rmtree(self.extraction_path)
+                shutil.rmtree(self.extraction_path.resolve())
             except FileNotFoundError:
                 pass
 
