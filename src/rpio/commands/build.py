@@ -19,10 +19,10 @@ import subprocess
 
 @click.group()
 @click.pass_context
-def buildCmds():
+def build_cmds():
     pass
 
-@buildCmds.command()
+@build_cmds.command()
 @click.option('--verbose','-v', is_flag=True,default=False,help='Enable debug information.')
 def build(verbose):
     """Build standalone RoboSAPIENS Adaptive Platform application package."""

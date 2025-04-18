@@ -1,17 +1,15 @@
 import click
 
-from rpio.commands.version import versionCmds
-from rpio.commands.importer import importCmds
-from rpio.commands.exporter import exportCmds
-from rpio.commands.run import runCmds
-from rpio.commands.build import buildCmds
-from rpio.commands.package import packageCmds
-from rpio.commands.deploy import deployCmds
-from rpio.commands.transformations import transformationCmds
-from rpio.commands.platform import platformCmds
+from rpio.commands.version import version_commands
+from rpio.commands.run import run_cmds
+from rpio.commands.build import build_cmds
+from rpio.commands.package import package_cmds
+from rpio.commands.deploy import deploy_cmds
+from rpio.commands.transformations import transformation_cmds
+from rpio.commands.platform import platform_cmds
 
 cli = click.CommandCollection(
-    sources=[versionCmds, packageCmds, transformationCmds, runCmds, buildCmds, deployCmds, platformCmds],
+    sources=[version_commands, package_cmds, transformation_cmds, run_cmds, build_cmds, deploy_cmds, platform_cmds],
     help="robosapiensIO command line tool"
 )
 

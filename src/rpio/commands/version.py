@@ -3,10 +3,10 @@ import click
 
 @click.group()
 @click.pass_context
-def versionCmds():
+def version_commands():
     pass
 
-@versionCmds.command()
+@version_commands.command()
 def version():
     """Display the current version."""
     version = "0.3.24" # TODO Get from pyproject

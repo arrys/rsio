@@ -20,10 +20,10 @@ from rpio.package.manager import *
 
 @click.group()
 @click.pass_context
-def packageCmds():
+def package_cmds():
     pass
 
-@packageCmds.command()
+@package_cmds.command()
 @click.option('--verbose','-v', is_flag=True,default=False,help='Enable debug information.')
 @click.option('--check','-c', is_flag=True,default=False,help='Check if standalone robosapiensIO package is valid.')
 @click.option('--create', is_flag=True,default=False,help='Create new standalone robosapiensIO package.')

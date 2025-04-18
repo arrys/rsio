@@ -22,10 +22,10 @@ from rpio.metamodels.aadl2_IL import *
 
 @click.group()
 @click.pass_context
-def transformationCmds():
+def transformation_cmds():
     pass
 
-@transformationCmds.command()
+@transformation_cmds.command()
 @click.option('--verbose','-v', is_flag=True,default=False,help='Enable debug information.')
 @click.option('--roboarch2aadl', is_flag=True,default=False,help='Perform the roboArch2AADL transformation.')
 @click.option('--aadl2aadlil', is_flag=True,default=False,help='Perform the AADL2AADLIL transformation.')

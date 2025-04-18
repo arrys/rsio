@@ -18,10 +18,10 @@ from rpio.utils.auxiliary import *
 
 @click.group()
 @click.pass_context
-def platformCmds():
+def platform_cmds():
     pass
 
-@platformCmds.command()
+@platform_cmds.command()
 @click.option('--verbose','-v', is_flag=True,default=False,help='Enable debug information.')
 @click.option('--check', is_flag=True,default=False,help='Checking the prerequisites for running the adaptive application on this platform.')
 @click.option('--set', is_flag=True,default=False,help='Setting up the prerequisites for running the adaptive application on this platform.')

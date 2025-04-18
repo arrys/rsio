@@ -19,10 +19,10 @@ from rpio.launcher.pyLauncher import launch,launch_main, launch_docker_compose
 
 @click.group()
 @click.pass_context
-def runCmds():
+def run_cmds():
     pass
 
-@runCmds.command()
+@run_cmds.command()
 @click.option('--verbose','-v', is_flag=True,default=False,help='Enable debug information.')
 @click.option('--platform','-p', default='none', help='Specify on which platform you want to run the adaptive application, based on the AADL deployment.')
 @click.option('--launchfile', is_flag=True,default=False,help='Specify the use of the launchfile to run the adaptive application.')

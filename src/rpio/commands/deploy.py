@@ -19,10 +19,10 @@ import subprocess
 
 @click.group()
 @click.pass_context
-def deployCmds():
+def deploy_cmds():
     pass
 
-@deployCmds.command()
+@deploy_cmds.command()
 @click.option('--verbose','-v', is_flag=True,default=False,help='Enable debug information.')
 def deploy(verbose):
     """Deploying standalone RoboSAPIENS Adaptive Platform application package on target."""
