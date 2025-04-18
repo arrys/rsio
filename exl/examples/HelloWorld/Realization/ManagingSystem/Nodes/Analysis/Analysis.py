@@ -6,7 +6,7 @@
 # * RAP R&D concepts can not be copied and/or distributed without the express
 # * permission of Bert Van Acker
 # **********************************************************************************
-from rpio.clientLibraries.rpclpy.node import Node
+from rpio.client.rpclpy.node import Node
 import time
 
 try:
@@ -24,7 +24,7 @@ except (ValueError, ImportError):
     from lidarocclusion.masks import BoolLidarMask, ProbLidarMask
     from lidarocclusion.sliding_lidar_masks import sliding_lidar_mask, sliding_prob_lidar_mask
     from lidarocclusion.masks import BoolLidarMask
-    
+
 from typing import List, Tuple, Dict
 import traceback
 import numpy as np
