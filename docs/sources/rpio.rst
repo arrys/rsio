@@ -9,7 +9,6 @@ Subpackages
 
    rpio.client
    rpio.commands
-   rpio.logging
    rpio.package
    rpio.launcher
    rpio.transformations

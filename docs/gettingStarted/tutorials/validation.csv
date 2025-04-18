@@ -15,7 +15,7 @@ Level,Group,Feature,hello world,hello worldv2 ,hello worldv3, NTNU
 ,,aadl_il2messages,|ok|,|ok|,|ok|,|ok|
 ,,aadl_il2actions,|nok|,|ok|,|ok|,|ok|
 ,,aadl_il2workflows,|nok|,|ok|,|ok|,|ok|
-,**PyLauncher**,launch python swc,|nok|,|ok|,|ok|,|ok|
+,**launcher**,launch python swc,|nok|,|ok|,|ok|,|ok|
 ,**Command Line Interface (CLI)**,run transformations,|nok|,|ok|,|ok|,|ok|
 ,,build,|nok|,|ok|,|ok|,|ok|
 ,,deploy,|nok|,|nok|,|ok|,|nok|

@@ -15,7 +15,7 @@ Level,Group,Feature,v0.3.0,v0.3.1,v0.3.4,v0.3.10,v1.0
 ,,aadl_il2messages,|ok|,|ok|,|ok|,|ok|,
 ,,aadl_il2actions,|nok|,|nok|,|nok|,|nok|,
 ,,aadl_il2workflows,|nok|,|nok|,|nok|,|nok|,
-,**PyLauncher**,launch python swc,|ok|,|ok|,|ok|,|ok|,
+,**launcher**,launch python swc,|ok|,|ok|,|ok|,|ok|,
 ,**Command Line Interface (CLI)**,run transformations,|nok|,|nok|,|nok|,|nok|,
 ,,build,|nok|,|nok|,|nok|,|nok|,
 ,,deploy,|nok|,|nok|,|nok|,|nok|,
