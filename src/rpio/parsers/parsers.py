@@ -13,7 +13,7 @@ from rpio.metamodels.aadl2_IL import *
 from textx import metamodel_from_file
 
 class AADL_parser:
-    """This is a parser that parses muliple AADL files and puts them into the AADL intermediate language.
+    """This is a parser that parses multiple AADL files and puts them into the AADL intermediate language.
 
         :param [logicalArchitecture]: [Path to the logical architecture AADL model], defaults to [None]
         :type [logicalArchitecture]: [string](, optional)

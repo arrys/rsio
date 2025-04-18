@@ -8,10 +8,9 @@ from tests.utils import TemporaryTemplatedPath
 def test_aadl_to_aadlil_transformation():
     """"""
     package_manager = rpio.package.manager.PackageManager()
-    package_name = "package"
     # TODO Needs better testing with better package input
-    with TemporaryTemplatedPath(Path(__file__).resolve().parent / Path("data/ntnu-package.zip"), package_name) as package_path:
-        package_manager.create(package_name, standalone=True)
+    with TemporaryTemplatedPath(Path(__file__).resolve().parent / Path("data/ntnu-package.zip"), Path.cwd() / "package") as package_path:
+        package_manager.create(package_path.stem, standalone=True)
         # aadl -> aadlil
         rpio.parsers.parsers.AADL_parser(
             logicalArchitecture=str(package_path / "Design/logicalArchitecture.aadl"),
