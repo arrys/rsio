@@ -21,6 +21,19 @@ wheels = [
 ]
 
 [[package]]
+name = "arklog"
+version = "0.5.3"
+source = { registry = "https://git.rys.one/api/v4/groups/phd/-/packages/pypi/simple" }
+dependencies = [
+    { name = "pyyaml" },
+    { name = "toml" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/be/6e/592edd876f5bc65392db70f5017b7b2eb4bb180ab4a3718ba4808bb3b282/arklog-0.5.3.tar.gz", hash = "sha256:5c01e45f8b8ebef330168ff435be980ba481cc2fedbe03d587321ae98a0a88b1", size = 5488 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/66/64/1bb608efc5ac4e07abc150a0b2c90a9b31de89268a298ba5aa069d9cd913/arklog-0.5.3-py3-none-any.whl", hash = "sha256:c94cb2a46d16d3c823eef547cb0692983351c593832ec051b667acba8a826e88", size = 4767 },
+]
+
+[[package]]
 name = "arpeggio"
 version = "2.0.2"
 source = { registry = "https://git.rys.one/api/v4/groups/phd/-/packages/pypi/simple" }
@@ -384,6 +397,7 @@ name = "rpio"
 version = "0.3.24"
 source = { editable = "." }
 dependencies = [
+    { name = "arklog" },
     { name = "click" },
     { name = "jinja2" },
     { name = "paho-mqtt" },
@@ -415,6 +429,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
+    { name = "arklog", specifier = ">=0.5.3" },
     { name = "click", specifier = ">=8.1.8" },
     { name = "invoke", marker = "extra == 'dev'" },
     { name = "jinja2", specifier = ">=3.1.4" },
@@ -598,6 +613,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/50/34/8577e4d4ccea98b0bcc7b05a80e02bb8521e1267bc6792864abe85a46546/textx-4.1.0.tar.gz", hash = "sha256:37b4f0c455452e27cc0f13d40777b5d20549eaa871311b26e2ed83c019456692", size = 2136296 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/df/df/1e6006b005fcffbfee9d065d80d0a628512bc22f1814904e23243f457f7e/textx-4.1.0-py3-none-any.whl", hash = "sha256:297784421e81a27b3701c968cf820353b79969e0d443f4ca6ac9352a827bf871", size = 67845 },
+]
+
+[[package]]
+name = "toml"
+version = "0.10.2"
+source = { registry = "https://git.rys.one/api/v4/groups/phd/-/packages/pypi/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/be/ba/1f744cdc819428fc6b5084ec34d9b30660f6f9daaf70eead706e3203ec3c/toml-0.10.2.tar.gz", hash = "sha256:b3bda1d108d5dd99f4a20d24d9c348e91c4db7ab1b749200bded2f839ccbe68f", size = 22253 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/44/6f/7120676b6d73228c96e17f1f794d8ab046fc910d781c8d151120c3f1569e/toml-0.10.2-py2.py3-none-any.whl", hash = "sha256:806143ae5bfb6a3c6e736a764057db0e6a0e05e338b5630894a5f779cabb4f9b", size = 16588 },
 ]
 
 [[package]]
