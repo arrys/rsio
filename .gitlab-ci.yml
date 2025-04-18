@@ -70,19 +70,17 @@ release-rpio:
       when: manual
       allow_failure: true
 
-# TODO port to uv -> uvx
-.release-rpio-exe:
+release-rpio-exe:
   stage: release
   tags:
-    - windows  # Ensure the runner is tagged for windoze
+    - windows
   image: python:3.12-windowsservercore-ltsc2022
   script:
-    - pip install pyinstaller
-    - pyinstaller --onefile --name "rpio" rpio.spec
+    - powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+    - uvx pyinstaller src/rpio/__main__.py --onefile -n rpio
   artifacts:
     paths:
       - dist/
-    expire_in: 1 week
   rules:
     - if: $CI_COMMIT_TAG
     - if: $CI_PIPELINE_SOURCE == "push"
@@ -102,7 +100,7 @@ release-rpio:
       when: manual
       allow_failure: true
 
-build-docker:
+.build-docker:
   stage: release
   script:
     - docker info
@@ -117,7 +115,7 @@ build-docker:
       when: manual
       allow_failure: true
 
-build-tagged-docker:
+.build-tagged-docker:
   stage: release
   script:
     - docker info
