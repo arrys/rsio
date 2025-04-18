@@ -1,21 +1,21 @@
 +-----------------+--------------------------+-------+----------------------------------------------------------------------+--------------+-------------+----------------------------+---------------+
 | Level           | Group                    | ID    | Description                                                          | D5.1 status  | D5.2 Status | Validated By               | RPio Version  |
 +=================+==========================+=======+======================================================================+==============+=============+============================+===============+
-| Architecture    | Adaptation Manager       | AM-1  | Orchastrate adaptation process between components                    | Done         | N/A         | TB Simulator , TB4         | 0.3.0         |
+| Architecture    | Adaptation Manager       | AM-1  | Orchestrate adaptation process between components                    | Done         | N/A         | TB Simulator , TB4         | 0.3.0         |
 +-----------------+--------------------------+-------+----------------------------------------------------------------------+--------------+-------------+----------------------------+---------------+
 | Architecture    | Communication Manager    | CM-1  | Communication between MAPLE-K component                              | Done         | N/A         | TB Simulator, TB4  , NTNU  | 0.3.0         |
 +-----------------+--------------------------+-------+----------------------------------------------------------------------+--------------+-------------+----------------------------+---------------+
 | Transformations | Design to Realization    | D2R-1 | Generate software component code skeleton from AADL                  | Done         | N/A         | TB Simulator               | 0.3.0         |
 +-----------------+--------------------------+-------+----------------------------------------------------------------------+--------------+-------------+----------------------------+---------------+
-| Transformations | Design to Realization    | D2R-2 | Generate costum messages from AADL                                   | Done         | N/A         | TB Simulator               | 0.3.0         |
+| Transformations | Design to Realization    | D2R-2 | Generate custom messages from AADL                                   | Done         | N/A         | TB Simulator               | 0.3.0         |
 +-----------------+--------------------------+-------+----------------------------------------------------------------------+--------------+-------------+----------------------------+---------------+
-| Architecture    | Knowledge Manager        | KM-1  | Use a local knowledge as shaerd knowledge between components         | Done         | N/A         | TB Simulator, TB4, NTNU    | 0.3.0         |
+| Architecture    | Knowledge Manager        | KM-1  | Use a local knowledge as shared knowledge between components         | Done         | N/A         | TB Simulator, TB4, NTNU    | 0.3.0         |
 +-----------------+--------------------------+-------+----------------------------------------------------------------------+--------------+-------------+----------------------------+---------------+
-| Architecture    | Logging And Trancking    | L&T-1 | Use filesystem logger for logging the status of components           | Done         | N/A         | TB4  , TB Simulator, NTNU  | 0.3.0         |
+| Architecture    | Logging And Tracking     | L&T-1 | Use filesystem logger for logging the status of components           | Done         | N/A         | TB4  , TB Simulator, NTNU  | 0.3.0         |
 +-----------------+--------------------------+-------+----------------------------------------------------------------------+--------------+-------------+----------------------------+---------------+
-| Architecture    | Logging And Trancking    | L&T-2 | Add a visualized Dashboard to show components activation status      | Done         | N/A         | TB4  , TB Simulator        | 0.3.0         |
+| Architecture    | Logging And Tracking     | L&T-2 | Add a visualized Dashboard to show components activation status      | Done         | N/A         | TB4  , TB Simulator        | 0.3.0         |
 +-----------------+--------------------------+-------+----------------------------------------------------------------------+--------------+-------------+----------------------------+---------------+
-| Transformations | Concept to Design        | C2D-1 | Genarate AADL logical architecture from roboChart                    | Todo         | Done        | TB Simulator               | 0.3.3         |
+| Transformations | Concept to Design        | C2D-1 | Generate AADL logical architecture from roboChart                    | Todo         | Done        | TB Simulator               | 0.3.3         |
 +-----------------+--------------------------+-------+----------------------------------------------------------------------+--------------+-------------+----------------------------+---------------+
 | Transformations | Concept to Design        | C2D-2 | Generate standard AADL messages from roboChart                       | Todo         | Done        | TB Simulator               | 0.3.3         |
 +-----------------+--------------------------+-------+----------------------------------------------------------------------+--------------+-------------+----------------------------+---------------+
@@ -29,13 +29,13 @@
 +-----------------+--------------------------+-------+----------------------------------------------------------------------+--------------+-------------+----------------------------+---------------+
 | Transformations | Design to Realization    | D2R-6 | Create RPio package using command line interface                     | Todo         | Done        | TB Simulator               | 0.3.3         |
 +-----------------+--------------------------+-------+----------------------------------------------------------------------+--------------+-------------+----------------------------+---------------+
-| Architecture    | Knowledge Manager        | KM-2  | Use shared distrdibuted Knowledge in knowledge manager (Redis)       | Todo         | Done        | TB4  , NTNU, TB Simulator  | 0.3.3         |
+| Architecture    | Knowledge Manager        | KM-2  | Use shared distributed Knowledge in knowledge manager (Redis)        | Todo         | Done        | TB4  , NTNU, TB Simulator  | 0.3.3         |
 +-----------------+--------------------------+-------+----------------------------------------------------------------------+--------------+-------------+----------------------------+---------------+
-| Architecture    | Adaptation Manager       | AM-2  | Seprate inter and intra component communication manager              | Todo         | Done        | TB Simulator               | 0.4.0         |
+| Architecture    | Adaptation Manager       | AM-2  | Separate inter and intra component communication manager             | Todo         | Done        | TB Simulator               | 0.4.0         |
 +-----------------+--------------------------+-------+----------------------------------------------------------------------+--------------+-------------+----------------------------+---------------+
-| Architecture    | Adaptation Manager       | AM-3  | Add time-stamp to messgaes in communication and knowledge manager    | Todo         | Done        | TB Simulator               | 0.4.0         |
+| Architecture    | Adaptation Manager       | AM-3  | Add time-stamp to messages in communication and knowledge manager    | Todo         | Done        | TB Simulator               | 0.4.0         |
 +-----------------+--------------------------+-------+----------------------------------------------------------------------+--------------+-------------+----------------------------+---------------+
-| Architecture    | Adaptation Manager       | AM-4  | Add random uique-id in event messages                                | Todo         | Done        | TB Simulator               | 0.4.0         |
+| Architecture    | Adaptation Manager       | AM-4  | Add random unique-id in event messages                               | Todo         | Done        | TB Simulator               | 0.4.0         |
 +-----------------+--------------------------+-------+----------------------------------------------------------------------+--------------+-------------+----------------------------+---------------+
 | Architecture    | Communication Manager    | CM-3  | Support faster communication protocols_redis                         | Todo         | Done        | TB Simulator               | 0.4.0         |
 +-----------------+--------------------------+-------+----------------------------------------------------------------------+--------------+-------------+----------------------------+---------------+
@@ -51,7 +51,7 @@
 +-----------------+--------------------------+-------+----------------------------------------------------------------------+--------------+-------------+----------------------------+---------------+
 | Architecture    | Knowledge Manager        | KM-5  | Support read/write knowledge using standard messages                 | Todo         | Done        | Not validated              | 0.4.0         |
 +-----------------+--------------------------+-------+----------------------------------------------------------------------+--------------+-------------+----------------------------+---------------+
-| Architecture    | Logging And Trancking    | L&T-3 | Support faster logging protocol in logging and tracking_redis        | Todo         | Done        | TB Simulator               | 0.4.0         |
+| Architecture    | Logging And Tracking     | L&T-3 | Support faster logging protocol in logging and tracking_redis        | Todo         | Done        | TB Simulator               | 0.4.0         |
 +-----------------+--------------------------+-------+----------------------------------------------------------------------+--------------+-------------+----------------------------+---------------+
 | Architecture    | Trustworthiness Checker  | TC-1  | Integrate first version of the trustworthiness checker (MQTT)        | Todo         | Done        | TB4  , TB Simulator        | 0.4.0         |
 +-----------------+--------------------------+-------+----------------------------------------------------------------------+--------------+-------------+----------------------------+---------------+
@@ -61,7 +61,7 @@
 +-----------------+--------------------------+-------+----------------------------------------------------------------------+--------------+-------------+----------------------------+---------------+
 | Architecture    | Knowledge Manager        | KM-6  | Support LSTM model saving in knowledgebase                           | Todo         | Todo        | Not validated              | Later         |
 +-----------------+--------------------------+-------+----------------------------------------------------------------------+--------------+-------------+----------------------------+---------------+
-| Architecture    | Knowledge Manager        | KM-7  | Support read/write hsitorical data in the knowledgebase              | Todo         | Todo        | Not validated              | Later         |
+| Architecture    | Knowledge Manager        | KM-7  | Support read/write historical data in the knowledgebase              | Todo         | Todo        | Not validated              | Later         |
 +-----------------+--------------------------+-------+----------------------------------------------------------------------+--------------+-------------+----------------------------+---------------+
-| Architecture    | Logging And Trancking    | L&T-4 | Integrate the visualized dashboard in Logging and Tracking component | Todo         | Todo        | Not validated              | Later         |
+| Architecture    | Logging And Tracking     | L&T-4 | Integrate the visualized dashboard in Logging and Tracking component | Todo         | Todo        | Not validated              | Later         |
 +-----------------+--------------------------+-------+----------------------------------------------------------------------+--------------+-------------+----------------------------+---------------+
