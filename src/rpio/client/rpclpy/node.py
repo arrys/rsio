@@ -1,7 +1,7 @@
 import yaml
 import logging
-from rpio.clientLibraries.rpclpy.communication_manager import CommunicationManager
-from rpio.clientLibraries.rpclpy.knowledge import KnowledgeManager
+from rpio.client.rpclpy.communication_manager import CommunicationManager
+from rpio.client.rpclpy.knowledge import KnowledgeManager
 
 class Node:
     def __init__(self, config, verbose = False):
@@ -9,8 +9,8 @@ class Node:
         self.logger = self._initialize_logger()
         self.knowledge = self._initialize_knowledge()  # Initialize knowledge within the component
         self.communication_manager = self._initialize_communication_manager()  # Initialize Event manager
-        
-        
+
+
 
         # Initialize MQTT and ROS2 Event
         if self.communication_manager:
@@ -29,7 +29,7 @@ class Node:
 
         log_format = log_config.get("format", "%(asctime)s - %(name)s - %(levelname)s - %(message)s")
         log_file = log_config.get("file", None)
-        
+
         formatter = logging.Formatter(log_format)
 
         if log_file:

@@ -7,11 +7,11 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
-   rpio.clientLibraries
+   rpio.client
    rpio.commands
    rpio.logging
    rpio.package
-   rpio.pyLauncher
+   rpio.launcher
    rpio.transformations
    rpio.utils
 

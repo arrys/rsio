@@ -1,12 +1,3 @@
-#**********************************************************************************
-# * Copyright (C) 2024-present Bert Van Acker (B.MKR) <bert.vanacker@uantwerpen.be>
-# *
-# * This file is part of the roboarch R&D project.
-# *
-# * RAP R&D concepts can not be copied and/or distributed without the express
-# * permission of Bert Van Acker
-# **********************************************************************************
-import os
 from os import mkdir
 from os.path import exists, dirname, join, isfile
 import jinja2
@@ -18,18 +9,11 @@ import datetime
 #-----------------------------------------------------------------------------------
 def _AddRequirementsFile(file="requirements.txt", path=None):
     """Function to add a requirement.txt to the provided path."""
-
-    # --- open file ---
     f = open(path + "/" + file, "a")
-
-    # --- custom file content ---
     f.write("robosapiensio==0.3.19\n")
     f.write("jsonpickle==3.3.0\n")
     f.write("paho-mqtt==2.1.0\n")
     f.write("PyYAML==6.0.2\n")
-
-
-    # --- close file ---
     f.close()
 
 def _AddDockerFile(file="Dockerfile",cmpName="", path=None):
@@ -64,16 +48,15 @@ def _AddDockerFile(file="Dockerfile",cmpName="", path=None):
 #--------------------------------TRANSFORMATIONS------------------------------------
 #-----------------------------------------------------------------------------------
 def swc2code_py(system=None,path="output/generated"):
-    """Function to generate python code from the system modeled within the AADL Intermediate Language
+    """
+    Generate Python code from the system modeled within the AADL Intermediate Language (AADLIL).
 
-    :param [system]: [Adaptive system model within aadlil], defaults to [None]
-    :type [system]: [system (aadlil)](, optional)
-
-    :param [path]: [Adaptive system model within aadlil], defaults to ["output/generated/messages"]
-    :type [path]: [string](, optional)
-    ...
-    :return: [Functions returns nothing]
-    :rtype: [None]
+    :param system: Adaptive system model within AADLIL, defaults to None
+    :type system: object, optional
+    :param path: Output directory for the generated code, defaults to "output/generated/messages"
+    :type path: str, optional
+    :return: None
+    :rtype: None
     """
 
 
@@ -159,17 +142,15 @@ def swc2code_py(system=None,path="output/generated"):
 
 
 def message2code_py(system=None,path="output/generated/messages"):
-    """Function to generate python code from messages modeled within the AADL Intermediate Language
+    """
+    Generate Python code from messages modeled within the AADL Intermediate Language (AADLIL).
 
-    :param [system]: [Adaptive system model within aadlil], defaults to [None]
-    :type [system]: [system (aadlil)](, optional)
-
-    :param [path]: [Adaptive system model within aadlil], defaults to ["output/generated/messages"]
-    :type [path]: [string](, optional)
-
-    ...
-    :return: [Functions returns nothing]
-    :rtype: [None]
+    :param system: Adaptive system model within AADLIL, defaults to None
+    :type system: object, optional
+    :param path: Output directory for the generated code, defaults to "output/generated/messages"
+    :type path: str, optional
+    :return: None
+    :rtype: None
     """
 
     if not exists(path):
@@ -188,17 +169,15 @@ def message2code_py(system=None,path="output/generated/messages"):
 
 
 def swc2launch(system=None,path="output/generated/lauch"):
-    """Function to generate launch files for the given system deployment
+    """
+    Generate launch files for the given system deployment.
 
-    :param [system]: [Managing or managed system model part of the adaptive systen within aadlil,either managing or managed system], defaults to [None]
-    :type [system]: [system (aadlil)](, optional)
-
-    :param [path]: [Adaptive system model within aadlil], defaults to ["output/generated/launch"]
-    :type [path]: [string](, optional)
-
-    ...
-    :return: [Functions returns nothing]
-    :rtype: [None]
+    :param system: Managing or managed system model within AADLIL, defaults to None
+    :type system: object, optional
+    :param path: Output directory for the generated launch files, defaults to "output/generated/launch"
+    :type path: str, optional
+    :return: None
+    :rtype: None
     """
     if not exists(path):
         mkdir(path)
@@ -220,20 +199,17 @@ def swc2launch(system=None,path="output/generated/lauch"):
             f.write(template.render(processor=processor))
 
 def swc2main(system=None,package="",prefix=None,path="output/generated/main"):
-    """Function to generate main files for the given system deployment
+    """
+    Generate main files for the given system deployment.
 
-    :param [system]: [Managing or managed system model part of the adaptive systen within aadlil,either managing or managed system], defaults to [None]
-    :type [system]: [system (aadlil)](, optional)
-
-    :param [package]: [Package name], defaults to [""]
-    :type [package]: [string](, optional)
-
-    :param [path]: [Adaptive system model within aadlil], defaults to ["output/generated/launch"]
-    :type [path]: [string](, optional)
-
-    ...
-    :return: [Functions returns nothing]
-    :rtype: [None]
+    :param system: Managing or managed system model within AADLIL, defaults to None
+    :type system: object, optional
+    :param package: Package name, defaults to an empty string
+    :type package: str, optional
+    :param path: Output directory for the generated main files, defaults to "output/generated/launch"
+    :type path: str, optional
+    :return: None
+    :rtype: None
     """
     if not exists(path):
         mkdir(path)
@@ -251,17 +227,15 @@ def swc2main(system=None,package="",prefix=None,path="output/generated/main"):
             f.write(template.render(processor=processor,package=package,prefix=prefix))
 
 def robochart2aadlmessages(maplek=None,path="output/generated/messages"):
-    """Function to generate AADL messages from robochart models
+    """
+    Generate AADL messages from RoboChart models.
 
-    :param [MAPLEK]: [MAPLE-K modeled within robochart], defaults to [None]
-    :type [MAPLEK]: [maplek (robochart)](, optional)
-
-    :param [path]: [path to the output folder], defaults to ["output/generated/messages"]
-    :type [path]: [string](, optional)
-
-    ...
-    :return: [Functions returns nothing]
-    :rtype: [None]
+    :param MAPLEK: MAPLE-K modeled within RoboChart, defaults to None
+    :type MAPLEK: object, optional
+    :param path: Path to the output folder, defaults to "output/generated/messages"
+    :type path: str, optional
+    :return: None
+    :rtype: None
     """
 
     if not exists(path):
@@ -279,17 +253,15 @@ def robochart2aadlmessages(maplek=None,path="output/generated/messages"):
         f.write(template.render(types=maplek.types))
 
 def robochart2logical(parsed=None,path="output/generated/LogicalArchitecture"):
-    """Function to generate AADL logical architecture from robochart models
+    """
+    Generate AADL logical architecture from RoboChart models.
 
-    :param [MAPLEK]: [MAPLE-K components within robochart], defaults to [None]
-    :type [MAPLEK]: [maplek (robochart)](, optional)
-
-    :param [path]: [path to the output folder], defaults to ["output/generated/messages"]
-    :type [path]: [string](, optional)
-
-    ...
-    :return: [Functions returns nothing]
-    :rtype: [None]
+    :param MAPLEK: MAPLE-K components within RoboChart, defaults to None
+    :type MAPLEK: object, optional
+    :param path: Path to the output folder, defaults to "output/generated/messages"
+    :type path: str, optional
+    :return: None
+    :rtype: None
     """
 
     if not exists(path):
@@ -311,17 +283,15 @@ def robochart2logical(parsed=None,path="output/generated/LogicalArchitecture"):
 
 
 def swc2dockerCompose(system=None,path="output/generated/docker"):
-    """Function to generate docker compose for the given system deployment
+    """
+    Generate Docker Compose for the given system deployment.
 
-    :param [system]: [Managing or managed system model part of the adaptive systen within aadlil,either managing or managed system], defaults to [None]
-    :type [system]: [system (aadlil)](, optional)
-
-    :param [path]: [Adaptive system model within aadlil], defaults to ["output/generated/launch"]
-    :type [path]: [string](, optional)
-
-    ...
-    :return: [Functions returns nothing]
-    :rtype: [None]
+    :param system: Managing or managed system model within AADLIL, either managing or managed system, defaults to None
+    :type system: object, optional
+    :param path: Path to the output directory, defaults to "output/generated/launch"
+    :type path: str, optional
+    :return: None
+    :rtype: None
     """
     if not exists(path):
         mkdir(path)
@@ -345,17 +315,15 @@ def swc2dockerCompose(system=None,path="output/generated/docker"):
 
 
 def update_robosapiensIO_ini(system=None,package="",prefix ="",path="output/generated/docker"):
-    """Function to update the robosapiensIO configuration
+    """
+    Update the RoboSapiensIO configuration.
 
-    :param [system]: [Managing or managed system model part of the adaptive systen within aadlil,either managing or managed system], defaults to [None]
-    :type [system]: [system (aadlil)](, optional)
-
-    :param [path]: [robosapiensIO.ini], defaults to ["output/generated/launch"]
-    :type [path]: [string](, optional)
-
-    ...
-    :return: [Functions returns nothing]
-    :rtype: [None]
+    :param system: Managing or managed system model within AADLIL, either managing or managed system, defaults to None
+    :type system: object, optional
+    :param path: Path to the robosapiensIO.ini file, defaults to "output/generated/launch"
+    :type path: str, optional
+    :return: None
+    :rtype: None
     """
     if path is None:
         path = os.getcwd()
@@ -380,17 +348,15 @@ def update_robosapiensIO_ini(system=None,package="",prefix ="",path="output/gene
 
 
 def add_backbone_config(system=None,path='Resources'):
-    """Function to add the RoboSAPIENS Adaptive Platform backbone configuration to the repository
+    """
+    Add the RoboSAPIENS Adaptive Platform backbone configuration to the repository.
 
-    :param [system]: [Managing or managed system model part of the adaptive systen within aadlil,either managing or managed system], defaults to [None]
-    :type [system]: [system (aadlil)](, optional)
-
-    :param [path]: [robosapiensIO.ini], defaults to ["output/generated/launch"]
-    :type [path]: [string](, optional)
-
-    ...
-    :return: [Functions returns nothing]
-    :rtype: [None]
+    :param system: Managing or managed system model within AADLIL, either managing or managed system, defaults to None
+    :type system: object, optional
+    :param path: Path to the robosapiensIO.ini file, defaults to "Resources"
+    :type path: str, optional
+    :return: None
+    :rtype: None
     """
 
     if path is None:

@@ -22,7 +22,7 @@ This means that everything needed to go from conceptual design to realization an
 Prerequisites
 -------------
 
-- **robosapiensio package**: Ensure that the `robosapiensio` python package is installed in your python, either system-wide or in python virtual environement. Installation instructions can be found `here <../../installation/methods/pypi.html>`_
+- **robosapiensio package**: Ensure that the `robosapiensio` python package is installed in your Python, either system-wide or in Python virtual environment. You can follow the `Pypi installation instructions <../../installation/methods/pypi.html>`_.
 - **[optional] rpio CLI**: Ensure that the `rpio` command-line tool is installed and available on your system.
 
 Tasks
@@ -93,14 +93,14 @@ Here's what each argument in the command does:
 
    Within the newly generated application package ``newPackage``, a folder is provided to develop the AADL design, namely `/Design`. Within this folder, the following design files are required:
 
-   - **LogicalArchitecture.aadl:** modeling the MAPLE-K components. Instructions how to model can be found `here <../basics/aadl_gettingStarted.html>`_.
-   - **messages.aadl:** modeling the custom messages. Instructions how to model can be found `here <../basics/aadl_gettingStarted.html>`_.
+   - **LogicalArchitecture.aadl:** modeling the MAPLE-K components. Instructions how to `model components <../basics/aadl_gettingStarted.html>`_.
+   - **messages.aadl:** modeling the custom messages. Instructions how to `model messages <../basics/aadl_gettingStarted.html>`_.
    - **PhysicalArchitecture.aadl:** modeling the compute architecture. Instructions how to model can be found here !TODO!
    - **system.aadl:** modeling the logical-physical mapping architecture. Instructions how to model can be found here !TODO!
 
    .. warning::
 
-    This tutorial focusses on the workflows instead of implementing the self-adaptive application design.
+    This tutorial focuses on the workflows instead of implementing the self-adaptive application design.
     Therefore the design file of the ``hello world`` example is provided as ``json file``.
     Please download the hello world design file (:download:`download<files/design.json>`) and put in the `/Design` folder.
 
@@ -152,19 +152,11 @@ Here's what each argument in the command does:
 
    an example of the generated code skeleton for the ``hello world`` ``Monitor`` component is provided below.
    It uses the robosapiensio client library ``rpclpy`` to interface with the ``RoboSAPIENS Adaptive Platform`` (e.g. writing to knowledge, listening to and triggering events, etc.)
-   This node is ready to be implemented. Detailed instructions on implementing the MAPLE-K components behavior can be found `here <../basics/Beginner-basics.html>`_.
+   This node is ready to be implemented. Detailed instructions on `implementing the MAPLE-K components behavior here <../basics/Beginner-basics.html>`_.
 
    .. code-block:: python
 
-        # **********************************************************************************
-        # * Copyright (C) 2024-present Bert Van Acker (B.MKR) <bert.vanacker@uantwerpen.be>
-        # *
-        # * This file is part of the roboarch R&D project.
-        # *
-        # * RAP R&D concepts can not be copied and/or distributed without the express
-        # * permission of Bert Van Acker
-        # **********************************************************************************
-        from rpio.clientLibraries.rpclpy.node import Node
+        from rpio.client.rpclpy.node import Node
         import time
 
         try:
@@ -231,7 +223,7 @@ Here's what each argument in the command does:
 7. **Inspect the generated deployment and run methods**
 
    After executing the ``AADL2CODE transformation``, different deployment and run methods are generated for running the MAPLE-K loop.
-   The following deployment and run methods are currently avaialble:
+   The following deployment and run methods are currently available:
 
    - **Running containerized:** the MAPLE-K loop can be run as a multi-container Docker application.
    - **Running manually:** the MAPLE-K loop can be run in a manual fashion.
@@ -240,8 +232,8 @@ Here's what each argument in the command does:
 
    .. note::
 
-        Within the desing phase of the ``hello world`` example, the complete MAPLE-K and the robosapiensio backend is mapped to be executed on the ``xeon1`` compute unit.
-        Therefore, the generated docker compose file contains all MAPLE-K component services and the services for runnig the robosapiensio backend (EMQX, Redis).
+        Within the design phase of the ``hello world`` example, the complete MAPLE-K and the robosapiensio backend is mapped to be executed on the ``xeon1`` compute unit.
+        Therefore, the generated docker compose file contains all MAPLE-K component services and the services for running the robosapiensio backend (EMQX, Redis).
         Distributed execution of the MAPLE-K can be achieved simply by changing the mapping within the design phase.
 
    .. code-block:: bash
@@ -335,9 +327,9 @@ Here's what each argument in the command does:
 
    .. note::
 
-        Within the desing phase of the ``hello world`` example, the complete MAPLE-K and the robosapiensio backend is mapped to be executed on the ``xeon1`` compute unit.
+        Within the design phase of the ``hello world`` example, the complete MAPLE-K and the robosapiensio backend is mapped to be executed on the ``xeon1`` compute unit.
         Therefore, the main file for executing the MAPLE-K manually is generated under ``Resources/main_xeon1.py``
-        To run the MAPLE-K loop the manual way, the user needs to also manually setup the ``robosapiensio backend``. Detailed instructions how to setup the ``robosapiensio backend`` can be found `here <../basics/robosapiensIO_backend_docker.html>`_.
+        To run the MAPLE-K loop the manual way, the user needs to also manually setup the ``robosapiensio backend``. Detailed instructions how to setup the ``robosapiensio backend`` are available on the `docker backend page <../basics/robosapiensIO_backend_docker.html>`_.
 
    .. code-block:: python
 

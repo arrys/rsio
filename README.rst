@@ -58,3 +58,9 @@ Don't forget to run the tests after making changes.
 
    uv pip install -e . # Optional
    uv run pytest tests
+
+You can also build the documentation.
+
+.. code-block:: bash
+
+   uv run sphinx-build -b html ./docs public

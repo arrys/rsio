@@ -15,7 +15,7 @@
 import click
 import os
 import subprocess
-from rpio.pyLauncher.pyLauncher import launch,launch_main, launch_docker_compose
+from rpio.launcher.pyLauncher import launch,launch_main, launch_docker_compose
 
 @click.group()
 @click.pass_context

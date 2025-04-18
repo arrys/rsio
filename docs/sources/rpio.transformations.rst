@@ -12,8 +12,9 @@ rpio.transformations.transformations module
    :undoc-members:
    :show-inheritance:
 
-.. autofunction:: rpio.transformations.transformations.swc2code_py
-.. autofunction:: rpio.transformations.transformations.message2code_py
+..
+   .. autofunction:: rpio.transformations.transformations.swc2code_py
+   .. autofunction:: rpio.transformations.transformations.message2code_py
 
 Module contents
 ---------------

@@ -1,11 +1,6 @@
-.. RoboSAPIENS IO Project documentation master file, created by
-   sphinx-quickstart on Tue Oct 29 22:52:46 2024.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
 robosapiensIO documentation
-============================
-.. image:: assets/banner.png
+===========================
+.. image:: /static/images/banner.png
   :width: 800
   :alt: banner
 
@@ -40,3 +35,5 @@ Miscellaneous
     features/history
     features/supported-features
     gettingStarted/tutorials/validation
+    gettingStarted/tutorials/helloworldExamples/validation
+    sources/modules
