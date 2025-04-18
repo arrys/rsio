@@ -1,4 +1,4 @@
-image: docker:27.3.1-dind
+image: docker:28
 
 variables:
   DOCKER_DRIVER: overlay2
@@ -12,21 +12,67 @@ variables:
 
 stages:
   - test
-  - build
   - release
-  - publish
 
-test-wiki:
+before_script:
+  - docker info
+  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+
+test-rpio:
+  image: ghcr.io/astral-sh/uv:python3.13-alpine
   stage: test
-  image: python:3.12
+  before_script:
+    - python -V
+    - uv --version
+    - echo "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/pypi"
   script:
-    - pip install .
-    - pip install -r requirements.txt
-    - pip install -U sphinx
-    - sphinx-build -b html ./docs public
+    - uv cache prune --ci
+    - uv venv .venv
+    - source .venv/bin/activate
+    - uv pip install -r pyproject.toml --extra dev --extra test --extra doc
+    - uv pip install -e .
+    - uv run pytest tests
+  cache:
+    - key:
+        files:
+          - uv.lock
+      paths:
+        - .uv-cache
+  rules:
+    - if: $CI_COMMIT_TAG
+    - if: $CI_PIPELINE_SOURCE == "push"
+      when: manual
+      allow_failure: true
 
-.pyinstaller-build:
-  stage: build
+release-rpio:
+  image: ghcr.io/astral-sh/uv:python3.13-alpine
+  stage: release
+  before_script:
+    - python -V
+    - uv --version
+    - echo "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/pypi"
+  script:
+    - uv cache prune --ci
+    - uv venv .venv
+    - source .venv/bin/activate
+    - uv pip install build twine flit
+    - uv build
+    - TWINE_PASSWORD=${CI_JOB_TOKEN} TWINE_USERNAME=gitlab-ci-token python -m twine upload --repository-url ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/pypi dist/*
+  cache:
+    - key:
+        files:
+          - uv.lock
+      paths:
+        - .uv-cache
+  rules:
+    - if: $CI_COMMIT_TAG
+    - if: $CI_PIPELINE_SOURCE == "push"
+      when: manual
+      allow_failure: true
+
+# TODO port to uv -> uvx
+.release-rpio-exe:
+  stage: release
   tags:
     - windows  # Ensure the runner is tagged for windoze
   image: python:3.12-windowsservercore-ltsc2022
@@ -43,35 +89,13 @@ test-wiki:
       when: manual
       allow_failure: true
 
-upload:
-  stage: release
-  image: python:3.12
-  script:
-    - pip install build twine flit
-    - FLIT_INDEX_URL=${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/pypi flit build
-    - TWINE_PASSWORD=${CI_JOB_TOKEN} TWINE_USERNAME=gitlab-ci-token python -m twine upload --repository-url ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/pypi dist/*
-  rules:
-    - if: $CI_COMMIT_TAG
-
-.upload-pypi:
-  stage: release
-  image: python:3.12
-  script:
-    - pip install build twine flit
-    - flit build
-    - python -m twine upload dist/*
-  dependencies:
-    - upload
-  rules:
-    - if: $CI_COMMIT_TAG
-
 .upload-binaries:
   stage: release
   image: python:3.12
   script:
-    - echo "Uploading binaries to release"
+    - echo "Uploading executable to release"
   dependencies:
-    - pyinstaller-build
+    - release-rpio-exe
   rules:
     - if: $CI_COMMIT_TAG
     - if: $CI_PIPELINE_SOURCE == "push"
@@ -79,7 +103,7 @@ upload:
       allow_failure: true
 
 build-docker:
-  stage: build
+  stage: release
   script:
     - docker info
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
@@ -88,13 +112,13 @@ build-docker:
     - docker build --cache-from $DOCKER_BRANCH -f ./Dockerfile --tag $DOCKER_BRANCH .
     - docker push $DOCKER_BRANCH
   rules:
-    - if: $CI_COMMIT_TAG || $CI_COMMIT_BRANCH == "main"
-    - if: $CI_COMMIT_BRANCH == "dev"
+    - if: $CI_COMMIT_TAG
+    - if: $CI_PIPELINE_SOURCE == "push"
       when: manual
       allow_failure: true
 
 build-tagged-docker:
-  stage: build
+  stage: release
   script:
     - docker info
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
@@ -108,18 +132,28 @@ build-tagged-docker:
     - if: $CI_COMMIT_TAG
 
 pages:
-  stage: publish
-  image: python:3.12
+  image: ghcr.io/astral-sh/uv:python3.13-alpine
+  stage: release
+  before_script:
+    - python -V
+    - uv --version
+    - echo "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/pypi"
   script:
-    - pip install .
-    - pip install -r requirements.txt
-    - pip install -U sphinx
-    - sphinx-build -b html ./docs public
-  dependencies:
-    - test-wiki
+    - uv cache prune --ci
+    - uv venv .venv
+    - source .venv/bin/activate
+    - uv pip install -r pyproject.toml --extra dev --extra test --extra doc
+    - uv pip install -e .
+    - uv run sphinx-build -b html ./docs public
   artifacts:
     paths:
       - public
+  cache:
+    - key:
+        files:
+          - uv.lock
+      paths:
+        - .uv-cache
   rules:
     - if: $CI_COMMIT_TAG
     - if: $CI_PIPELINE_SOURCE == "push"
