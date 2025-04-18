@@ -13,10 +13,10 @@ def test_aadl_to_aadlil_transformation():
         package_manager.create(package_path.stem, standalone=True)
         # aadl -> aadlil
         rpio.parsers.parsers.AADL_parser(
-            logicalArchitecture=str(package_path / "Design/logicalArchitecture.aadl"),
-            physicalArchitecture=str(package_path / "Design/physicalArchitecture.aadl"),
+            logical_architecture=str(package_path / "Design/logicalArchitecture.aadl"),
+            physical_architecture=str(package_path / "Design/physicalArchitecture.aadl"),
             messages=str(package_path / "Design/messages.aadl")
-        ).aadl2aadlIl().object2json(fileName=str(package_path / "Design/design.json"))
+        ).aadl2aadl_il().object2json(file_name=str(package_path / "Design/design.json"))
         assert (package_path / "Design/design.json").is_file()
 
 # def test_aadl_to_py_transformation():

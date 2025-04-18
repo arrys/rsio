@@ -7,7 +7,7 @@
 # * permission of Bert Van Acker
 # **********************************************************************************
 from rpio.workflow.tasks import *
-from rpio.workflow.executer import Executer_GUI, Executer_headless
+from rpio.workflow.executer import ExecutorGui, ExecutorHeadless
 
 # 1 . define the tasks
 tasks = {
@@ -17,7 +17,7 @@ tasks = {
 }
 
 # 2. Launch the graphical executer
-app = Executer_GUI(tasks=tasks,name="ROBOCHART2AADL")
+app = ExecutorGui(tasks=tasks, name="ROBOCHART2AADL")
 app.root.mainloop()
 
 #3. Launch the headless executer

@@ -7,7 +7,7 @@
 # * permission of Bert Van Acker
 # **********************************************************************************
 from rpio.workflow.tasks import *
-from rpio.workflow.executer import Executer_GUI
+from rpio.workflow.executer import ExecutorGui
 
 # 1 . define the tasks
 tasks = {
@@ -20,5 +20,5 @@ tasks = {
 }
 
 # 2. Launch the graphical executer
-app = Executer_GUI(tasks=tasks,name="AADL2CODE")
+app = ExecutorGui(tasks=tasks, name="AADL2CODE")
 app.root.mainloop()

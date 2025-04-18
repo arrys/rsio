@@ -1,11 +1,3 @@
-# **********************************************************************************
-# * Copyright (C) 2024-present Bert Van Acker (B.MKR) <bert.vanacker@uantwerpen.be>
-# *
-# * This file is part of the roboarch R&D project.
-# *
-# * RAP R&D concepts can not be copied and/or distributed without the express
-# * permission of Bert Van Acker
-# **********************************************************************************
 import tkinter as tk
 from tkinter import messagebox
 from time import sleep
@@ -13,7 +5,7 @@ from threading import Thread
 from rpio.utils.constants import *
 from rpio.logging.logger import *
 
-class Executer_GUI:
+class ExecutorGui:
 
     STATUS_COLORS = {
         StepStatus.PENDING: "#a9a9a9",
@@ -111,7 +103,7 @@ class Executer_GUI:
         )
         label.update()
 
-class Executer_headless:
+class ExecutorHeadless:
 
     def __init__(self, tasks,name):
         self.tasks = tasks

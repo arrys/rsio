@@ -1,17 +1,10 @@
-#**************************************************************************
-# * Copyright (C) 2023-present Bert Van Acker (B.MKR) <bva.bmkr@gmail.com>
-# *
-# * This file is part of the hybridIO project.
-# *
-# * HybridIO can not be copied and/or distributed without the express
-# * permission of Bert Van Acker
-# *************************************************************************
 import os
 import logging
 
+
 def setup_logger(name, log_file, level=logging.INFO):
     """Setup of multiple loggers"""
-    formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+    formatter = logging.Formatter("%(asctime)s %(levelname)s %(message)s")
     handler = logging.FileHandler(log_file)
     handler.setFormatter(formatter)
     logger = logging.getLogger(name)
@@ -20,8 +13,9 @@ def setup_logger(name, log_file, level=logging.INFO):
 
     return logger
 
+
 class Logger(object):
-    def __init__(self,name="customLogger",path=None,verbose=False):
+    def __init__(self, name="customLogger", path=None, verbose=False):
         """Initialize a Logger component.
 
                 Parameters
@@ -46,22 +40,22 @@ class Logger(object):
         self._name = name
         self._verbose = verbose
 
-        #set logging file
+        # set logging file
         if path is None:
-            systemLog = os.getcwd()+"/Resources/sys.log"
+            system_log = os.getcwd() + "/Resources/sys.log"
         else:
-            systemLog = path+"/Resources/sys.log"
+            system_log = path + "/Resources/sys.log"
 
-        #setup logger
-        self._syslogger=setup_logger(name="systemLog",log_file=systemLog,level=logging.INFO)
-        #self.syslog(msg="Logger configured", level="INFO")
+        # setup logger
+        self._syslogger = setup_logger(name="system_log", log_file=system_log, level=logging.INFO)
+        # self.syslog(msg="Logger configured", level="INFO")
 
     @property
     def name(self):
         """The name property (read-only)."""
         return self._name
 
-    def syslog(self,msg="tbd",level="INFO"):
+    def syslog(self, msg="tbd", level="INFO"):
         """Perform a system log entry.
 
             Parameters
@@ -85,9 +79,9 @@ class Logger(object):
         # verbose printing
         if self._verbose: print(msg)
         # logging
-        if level == 'INFO':
+        if level == "INFO":
             self._syslogger.info(msg)
-        elif level == 'DEBUG':
+        elif level == "DEBUG":
             self._syslogger.debug(msg)
-        elif level == 'ERROR':
+        elif level == "ERROR":
             self._syslogger.error(msg)

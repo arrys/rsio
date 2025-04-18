@@ -10,6 +10,7 @@ import yaml
 import redis
 import importlib
 from subprocess import Popen
+
 # Only windoze supports CREATE_NEW_CONSOLE
 try:
     from subprocess import CREATE_NEW_CONSOLE
@@ -17,21 +18,19 @@ except ImportError:
     pass
 
 
-def getCustomCode(text,tag):
-    pattern = r"#<!-- cc_"+tag+" START--!>(.*?)#<!-- cc_"+tag+" END--!>"
+def get_custom_code(text, tag):
+    pattern = r"#<!-- cc_" + tag + " START--!>(.*?)#<!-- cc_" + tag + " END--!>"
     matches = re.findall(pattern, text, re.DOTALL)
     return matches if matches else None
 
-def replaceCustomCode(text,tag,replacement):
-    pattern = r"#<!-- cc_"+tag+" START--!>(.*?)#<!-- cc_"+tag+" END--!>"
-    start_tag = "#<!-- cc_"+tag+" START--!>"
+
+def replace_custom_code(text, tag, replacement):
+    pattern = r"#<!-- cc_" + tag + " START--!>(.*?)#<!-- cc_" + tag + " END--!>"
+    start_tag = "#<!-- cc_" + tag + " START--!>"
     end_tag = "#<!-- cc_" + tag + " END--!>"
-    return re.sub(pattern,start_tag+replacement[0]+end_tag,text,flags=re.DOTALL)
+    return re.sub(pattern, start_tag + replacement[0] + end_tag, text, flags=re.DOTALL)
 
 
-#----------------------------------------------------------------------------------------------------------------------
-#------------------------------------------------CLI FUNCTIONS---------------------------------------------------------
-#----------------------------------------------------------------------------------------------------------------------
 def run_command(command):
     try:
         # result = subprocess.run(command[0][0], shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -39,8 +38,8 @@ def run_command(command):
         stdout, stderr = process.communicate()
         print(process.stdout)
     except subprocess.CalledProcessError as e:
-        print(f"Failed to run command. Error: {e}")     #decode('utf-8') possible source of exe being flagged as virus
-        #print(f"Command: {command}\nError: {e.stderr.decode('utf-8')}")
+        print(f"Failed to run command. Error: {e}")  # decode('utf-8') possible source of exe being flagged as virus
+        # print(f"Command: {command}\nError: {e.stderr.decode('utf-8')}")
 
 
 def execute_commands(commands):
@@ -59,36 +58,26 @@ def execute_commands(commands):
     for thread in threads:
         thread.join()
 
-def extractCommands(launchDescription):
+
+def extract_commands(launch_description):
     commands = []
-    for component in launchDescription.components:
+    for component in launch_description.components:
         commands.append([component.cmd, component.path])
     return commands
 
 
-#----------------------------------------------------------------------------------------------------------------------
-#--------------------------------------------LAUNCH FILE FUNCTIONS-----------------------------------------------------
-#----------------------------------------------------------------------------------------------------------------------
-
-# Example usage
-xml_string = """
-<launch>
-    <node name="monitor" path="C:/Users/Bert/UAntwerpen/Documenten/00_UA/02_Projects/01_RoboSAPIENS/98_Sandbox/Redis/pythonProject/PyLauncher/monitor"/>
-    <node name="analysis" path="C:/Users/Bert/UAntwerpen/Documenten/00_UA/02_Projects/01_RoboSAPIENS/98_Sandbox/Redis/pythonProject/PyLauncher/analysis"/>
-</launch>
-"""
-
 class Component:
-    def __init__(self, name, path,formalism):
+    def __init__(self, name, path, formalism):
         self.name = name
         self.path = path
         if formalism == 'python':
-            self.cmd= ['python', name+'.py']
+            self.cmd = ['python', name + '.py']
         if formalism == 'c++':
-            self.cmd = [path+'/'+name+'.exe']
+            self.cmd = [path + '/' + name + '.exe']
 
     def __repr__(self):
         return f"Swc(name='{self.name}', cmd='{self.cmd}')"
+
 
 class Launch:
     def __init__(self, nodes):
@@ -96,7 +85,9 @@ class Launch:
 
     def __repr__(self):
         return f"Launch(components={self.components})"
-def parse_launch_xml(file,formalism="python"):
+
+
+def parse_launch_xml(file, formalism="python"):
     with open(file, 'r') as f:
         data = f.read()
         root = ET.fromstring(data)
@@ -104,18 +95,16 @@ def parse_launch_xml(file,formalism="python"):
         for node_elem in root.findall('node'):
             name = node_elem.get('name')
             path = node_elem.get('path')
-            components.append(Component(name, path,formalism))
+            components.append(Component(name, path, formalism))
         return Launch(components)
 
 
-#----------------------------------------------------------------------------------------------------------------------
-#-------------------------------------------FILE HANDLING FUNCTIONS----------------------------------------------------
-#----------------------------------------------------------------------------------------------------------------------
 def decompress_folder(data, output_path):
     # Decompress the byte stream into the output folder
     with zipfile.ZipFile(io.BytesIO(data), 'r') as zip_file:
         zip_file.extractall(output_path)
     print(f"Folder decompressed to '{output_path}'.")
+
 
 def compress_folder(folder_path):
     # Compress the folder into a byte stream
@@ -129,14 +118,12 @@ def compress_folder(folder_path):
     return zip_buffer.read()
 
 
-#----------------------------------------------------------------------------------------------------------------------
-#-------------------------------------------PYTHON ENVIRONMENT SETUP---------------------------------------------------
-#----------------------------------------------------------------------------------------------------------------------
 def get_activate_script_path(venv_name):
     """
-    Returns the path to the activate script based on the operating system.
+    Returns the path to the activated script based on the operating system.
     """
-    return os.path.join(venv_name, "Scripts", "activate.bat") if os.name == "nt" else os.path.join(venv_name, "bin", "activate")
+    return os.path.join(venv_name, "Scripts", "activate.bat") if os.name == "nt" else os.path.join(venv_name, "bin",
+                                                                                                   "activate")
 
 
 def get_pip_path(venv_name):
@@ -178,7 +165,8 @@ def activate_virtual_environment(venv_name="venv"):
     """
     activate_script = get_activate_script_path(venv_name)
     if not os.path.exists(activate_script):
-        print(f"Activate script not found in the virtual environment '{venv_name}'. Make sure the virtual environment is created.")
+        print(
+            f"Activate script not found in the virtual environment '{venv_name}'. Make sure the virtual environment is created.")
         return
 
     if os.name == "nt":
@@ -199,7 +187,7 @@ def deactivate_virtual_environment():
 
 def install_requirements(venv_name="venv", requirements_file="requirements.txt"):
     """
-    Installs packages listed in a requirements file into the virtual or native environment .
+    Installs packages listed in a requirements file into the virtual or native environment.
 
     :param venv_name: The name of the virtual environment directory. Defaults to "venv".
     :param requirements_file: The path to the requirements.txt file. Defaults to "requirements.txt".
@@ -224,6 +212,7 @@ def install_requirements(venv_name="venv", requirements_file="requirements.txt")
     except subprocess.CalledProcessError as e:
         print(f"Error occurred while installing requirements: {e}")
 
+
 def get_python_version():
     """
     Checks and returns the current Python version installed on the system.
@@ -243,9 +232,7 @@ def get_python_version():
         print(f"Error occurred while checking Python version: {e}")
         return None
 
-#----------------------------------------------------------------------------------------------------------------------
-#--------------------------------------------DOCKER SETUP FUNCTIONS----------------------------------------------------
-#----------------------------------------------------------------------------------------------------------------------
+
 def build_docker_image(module_path, image_name):
     """
     Build a Docker image for a Python module at a given path.
@@ -313,10 +300,7 @@ def get_docker_version():
         return False
 
 
-#----------------------------------------------------------------------------------------------------------------------
-#----------------------------------------------ENVIRONMENT CHECKS------------------------------------------------------
-#----------------------------------------------------------------------------------------------------------------------
-def check_redis(host="localhost", port=6379, db=0, timeout=30,config=None):
+def check_redis(host="localhost", port=6379, db=0, timeout=30, config=None):
     """
     Check if Redis is running and reachable
 
@@ -325,8 +309,7 @@ def check_redis(host="localhost", port=6379, db=0, timeout=30,config=None):
 
     try:
         if config is None:
-            print(
-                'WARNING: configuration file not provided, checking Redis with default values (broker="localhost", port=6379, db=0)')
+            print('WARNING: configuration file not provided, checking Redis with default values (broker="localhost", port=6379, db=0)')
         else:
             with open(config, 'r') as file:
                 configuration = yaml.safe_load(file)
@@ -344,7 +327,8 @@ def check_redis(host="localhost", port=6379, db=0, timeout=30,config=None):
 
     return False  # Redis is not reachable
 
-def check_mqtt(broker="localhost", port=1883, timeout=30,config=None):
+
+def check_mqtt(broker="localhost", port=1883, timeout=30, config=None):
     """
     Check if MQTT is running and reachable
 
@@ -360,12 +344,12 @@ def check_mqtt(broker="localhost", port=1883, timeout=30,config=None):
     client.reachable = False  # Initial assumption: not reachable
     client.on_connect = on_connect
 
-    #resolve the config file for checking the MQTT config
+    # resolve the config file for checking the MQTT config
     if config is None:
         print('WARNING: configuration file not provided, checking MQTT with default values (broker="localhost", port=1833)')
     else:
         with open(config, 'r') as file:
-            configuration=yaml.safe_load(file)
+            configuration = yaml.safe_load(file)
             broker = configuration['mqtt_broker']
             port = configuration['mqtt_port']
 
@@ -379,6 +363,7 @@ def check_mqtt(broker="localhost", port=1883, timeout=30,config=None):
         print(f"Could not connect to MQTT broker: {e}")
 
     return client.reachable
+
 
 def check_package_installation(package="robosapiensio"):
     try:

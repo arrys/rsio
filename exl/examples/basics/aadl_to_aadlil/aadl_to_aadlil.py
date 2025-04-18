@@ -10,12 +10,12 @@ from rpio.parsers.parsers import *
 from rpio.metamodels.aadl2_IL import *
 
 # 1. Setup the AADL parser
-parser = AADL_parser(logicalArchitecture='input/logicalArchitecture.aadl',physicalArchitecture='input/PhysicalArchitecture.aadl',messages='input/messages.aadl')
+parser = AADL_parser(logical_architecture='input/logicalArchitecture.aadl', physical_architecture='input/PhysicalArchitecture.aadl', messages='input/messages.aadl')
 
 # 2. parse the aadl models and store in AADLIL
-s = parser.aadl2aadlIl()
+s = parser.aadl2aadl_il()
 # 3. dump to aadlil json
-s.object2json(fileName='output/system.json')
+s.object2json(file_name='output/system.json')
 # 3. reload the AADLIL from json
-loadedSystem = system(name="adaptiveSystem", description="Generated from AADL models",JSONDescriptor='output/system.json')
-loadedSystem.object2json(fileName='output/loaded.json')
+loadedSystem = System(name="adaptiveSystem", description="Generated from AADL models", json_descriptor='output/system.json')
+loadedSystem.object2json(file_name='output/loaded.json')

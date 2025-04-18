@@ -6,8 +6,8 @@ import click
 def version_commands():
     pass
 
+
 @version_commands.command()
 def version():
     """Display the current version."""
-    version = "0.3.24" # TODO Get from pyproject
-    click.echo("rpio v"+version)
+    click.echo("rpio v0.3.24") # TODO Get from pyproject

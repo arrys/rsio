@@ -1,50 +1,18 @@
-# **********************************************************************************
-# * Copyright (C) 2024-present Bert Van Acker (B.MKR) <bert.vanacker@uantwerpen.be>
-# *
-# * This file is part of the roboarch R&D project.
-# *
-# * RAP R&D concepts can not be copied and/or distributed without the express
-# * permission of Bert Van Acker
-# **********************************************************************************
 import os
 from pathlib import Path
 
+
 class PackageManager(object):
 
-    def __init__(self, name='PackageManager',description='Built-in package manager',verbose=False):
-        """Initialize a Package Manager component.
-
-                Parameters
-                ----------
-                name : string
-                    name of the property components
-
-                description : string
-                    description of the property components
-
-                verbose : bool
-                    component verbose execution
-
-        See Also
-        --------
-        ..
-
-        Examples
-        --------
-        >> pm = PackageManager(name="PM1",description="Default package manager",verbose=False)
-
-        """
-
+    def __init__(self, name='PackageManager', description='Built-in package manager', verbose=False):
+        """"""
         self._name = name
         self._description = description
         self._verbose = verbose
 
-        #package info
-        self._packageName = "rpio_pkg"
-        self.standalonePath = ""
-        # get current directory
+        self._package_name = "rpio_pkg"
+        self.standalone_path = ""
         self._directory = os.getcwd()
-
 
     @property
     def name(self):
@@ -56,115 +24,74 @@ class PackageManager(object):
         """The description property (read-only)."""
         return self._description
 
-    def create(self,name,force=False,standalone=False,path=None):
-        """Create rpIO package.
-
-                Parameters
-                ----------
-                name : string
-                    name of the rpIO package
-
-                force : bool
-                    force the creation of a rpIO package
-
-                standalone : bool
-                    create rpIO package in standalone mode, not in current directory
-
-                path : string
-                    path where the new hybridIO package needs to be generated
-
-                See Also
-                --------
-                ..
-
-                Examples
-                --------
-                >> pm.create(force=False,standalone=True)
-
-                """
-        isEmpty=self._checkEmptyDir()
+    def create(self, name, force=False, standalone=False, path=None):
+        """"""
+        is_empty = self._check_empty_dir()
 
         if not standalone:
-            if isEmpty or (not isEmpty and force):
-                if self._verbose:print("DEBUG: directory is empty, creating "+self._packageName+" package...")
+            if is_empty or (not is_empty and force):
+                if self._verbose: print("DEBUG: directory is empty, creating " + self._package_name + " package...")
                 # --- rpio package creation ---
                 try:
-                    self._populatePackage(name=name, standalone=standalone)
+                    self._populate_package(name=name, standalone=standalone)
                 except:
-                    raise Exception("ERROR: "+self._packageName+" package could not be created!")
+                    raise Exception("ERROR: " + self._package_name + " package could not be created!")
 
-                if self._verbose: print("DEBUG: "+self._packageName+" package created...")
+                if self._verbose: print("DEBUG: " + self._package_name + " package created...")
             else:
-                if self._verbose: print("DEBUG: directory is not empty, no "+self._packageName+" package created!")
+                if self._verbose: print("DEBUG: directory is not empty, no " + self._package_name + " package created!")
         else:
             if path is not None:
-                self.standalonePath = path
+                self.standalone_path = path
                 try:
-                    self._populatePackage(name=name, standalone=standalone)
-                    if self._verbose: print("DEBUG: " + self._packageName + " package created...")
+                    self._populate_package(name=name, standalone=standalone)
+                    if self._verbose: print("DEBUG: " + self._package_name + " package created...")
                 except:
-                    raise Exception("ERROR: "+self._packageName+" package could not be created!")
+                    raise Exception("ERROR: " + self._package_name + " package could not be created!")
 
             else:
-                self.standalonePath = os.getcwd()
+                self.standalone_path = os.getcwd()
                 try:
-                    self._populatePackage(name=name, standalone=standalone)
-                    if self._verbose: print("DEBUG: " + self._packageName + " package created...")
+                    self._populate_package(name=name, standalone=standalone)
+                    if self._verbose: print("DEBUG: " + self._package_name + " package created...")
                 except:
-                    raise Exception("ERROR: "+self._packageName+" package could not be created!")
+                    raise Exception("ERROR: " + self._package_name + " package could not be created!")
 
     def check(self, path: str | Path = None) -> bool:
-        """Check rpIO package.
-
-            Parameters
-            ----------
-            path : string
-                path to the standalone hybridIO package
-
-
-            See Also
-            --------
-            ..
-
-            Examples
-            --------
-            >> isHybridIOPackage = pm.check(path="path/to/rpio/package")
-
-        """
+        """"""
         path = path if path else Path.cwd()
         package_path = path if isinstance(path, Path) else Path(path)
-        if self._verbose: print(f"DEBUG: checking {self._packageName} package in {package_path}...")
+        if self._verbose: print(f"DEBUG: checking {self._package_name} package in {package_path}...")
         is_valid_package = (package_path / "robosapiensIO.ini").is_file()
         # TODO: add other checks
         return is_valid_package
 
-    def _checkEmptyDir(self):
-        """Function to determine if directory is empty."""
+    def _check_empty_dir(self):
+        """Function to determine if a directory is empty."""
         if self._verbose: print("DEBUG: Checking if directory is empty...")
-        dir = os.listdir(self._directory)
-        return len(dir) == 0
+        return len(os.listdir(self._directory)) == 0
 
-    def _populatePackage(self, name="rpio_pkg", standalone=False):
+    def _populate_package(self, name="rpio_pkg", standalone=False):
         """Function to populate the empty package."""
-        self._packageName = name
+        self._package_name = name
         if standalone:
             # generate in standalone package instead of in current directory
-            Path(self.standalonePath+"/"+self._packageName).mkdir(parents=True, exist_ok=True)
-            prefix = self.standalonePath+"/"+self._packageName+'/'
-            self._addFile(file="robosapiensIO.ini",name=self._packageName, path=prefix)
-            self._addFile(file="__init__.py", name=self._packageName, path=prefix)
-            logfilepath = prefix+"/Resources"
+            Path(self.standalone_path + "/" + self._package_name).mkdir(parents=True, exist_ok=True)
+            prefix = self.standalone_path + "/" + self._package_name + '/'
+            self._add_file(file="robosapiensIO.ini", name=self._package_name, path=prefix)
+            self._add_file(file="__init__.py", name=self._package_name, path=prefix)
+            logfilepath = prefix + "/Resources"
         else:
-            prefix=""
-            self._addFile(file="robosapiensIO.ini",name=self._packageName)
-            self._addFile(file="__init__.py", name=self._packageName)
+            prefix = ""
+            self._add_file(file="robosapiensIO.ini", name=self._package_name)
+            self._add_file(file="__init__.py", name=self._package_name)
             logfilepath = self._directory + "/Resources"
 
         self._mkdir_custom(prefix + "Documentation")
         self._mkdir_custom(prefix + "Concept")
         self._mkdir_custom(prefix + "Design")
         self._mkdir_custom(prefix + "Realization")
-        #managing system
+        # managing system
         self._mkdir_custom(prefix + "Realization/ManagingSystem/Documentation")
         self._mkdir_custom(prefix + "Realization/ManagingSystem/Binaries")
         self._mkdir_custom(prefix + "Realization/ManagingSystem/Nodes")
@@ -172,7 +99,7 @@ class PackageManager(object):
         self._mkdir_custom(prefix + "Realization/ManagingSystem/Platform")
         self._mkdir_custom(prefix + "Realization/ManagingSystem/Actions")
         self._mkdir_custom(prefix + "Realization/ManagingSystem/Workflows")
-        #managed system
+        # managed system
         self._mkdir_custom(prefix + "Realization/ManagedSystem/Documentation")
         self._mkdir_custom(prefix + "Realization/ManagedSystem/Binaries")
         self._mkdir_custom(prefix + "Realization/ManagedSystem/Nodes/Probes")
@@ -183,41 +110,35 @@ class PackageManager(object):
         self._mkdir_custom(prefix + "Realization/ManagedSystem/Workflows")
         # top-level workflows
         self._mkdir_custom(prefix + "Workflows")
-        self._addFile(file="AADL2CODE.py", path=prefix + "Workflows/")
-        self._addFile(file="ROBOCHART2AADL.py", path=prefix + "Workflows/")
+        self._add_file(file="AADL2CODE.py", path=prefix + "Workflows/")
+        self._add_file(file="ROBOCHART2AADL.py", path=prefix + "Workflows/")
         # temporary folder and resources
         self._mkdir_custom(prefix + "Resources")
 
         # add system log file
-        self._addFile(file="sys.log", path=logfilepath)
+        self._add_file(file="sys.log", path=logfilepath)
 
         # add run, build and deploy actions (placeholders) for managing system
-        self._addFile(file="run.py", path=prefix +"Realization/ManagingSystem/Actions/")
-        self._addFile(file="build.py", path=prefix + "Realization/ManagingSystem/Actions/")
-        self._addFile(file="deploy.py", path=prefix + "Realization/ManagingSystem/Actions/")
+        self._add_file(file="run.py", path=prefix + "Realization/ManagingSystem/Actions/")
+        self._add_file(file="build.py", path=prefix + "Realization/ManagingSystem/Actions/")
+        self._add_file(file="deploy.py", path=prefix + "Realization/ManagingSystem/Actions/")
 
         # add run, build and deploy actions (placeholders) for managed system
-        self._addFile(file="run.py", path=prefix + "Realization/ManagedSystem/Actions/")
-        self._addFile(file="build.py", path=prefix + "Realization/ManagedSystem/Actions/")
-        self._addFile(file="deploy.py", path=prefix + "Realization/ManagedSystem/Actions/")
+        self._add_file(file="run.py", path=prefix + "Realization/ManagedSystem/Actions/")
+        self._add_file(file="build.py", path=prefix + "Realization/ManagedSystem/Actions/")
+        self._add_file(file="deploy.py", path=prefix + "Realization/ManagedSystem/Actions/")
 
     def _mkdir_custom(self, folder="empty", file='readme.md'):
-        """CUSTOM mkdir function to initialize git-pushable directories"""
-        #create directory
+        """mkdir function to initialize git-pushable directories"""
         Path(folder).mkdir(parents=True, exist_ok=True)
-        #add file
-        self._addFile(file=file, path=folder)
+        self._add_file(file=file, path=folder)
 
-    def _addFile(self, file="requirements.txt",name="",description="", path=None):
+    def _add_file(self, file="requirements.txt", name="", description="", path=None):
         """Function to add a file to the provided path."""
 
-        if path==None:
+        if path == None:
             path = self._directory
-
-        # --- open file ---
         f = open(path + "/" + file, "a")
-
-        # --- custom file content ---
 
         if "__init__.py" in file:
             f.write("")
@@ -230,13 +151,12 @@ class PackageManager(object):
 
         if "robosapiensIO.ini" in file:
             f.write("[RoboSAPIENSIO]\n")
-            f.write('name = '+name+'\n')
+            f.write('name = ' + name + '\n')
             f.write('description = " Add project description"\n')
             f.write('\n')
             f.write("[PACKAGE]\n")
-            f.write("name = "+name+"\n")
+            f.write("name = " + name + "\n")
             f.write('prefix =  \n')
-
 
         if "run.py" in file:
             f.write("print('WARNING: Run action not implemented yet!')")
@@ -295,8 +215,4 @@ class PackageManager(object):
             f.write("# 2. Launch the graphical executer\n")
             f.write('app = Executer_GUI(tasks=tasks,name="ROBOCHART2AADL")\n')
             f.write("app.root.mainloop()\n")
-
-        # --- close file ---
         f.close()
-
-

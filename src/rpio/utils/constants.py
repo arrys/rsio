@@ -1,12 +1,3 @@
-#**************************************************************************
-# * Copyright (C) 2023-present Bert Van Acker (B.MKR) <bva.bmkr@gmail.com>
-# *
-# * This file is part of the hybridIO project.
-# *
-# * HybridIO can not be copied and/or distributed without the express
-# * permission of Bert Van Acker
-# *************************************************************************
-
 class OrchestrationType:
     FMI_local = "FMI_LOCAL"
     DISTRIBUTED = "DISTRIBUTED"

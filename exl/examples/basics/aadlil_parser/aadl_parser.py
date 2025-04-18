@@ -9,6 +9,6 @@
 from rpio.metamodels.aadl2_IL import *
 
 # 1. Load design from AADLIL model
-loadedSystem = system(name="adaptiveSystem", description="Loaded from aadlil",JSONDescriptor='input/design.json')
+loadedSystem = System(name="adaptiveSystem", description="Loaded from aadlil", json_descriptor='input/design.json')
 x = 1
 

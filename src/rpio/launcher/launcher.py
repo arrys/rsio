@@ -2,35 +2,35 @@ from rpio.utils.auxiliary import *
 from subprocess import call
 
 
-def launch(launchFile='launch.xml'):
+def launch(launch_file="launch.xml"):
     """
     Launch one or more Python software components using a launch description file.
 
-    :param launchFile: Launch description file (XML), defaults to 'launch.xml'
-    :type launchFile: str
+    :param launch_file: Launch description file (XML), defaults to "launch.xml"
+    :type launch_file: str
     :return: None
     :rtype: None
     """
 
     # 0. interpret launch file
-    launchDescription = parse_launch_xml(file=launchFile,formalism="python")
+    launch_description = parse_launch_xml(file=launch_file, formalism="python")
 
     # 1. launch all commands at once
-    execute_commands(extractCommands(launchDescription))
+    execute_commands(extract_commands(launch_description))
 
-def launch_main(mainFile='main.py'):
+def launch_main(main_file="main.py"):
     """
     Launch one or more Python software components using a main file.
 
-    :param mainFile: Launch description file (XML), defaults to 'launch.xml'
-    :type mainFile: str
+    :param main_file: Launch description file (XML), defaults to "launch.xml"
+    :type main_file: str
     :return: None
     :rtype: None
     """
-    command = ["python", mainFile]
+    command = ["python", main_file]
     call(command)
 
-def launch_docker_compose(path='/'):
+def launch_docker_compose(path="/"):
     """
     Launch one or more Python software components using a Docker Compose file.
 
@@ -40,7 +40,7 @@ def launch_docker_compose(path='/'):
     :rtype: None
     """
     try:
-        process = subprocess.Popen(f"docker compose up --build".split(), cwd=path,stdout=subprocess.PIPE)
+        subprocess.Popen(f"docker compose up --build".split(), cwd=path,stdout=subprocess.PIPE)
         return True
     except:
         return False

@@ -9,120 +9,120 @@ def HelloWorld():
 
 
     #laserScan message
-    ranges = data(name='ranges', dataType="Array")
-    angle_increment = data(name= 'angle_increment', dataType="Float_64")
+    ranges = Data(name='ranges', data_type="Array")
+    angle_increment = Data(name='angle_increment', data_type="Float_64")
 
-    laser_scan = message(name="LaserScan",featureList=[ranges,angle_increment])
+    laser_scan = Message(name="LaserScan", feature_list=[ranges, angle_increment])
 
     # rotationAction message
-    omega = data(name="omega",dataType="Float_64")
-    duration = data(name="duration",dataType="Float_64")
-    direction = message(name="Direction",featureList=[omega,duration])
+    omega = Data(name="omega", data_type="Float_64")
+    duration = Data(name="duration", data_type="Float_64")
+    direction = Message(name="Direction", feature_list=[omega, duration])
 
     # new_data message
-    new_data = data(name="new_data",dataType="Boolean")
-    new_data_message = message(name="NewData",featureList=[new_data])
+    new_data = Data(name="new_data", data_type="Boolean")
+    new_data_message = Message(name="NewData", feature_list=[new_data])
     # anomaly message
-    anomaly = data(name="anomaly",dataType="Boolean")
-    anomaly_message = message(name="AnomalyMessage",featureList=[anomaly])
+    anomaly = Data(name="anomaly", data_type="Boolean")
+    anomaly_message = Message(name="AnomalyMessage", feature_list=[anomaly])
 
-    new_plan = data(name="NewPlan",dataType="Boolean")
-    new_plan_message = message(name="NewPlanMessage",featureList=[new_plan])
+    new_plan = Data(name="NewPlan", data_type="Boolean")
+    new_plan_message = Message(name="NewPlanMessage", feature_list=[new_plan])
 
     # legitimate message
-    legitimate = data(name="legitimate",dataType="Boolean")
-    legitimate_message = message(name="LegitimateMessage",featureList=[legitimate])
+    legitimate = Data(name="legitimate", data_type="Boolean")
+    legitimate_message = Message(name="LegitimateMessage", feature_list=[legitimate])
 
     #-----------------------------------------------------------------------------------------------------------------------
     #--------------------------------------- LOGICAL ARCHITECTURE ----------------------------------------------------------
     #-----------------------------------------------------------------------------------------------------------------------
-    adaptiveSystem = system(name="adaptiveSystem", description="Example adaptive system",messageList=[laser_scan,direction,anomaly_message,new_plan_message])
+    adaptiveSystem = System(name="adaptiveSystem", description="Example adaptive system", message_list=[laser_scan, direction, anomaly_message, new_plan_message])
 
     #-A- --- managed system ---
-    managedSystem = system(name="managedSystem", description="managed system part")
+    managedSystem = System(name="managedSystem", description="managed system part")
 
-    _laserScan_OUT = outport(name="laser_scan",type="event data", message= laser_scan)
-    _direction_IN = inport(name="direction",type="event data", message=direction)
+    _laserScan_OUT = OutPort(name="laser_scan", type="event data", message= laser_scan)
+    _direction_IN = InPort(name="direction", type="event data", message=direction)
 
-    managedSystem.addFeature(_laserScan_OUT)
-    managedSystem.addFeature(_direction_IN)
+    managedSystem.add_feature(_laserScan_OUT)
+    managedSystem.add_feature(_direction_IN)
 
     #-B- --- managing system ---
 
-    managingSystem = system(name="managingSystem", description="managing system part")
+    managingSystem = System(name="managingSystem", description="managing system part")
 
-    _laser_scan_IN = inport(name="laser_scan",type="event data", message=laser_scan)
-    _direction_OUT = outport(name="direction",type="event data", message=direction)
+    _laser_scan_IN = InPort(name="laser_scan", type="event data", message=laser_scan)
+    _direction_OUT = OutPort(name="direction", type="event data", message=direction)
 
-    managingSystem.addFeature(_laser_scan_IN)
-    managingSystem.addFeature(_direction_OUT)
+    managingSystem.add_feature(_laser_scan_IN)
+    managingSystem.add_feature(_direction_OUT)
 
     # connections
-    c1 = connection(source=_laserScan_OUT, destination=_laser_scan_IN)
-    c2 = connection(source=_direction_OUT, destination=_direction_IN)
+    c1 = Connection(source=_laserScan_OUT, destination=_laser_scan_IN)
+    c2 = Connection(source=_direction_OUT, destination=_direction_IN)
 
 
     #---------------------COMPONENT LEVEL---------------------------
 
     #-MONITOR-
-    monitor = process(name="Monitor", description="monitor component")
+    monitor = Process(name="Monitor", description="monitor component")
 
-    _laserScan = outport(name="laser_scan",type="data", message=laser_scan)
-    _new_data_out = outport(name="new_data",type="event" , message=new_data_message)
+    _laserScan = OutPort(name="laser_scan", type="data", message=laser_scan)
+    _new_data_out = OutPort(name="new_data", type="event", message=new_data_message)
 
 
-    monitor.addFeature(_laserScan)
-    monitor.addFeature(_new_data_out)
+    monitor.add_feature(_laserScan)
+    monitor.add_feature(_new_data_out)
 
-    monitor_data = thread(name="monitor_data",featureList=[_laserScan, _new_data_out],eventTrigger='Scan')
-    monitor.addThread(monitor_data)
+    monitor_data = Thread(name="monitor_data", feature_list=[_laserScan, _new_data_out], event_trigger='Scan')
+    monitor.add_thread(monitor_data)
 
     #-ANALYSIS-
-    analysis = process(name="Analysis", description="analysis component")
+    analysis = Process(name="Analysis", description="analysis component")
 
-    _laserScan_in = inport(name="laser_scan",type="data", message=laser_scan)
-    _anomaly_out = outport(name="anomaly",type="event", message=anomaly_message)
+    _laserScan_in = InPort(name="laser_scan", type="data", message=laser_scan)
+    _anomaly_out = OutPort(name="anomaly", type="event", message=anomaly_message)
 
-    analysis.addFeature(_laserScan_in)
-    analysis.addFeature(_anomaly_out)
+    analysis.add_feature(_laserScan_in)
+    analysis.add_feature(_anomaly_out)
 
-    analyse_scan_data = thread(name="analyse_scan_data",featureList=[_laserScan_in,_anomaly_out],eventTrigger='new_data')
-    analysis.addThread(analyse_scan_data)
+    analyse_scan_data = Thread(name="analyse_scan_data", feature_list=[_laserScan_in, _anomaly_out], event_trigger='new_data')
+    analysis.add_thread(analyse_scan_data)
 
 
     #-PLAN-
-    plan = process(name="Plan", description="plan component")
+    plan = Process(name="Plan", description="plan component")
 
     #TODO: define input
-    _anomaly_in = inport(name="anomaly",type="event", message=anomaly_message)
-    _plan_out = outport(name="new_plan",type="data", message=new_plan_message)
-    _diraction_out = outport(name="direction",type="data", message=direction)
+    _anomaly_in = InPort(name="anomaly", type="event", message=anomaly_message)
+    _plan_out = OutPort(name="new_plan", type="data", message=new_plan_message)
+    _diraction_out = OutPort(name="direction", type="data", message=direction)
 
-    plan.addFeature(_anomaly_in)
-    plan.addFeature(_plan_out)
-    plan.addFeature(_diraction_out)
+    plan.add_feature(_anomaly_in)
+    plan.add_feature(_plan_out)
+    plan.add_feature(_diraction_out)
 
-    planner = thread(name="planner",featureList=[_anomaly_in, _plan_out, _diraction_out],eventTrigger='anomaly')
-    plan.addThread(planner)
+    planner = Thread(name="planner", feature_list=[_anomaly_in, _plan_out, _diraction_out], event_trigger='anomaly')
+    plan.add_thread(planner)
 
     #-LEGITIMATE-
-    legitimate = process(name="Legitimate", description="legitimate component")
+    legitimate = Process(name="Legitimate", description="legitimate component")
 
     #-EXECUTE-
-    execute = process(name="Execute", description="execute component")
+    execute = Process(name="Execute", description="execute component")
 
-    _new_plan_in = inport(name="new_plan",type="event", message=direction)
-    _isLegit = inport(name="isLegit",type="event data", message=legitimate_message)
-    _directions = inport(name="directions",type="data", message=direction)
-    _directions_out = outport(name="spin_config",type="data event", message=direction)
+    _new_plan_in = InPort(name="new_plan", type="event", message=direction)
+    _isLegit = InPort(name="isLegit", type="event data", message=legitimate_message)
+    _directions = InPort(name="directions", type="data", message=direction)
+    _directions_out = OutPort(name="spin_config", type="data event", message=direction)
 
-    execute.addFeature(_new_plan_in)
-    execute.addFeature(_isLegit)
-    execute.addFeature(_directions)
-    execute.addFeature(_directions_out)
+    execute.add_feature(_new_plan_in)
+    execute.add_feature(_isLegit)
+    execute.add_feature(_directions)
+    execute.add_feature(_directions_out)
 
-    executer = thread(name="executer",featureList=[_new_plan_in,_isLegit,_directions, _directions_out])
-    execute.addThread(executer)
+    executer = Thread(name="executer", feature_list=[_new_plan_in, _isLegit, _directions, _directions_out])
+    execute.add_thread(executer)
 
     # #-KNOWLEDGE-
     # knowledge = process(name="knowledge", description="knowledge component")
@@ -143,16 +143,16 @@ def HelloWorld():
     # knowledge.addFeature(_plan)
     # knowledge.addFeature(_isLegit)
 
-    managingSystem.addProcess(monitor)
-    managingSystem.addProcess(analysis)
-    managingSystem.addProcess(plan)
-    managingSystem.addProcess(legitimate)
-    managingSystem.addProcess(execute)
+    managingSystem.add_process(monitor)
+    managingSystem.add_process(analysis)
+    managingSystem.add_process(plan)
+    managingSystem.add_process(legitimate)
+    managingSystem.add_process(execute)
     # managingSystem.addProcess(knowledge)
 
     #---------------------SYSTEM LEVEL---------------------------
-    adaptiveSystem.addSystem(managingSystem)
-    adaptiveSystem.addSystem(managedSystem)
+    adaptiveSystem.add_system(managingSystem)
+    adaptiveSystem.add_system(managedSystem)
 
 
     #-----------------------------------------------------------------------------------------------------------------------
@@ -160,40 +160,40 @@ def HelloWorld():
     #-----------------------------------------------------------------------------------------------------------------------
 
     # XEON PROCESSOR CONNTECTION
-    MIPSCapacity = characteristic(name="MIPSCapacity",value=1000.0,dataType="MIPS")
-    I1 = port(name="I1",type="event data")
-    laptop_xeon1 = processor(name="xeon1",propertyList=[MIPSCapacity],featureList=[I1],IP="192.168.56.1")
+    MIPSCapacity = Characteristic(name="MIPSCapacity", value=1000.0, data_type="MIPS")
+    I1 = Port(name="I1", type="event data")
+    laptop_xeon1 = Processor(name="xeon1", property_list=[MIPSCapacity], feature_list=[I1], ip="192.168.56.1")
     laptop_xeon1.runs_rap_backbone= True    #RUNS THE RoboSAPIENS Adaptive Platform backbone
 
 
     # XEON PROCESSOR CONNTECTION
-    MIPSCapacity = characteristic(name="MIPSCapacity",value=2000.0,dataType="MIPS")
-    I2 = port(name="I2",type="event data")
-    RPI = processor(name="Raspberry Pi 4B",propertyList=[MIPSCapacity],featureList=[I2],IP="192.168.56.5")
+    MIPSCapacity = Characteristic(name="MIPSCapacity", value=2000.0, data_type="MIPS")
+    I2 = Port(name="I2", type="event data")
+    RPI = Processor(name="Raspberry Pi 4B", property_list=[MIPSCapacity], feature_list=[I2], ip="192.168.56.5")
 
     # WIFI CONNTECTION
-    BandWidthCapacity = characteristic(name="BandWidthCapacity",value=100.0,dataType="Mbytesps")
-    Protocol = characteristic(name="Protocol",value="MQTT",dataType="-")
-    DataRate = characteristic(name="DataRate",value=100.0,dataType="Mbytesps")
-    WriteLatency = characteristic(name="WriteLatency",value=4,dataType="Ms")
-    interface = bus(name="interface",propertyList=[BandWidthCapacity,Protocol,DataRate,WriteLatency])
+    BandWidthCapacity = Characteristic(name="BandWidthCapacity", value=100.0, data_type="Mbytesps")
+    Protocol = Characteristic(name="Protocol", value="MQTT", data_type="-")
+    DataRate = Characteristic(name="DataRate", value=100.0, data_type="Mbytesps")
+    WriteLatency = Characteristic(name="WriteLatency", value=4, data_type="Ms")
+    interface = Bus(name="interface", property_list=[BandWidthCapacity, Protocol, DataRate, WriteLatency])
 
-    interface.addConnection(I1)
-    interface.addConnection(I2)
+    interface.add_connection(I1)
+    interface.add_connection(I2)
 
     #-----------------------------------------------------------------------------------------------------------------------
     #--------------------------------------- MAPPING ARCHITECTURE ----------------------------------------------------------
     #-----------------------------------------------------------------------------------------------------------------------
 
-    laptop_xeon1.addProcessorBinding(process=monitor)
-    laptop_xeon1.addProcessorBinding(process=analysis)
-    laptop_xeon1.addProcessorBinding(process=plan)
+    laptop_xeon1.add_processor_binding(process=monitor)
+    laptop_xeon1.add_processor_binding(process=analysis)
+    laptop_xeon1.add_processor_binding(process=plan)
     #laptop_xeon1.addProcessorBinding(process=legitimate)
-    laptop_xeon1.addProcessorBinding(process=execute)
+    laptop_xeon1.add_processor_binding(process=execute)
 
-    managingSystem.addProcessor(laptop_xeon1)
+    managingSystem.add_processor(laptop_xeon1)
     #managingSystem.addProcessor(laptop_xeon2)
-    managedSystem.addProcessor(RPI)
+    managedSystem.add_processor(RPI)
 
     # -----------------------------------------------------------------------------------------------------------------------
     # --------------------------------------- NODE IMPLEMENTATION ----------------------------------------------------------
@@ -214,6 +214,6 @@ def HelloWorld():
     return adaptiveSystem
 
 HelloWorldDesign=HelloWorld()
-HelloWorldDesign.object2json(fileName="design.json")
+HelloWorldDesign.object2json(file_name="design.json")
 
 

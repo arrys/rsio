@@ -1,16 +1,9 @@
-#**********************************************************************************
-# * Copyright (C) 2024-present Bert Van Acker (B.MKR) <bert.vanacker@uantwerpen.be>
-# *
-# * This file is part of the roboarch R&D project.
-# *
-# * RAP R&D concepts can not be copied and/or distributed without the express
-# * permission of Bert Van Acker
-# **********************************************************************************
 import json
 
-class namedObject(object):
 
-    def __init__(self, name='tbd', description='tbd', verbose=False):
+class NamedObject(object):
+
+    def __init__(self, name="tbd", description="tbd", verbose=False):
         self._name = name
         self._description = description
         self._verbose = verbose
@@ -26,48 +19,46 @@ class namedObject(object):
         return self._description
 
 
+class Process(NamedObject):
 
-
-class process(namedObject):
-
-    def __init__(self, name='tbd',description='tbd',verbose=False,featureList = None,threadList=None,formalism="python",containerization=False):
+    def __init__(self, name="tbd", description="tbd", verbose=False, feature_list=None, thread_list=None, formalism="python", containerization=False):
         super().__init__(name=name, description=description, verbose=verbose)
 
-        if featureList is not None:
-            self._featureList = featureList
+        if feature_list is not None:
+            self._feature_list = feature_list
         else:
-            self._featureList = []
+            self._feature_list = []
 
-        if threadList is not None:
-            self._threadList = threadList
+        if thread_list is not None:
+            self._thread_list = thread_list
         else:
-            self._threadList = []
+            self._thread_list = []
 
         self._formalism = formalism
         self._containerization = containerization
 
     @property
     def features(self):
-        return self._featureList
+        return self._feature_list
 
-    def addFeature(self, feature):
+    def add_feature(self, feature):
         """Add a feature to the system """
-        self._featureList.append(feature)
+        self._feature_list.append(feature)
 
     @property
     def threads(self):
-        return self._threadList
+        return self._thread_list
 
-    def addThread(self, t):
+    def add_thread(self, t):
         """Add a thread to the system """
-        self._threadList.append(t)
+        self._thread_list.append(t)
 
     @property
     def formalism(self):
         return self._formalism
 
     @formalism.setter
-    def formalism(self,f):
+    def formalism(self, f):
         self._formalism = f
 
     @property
@@ -75,50 +66,52 @@ class process(namedObject):
         return self._containerization
 
     @containerization.setter
-    def containerization(self,c):
+    def containerization(self, c):
         self._containerization = c
 
-class thread(namedObject):
 
-    def __init__(self, name='tbd',description='tbd',verbose=False,featureList = None,eventTrigger=None):
+class Thread(NamedObject):
+
+    def __init__(self, name="tbd", description="tbd", verbose=False, feature_list=None, event_trigger=None):
         super().__init__(name=name, description=description, verbose=verbose)
-
-        if featureList is not None:
-            self._featureList = featureList
+        if feature_list is not None:
+            self._feature_list = feature_list
         else:
-            self._featureList = []
-
-        self._eventTrigger = eventTrigger
+            self._feature_list = []
+        self._event_trigger = event_trigger
 
     @property
     def features(self):
-        return self._featureList
-    def addFeature(self, feature):
+        return self._feature_list
+
+    def add_feature(self, feature):
         """Add a feature to the system """
-        self._featureList.append(feature)
+        self._feature_list.append(feature)
 
     @property
-    def eventTrigger(self):
-        return self._eventTrigger
+    def event_trigger(self):
+        return self._event_trigger
 
-class characteristic(namedObject):
 
-    def __init__(self, name='tbd',description='tbd',verbose=False,value="",dataType='-'):
+class Characteristic(NamedObject):
+
+    def __init__(self, name="tbd", description="tbd", verbose=False, value="", data_type="-"):
         super().__init__(name=name, description=description, verbose=verbose)
 
         self._value = value
-        self._dataType = dataType
+        self._dataType = data_type
 
-class event(namedObject):
 
-    def __init__(self, name='tbd',description='tbd',verbose=False):
+class Event(NamedObject):
+
+    def __init__(self, name="tbd", description="tbd", verbose=False):
         super().__init__(name=name, description=description, verbose=verbose)
 
-class mode(namedObject):
 
-    def __init__(self, name='tbd',description='tbd',verbose=False,callback = None):
+class Mode(NamedObject):
+
+    def __init__(self, name="tbd", description="tbd", verbose=False, callback=None):
         super().__init__(name=name, description=description, verbose=verbose)
-
         self._callback = callback
 
     @property
@@ -126,11 +119,11 @@ class mode(namedObject):
         """The callback property (read-only)."""
         return self._callback
 
-class transition(namedObject):
 
-    def __init__(self, name='tbd',description='tbd',verbose=False,callback = None,source=None,destination=None):
+class Transition(NamedObject):
+
+    def __init__(self, name="tbd", description="tbd", verbose=False, callback=None, source=None, destination=None):
         super().__init__(name=name, description=description, verbose=verbose)
-
         self._source = source
         self._destination = destination
         self._callback = callback
@@ -150,52 +143,52 @@ class transition(namedObject):
         """The callback property (read-only)."""
         return self._callback
 
-class feature(namedObject):
 
-    def __init__(self, name='tbd',description='tbd',verbose=False,featureType="feature"):
+class Feature(NamedObject):
+
+    def __init__(self, name="tbd", description="tbd", verbose=False, feature_type="feature"):
         super().__init__(name=name, description=description, verbose=verbose)
 
-        self._featureType = featureType
+        self._feature_type = feature_type
 
     @property
-    def featureType(self):
-        return self._featureType
+    def feature_type(self):
+        return self._feature_type
 
-    @featureType.setter
-    def featureType(self,type):
-        self._featureType = type
+    @feature_type.setter
+    def feature_type(self, type):
+        self._feature_type = type
 
-class port(feature):
 
-    def __init__(self, name='tbd',description='tbd',initialValue = 1.0,valueReference=1,type='data',message=None,verbose=False):
+class Port(Feature):
+
+    def __init__(self, name="tbd", description="tbd", initial_value=1.0, value_reference=1, type="data", message=None, verbose=False):
         super().__init__(name=name, description=description, verbose=verbose)
-
-        self._featureType = 'port'
-        self._initialValue = initialValue
-        self._valueReference = valueReference
+        self._feature_type = "port"
+        self._initial_value = initial_value
+        self._value_reference = value_reference
         self._type = type
         self._message = message
-
 
     @property
     def value(self):
         """The value property (read)."""
-        return self._initialValue
+        return self._initial_value
 
     @value.setter
-    def value(self,value):
+    def value(self, value):
         """The value property (write)."""
-        self._initialValue = value
+        self._initial_value = value
 
     @property
-    def valueReference(self):
+    def value_reference(self):
         """The valueReference property (read)."""
-        return self._valueReference
+        return self._value_reference
 
-    @valueReference.setter
-    def valueReference(self, value):
+    @value_reference.setter
+    def value_reference(self, value):
         """The valueReference property (write)."""
-        self._valueReference = value
+        self._value_reference = value
 
     @property
     def type(self):
@@ -207,22 +200,23 @@ class port(feature):
         """The message property"""
         return self._message
 
-class inport(port):
-    def __init__(self, name='tbd',description='tbd',initialValue = 1.0,valueReference=1,type='data',verbose=False,message=None):
-        super().__init__(name=name, description=description, verbose=verbose,initialValue=initialValue,valueReference=valueReference,type=type,message=message)
 
-        self._featureType = 'inport'
-class outport(port):
-    def __init__(self, name='tbd',description='tbd',initialValue = 1.0,valueReference=1,type='data',verbose=False,message=None):
-        super().__init__(name=name, description=description, verbose=verbose,initialValue=initialValue,valueReference=valueReference,type=type,message=message)
+class InPort(Port):
+    def __init__(self, name="tbd", description="tbd", initial_value=1.0, value_reference=1, type="data", verbose=False, message=None):
+        super().__init__(name=name, description=description, verbose=verbose, initial_value=initial_value, value_reference=value_reference, type=type, message=message)
+        self._feature_type = "inport"
 
-        self._featureType = 'outport'
 
-class connection(namedObject):
+class OutPort(Port):
+    def __init__(self, name="tbd", description="tbd", initial_value=1.0, value_reference=1, type="data", verbose=False, message=None):
+        super().__init__(name=name, description=description, verbose=verbose, initial_value=initial_value, value_reference=value_reference, type=type, message=message)
+        self._feature_type = "outport"
 
-    def __init__(self, name='tbd',description='tbd',verbose=False,source=None,destination=None):
+
+class Connection(NamedObject):
+
+    def __init__(self, name="tbd", description="tbd", verbose=False, source=None, destination=None):
         super().__init__(name=name, description=description, verbose=verbose)
-
         self._source = source
         self._destination = destination
 
@@ -236,79 +230,81 @@ class connection(namedObject):
         """The source (read-only)."""
         return self._destination
 
-class message(namedObject):
 
-    def __init__(self, name='tbd',description='tbd',verbose=False,featureList = None):
+class Message(NamedObject):
+
+    def __init__(self, name="tbd", description="tbd", verbose=False, feature_list=None):
         super().__init__(name=name, description=description, verbose=verbose)
 
-        if featureList is not None:
-            self._featureList = featureList
+        if feature_list is not None:
+            self._feature_list = feature_list
         else:
-            self._featureList = []
+            self._feature_list = []
 
     @property
     def features(self):
-        return self._featureList
+        return self._feature_list
 
-    def addFeature(self, feature):
+    def add_feature(self, feature):
         """Add a feature to the system """
-        self._featureList.append(feature)
+        self._feature_list.append(feature)
 
-class data(feature):
 
-    def __init__(self, name='tbd',description='tbd',dataType='Float_64',verbose=False):
+class Data(Feature):
+
+    def __init__(self, name="tbd", description="tbd", data_type="Float_64", verbose=False):
         super().__init__(name=name, description=description, verbose=verbose)
 
-        self._dataType = dataType
+        self._data_type = data_type
 
     @property
-    def dataType(self):
-        return self._dataType
+    def data_type(self):
+        return self._data_type
 
-class processor(namedObject):
 
-    def __init__(self,name='tbd', description='tbd', verbose=False,featureList = None,propertyList = None, bindingList=None,IP="localhost"):
-        super().__init__(name=name,description = description,verbose=verbose)
+class Processor(NamedObject):
 
-        if featureList is not None:
-            self._featureList = featureList
+    def __init__(self, name="tbd", description="tbd", verbose=False, feature_list=None, property_list=None, binding_list=None, ip="localhost"):
+        super().__init__(name=name, description=description, verbose=verbose)
+
+        if feature_list is not None:
+            self._feature_list = feature_list
         else:
-            self._featureList = []
-        if propertyList is not None:
-            self._propertyList = propertyList
+            self._feature_list = []
+        if property_list is not None:
+            self._property_list = property_list
         else:
-            self._propertyList = []
-        if bindingList is not None:
-            self._bindingList = bindingList
+            self._property_list = []
+        if binding_list is not None:
+            self._binding_list = binding_list
         else:
-            self._bindingList = []
-        self._IP = IP
+            self._binding_list = []
+        self._ip = ip
         self.rap_backbone = False
 
-
-    def addFeature(self, feature):
+    def add_feature(self, feature):
         """Add a feature to the system """
-        self._featureList.append(feature)
+        self._feature_list.append(feature)
 
-    def addProperty(self, p):
+    def add_property(self, p):
         """Add a property to the system """
-        self._propertyList.append(p)
+        self._property_list.append(p)
 
-    def addProcessorBinding(self,process):
+    def add_processor_binding(self, process):
         """Add a processor binding to the processor """
-        self._bindingList.append(process)
+        self._binding_list.append(process)
 
     @property
-    def processorBinding(self):
-        return self._bindingList
+    def processor_binding(self):
+        return self._binding_list
 
     @property
-    def IP(self):
-        return self._IP
+    def ip(self):
+        return self._ip
 
-    @IP.setter
-    def IP(self,ip):
-        self._IP = ip
+    @ip.setter
+    def ip(self, ip):
+        self._ip = ip
 
     @property
     def runs_rap_backbone(self):
@@ -319,222 +315,219 @@ class processor(namedObject):
         self.rap_backbone = flag
 
 
+class Memory(NamedObject):
 
-class memory(namedObject):
+    def __init__(self, name="tbd", description="tbd", verbose=False, property_list=None):
+        super().__init__(name=name, description=description, verbose=verbose)
 
-    def __init__(self,name='tbd', description='tbd', verbose=False,propertyList = None):
-        super().__init__(name=name,description = description,verbose=verbose)
-
-        if propertyList is not None:
-            self._propertyList = propertyList
+        if property_list is not None:
+            self._property_list = property_list
         else:
-            self._propertyList = []
+            self._property_list = []
 
-    def addProperty(self, p):
+    def add_property(self, p):
         """Add a property to the system """
-        self._propertyList.append(p)
+        self._property_list.append(p)
 
-class bus(namedObject):
 
-    def __init__(self,name='tbd', description='tbd', verbose=False,propertyList = None):
-        super().__init__(name=name,description = description,verbose=verbose)
+class Bus(NamedObject):
 
-        if propertyList is not None:
-            self._propertyList = propertyList
+    def __init__(self, name="tbd", description="tbd", verbose=False, property_list=None):
+        super().__init__(name=name, description=description, verbose=verbose)
+
+        if property_list is not None:
+            self._property_list = property_list
         else:
-            self._propertyList = []
+            self._property_list = []
 
-        self._connectionList = []
+        self._connection_list = []
 
-    def addProperty(self, p):
+    def add_property(self, p):
         """Add a property to the bus """
-        self._propertyList.append(p)
+        self._property_list.append(p)
 
-    def addConnection(self, p):
+    def add_connection(self, p):
         """Add a connection to the bus """
-        self._connectionList.append(p)
+        self._connection_list.append(p)
 
 
-class system(namedObject):
+class System(NamedObject):
 
-    def __init__(self,name='tbd', description='tbd', verbose=False,systemList = None,processList = None,featureList=None,messageList=None,processorList=None,package="",prefix="",JSONDescriptor=None):
-        super().__init__(name=name,description = description,verbose=verbose)
+    def __init__(self, name="tbd", description="tbd", verbose=False, system_list=None, process_list=None, feature_list=None, message_list=None, processor_list=None, package="", prefix="", json_descriptor=None):
+        super().__init__(name=name, description=description, verbose=verbose)
 
-        if featureList is not None:
-            self._featureList = featureList
+        if feature_list is not None:
+            self._feature_list = feature_list
         else:
-            self._featureList = []
-        if systemList is not None:
-            self._systemList = systemList
+            self._feature_list = []
+        if system_list is not None:
+            self._system_list = system_list
         else:
-            self._systemList = []
-        if processList is not None:
-            self._processList = processList
+            self._system_list = []
+        if process_list is not None:
+            self._process_list = process_list
         else:
-            self._processList = []
-        if messageList is not None:
-            self._messageList = messageList
+            self._process_list = []
+        if message_list is not None:
+            self._message_list = message_list
         else:
-            self._messageList = []
-        if processorList is not None:
-            self._processorList = processorList
+            self._message_list = []
+        if processor_list is not None:
+            self._processor_list = processor_list
         else:
-            self._processorList = []
+            self._processor_list = []
 
+        if json_descriptor is not None:
+            self.json2object(json_descriptor=json_descriptor)
 
-        if JSONDescriptor is not None:
-            self.json2object(JSONDescriptor=JSONDescriptor)
-
-
-    def addProcess(self,process):
+    def add_process(self, process):
         """Add a process to the process list """
-        self._processList.append(process)
+        self._process_list.append(process)
 
     @property
     def processes(self):
-        return self._processList
+        return self._process_list
 
     @property
     def systems(self):
-        return self._systemList
-    def addSystem(self,system):
+        return self._system_list
+
+    def add_system(self, system):
         """Add a system to the system list """
-        self._systemList.append(system)
+        self._system_list.append(system)
 
-    def addFeature(self,feature):
+    def add_feature(self, feature):
         """Add a feature to the system """
-        self._featureList.append(feature)
+        self._feature_list.append(feature)
 
-    def addMessage(self,message):
-        """Add a process to the process list """
-        self._messageList.append(message)
+    def add_message(self, message):
+        """Add a process to the process list."""
+        self._message_list.append(message)
 
     @property
     def messages(self):
-        return self._messageList
-    @messages.setter
-    def messages(self,d):
-        self._messageList = d
+        return self._message_list
 
-    def addProcessor(self,processor):
-        """Add a processor to the system list """
-        self._processorList.append(processor)
+    @messages.setter
+    def messages(self, d):
+        self._message_list = d
+
+    def add_processor(self, processor):
+        """Add a processor to the system list."""
+        self._processor_list.append(processor)
 
     @property
     def processors(self):
-        return self._processorList
+        return self._processor_list
 
-    def object2json(self,fileName):
-        """
-               Function to generate a json file
-        """
+    def object2json(self, file_name):
+        """Generate a JSON file."""
         data = json.dumps(self, default=lambda o: o.__dict__, indent=4)
-        with open(fileName, 'w', encoding='utf-8') as f:
+        with open(file_name, "w", encoding="utf-8") as f:
             f.write(data)
 
-    def json2object(self, JSONDescriptor='system.json'):
+    def json2object(self, json_descriptor="system.json"):
         """
-             Function to generate an AADLIL system from a JSON file
+        Function to generate an AADLIL system from a JSON file
 
-             :param string JSONDescriptor: absolute path to the json file for the AADLIL system
-
+        :param string json_descriptor: absolute path to the JSON file for the AADLIL system
         """
         # --interpret JSON file--
-        with open(JSONDescriptor, "r") as read_file:
-            jsonObject = json.load(read_file)
+        with open(json_descriptor, "r") as read_file:
+            json_object = json.load(read_file)
         # --setup object--
-        self._name = jsonObject['_name']
-        self._description = jsonObject['_description']
+        self._name = json_object["_name"]
+        self._description = json_object["_description"]
         # -- load messages --
-        for m in jsonObject['_messageList']:
+        for m in json_object["_messageList"]:
             features = []
-            for d in m['_featureList']:
-                tempD = data(name=d['_name'], dataType=d['_dataType'])
-                features.append(tempD)
-            tempMessage = message(name=m['_name'], featureList=features)
-            self.addMessage(tempMessage)
+            for d in m["_featureList"]:
+                temp_d = Data(name=d["_name"], data_type=d["_dataType"])
+                features.append(temp_d)
+            temp_message = Message(name=m["_name"], feature_list=features)
+            self.add_message(temp_message)
         # -- load systems and containing processes --
-        for s in jsonObject['_systemList']:
-            tempS=system(name=s['_name'], description=s['_description'])
-            for p in s['_processList']:
-                tempP=process(name=p['_name'], description=p['_description'])
+        for s in json_object["_systemList"]:
+            temp_s = System(name=s["_name"], description=s["_description"])
+            for p in s["_processList"]:
+                temp_p = Process(name=p["_name"], description=p["_description"])
                 features = []
-                for f in p['_featureList']:
+                for f in p["_featureList"]:
                     _m = None
                     for m in self.messages:
-                        if f['_message'] is not None:
-                            if m.name == f['_message']['_name']:
+                        if f["_message"] is not None:
+                            if m.name == f["_message"]["_name"]:
                                 _m = m
-                    if f['_featureType'] == 'inport':
-                        tempF = inport(name=f['_name'], type=f['_type'], message=_m)
-                    elif f['_featureType'] == 'outport':
-                        tempF = outport(name=f['_name'], type=f['_type'], message=_m)
+                    if f["_featureType"] == "inport":
+                        temp_f = InPort(name=f["_name"], type=f["_type"], message=_m)
+                    elif f["_featureType"] == "outport":
+                        temp_f = OutPort(name=f["_name"], type=f["_type"], message=_m)
                     else:
-                        tempF = ''
-                    tempP.addFeature(tempF)
+                        temp_f = ""
+                    temp_p.add_feature(temp_f)
                 threads = []
-                for t in p['_threadList']:
-                    Tfeatures = []
-                    for f in t['_featureList']:
+                for t in p["_threadList"]:
+                    tfeatures = []
+                    for f in t["_featureList"]:
                         _m = None
                         for m in self.messages:
-                            if f['_message'] is not None:
-                                if m.name == f['_message']['_name']:
+                            if f["_message"] is not None:
+                                if m.name == f["_message"]["_name"]:
                                     _m = m
-                        if f['_featureType'] == 'inport':
-                            tempF = inport(name=f['_name'], type=f['_type'], message=_m)
-                        elif f['_featureType'] == 'outport':
-                            tempF = outport(name=f['_name'], type=f['_type'], message=_m)
+                        if f["_featureType"] == "inport":
+                            temp_f = InPort(name=f["_name"], type=f["_type"], message=_m)
+                        elif f["_featureType"] == "outport":
+                            temp_f = OutPort(name=f["_name"], type=f["_type"], message=_m)
                         else:
-                            tempF = ''
-                        Tfeatures.append(tempF)
-                    tempT = thread(name=t["_name"],featureList=Tfeatures,eventTrigger=t["_eventTrigger"])
-                    tempP.addThread(tempT)
-                tempP.formalism=p['_formalism']
-                tempP.containerization=p['_containerization']
-                tempS.addProcess(tempP)
-            self.addSystem(tempS)
+                            temp_f = ""
+                        tfeatures.append(temp_f)
+                    temp_t = Thread(name=t["_name"], feature_list=tfeatures, event_trigger=t["_eventTrigger"])
+                    temp_p.add_thread(temp_t)
+                temp_p.formalism = p["_formalism"]
+                temp_p.containerization = p["_containerization"]
+                temp_s.add_process(temp_p)
+            self.add_system(temp_s)
         # -- load processors --
-        for s in jsonObject['_systemList']:
-            for p in s['_processorList']:
-                tempProcessor = processor(name=p['_name'],description=p['_description'])
-                tempProcessor.runs_rap_backbone=p['rap_backbone']
-                tempProcessor.IP=p['_IP']
+        for s in json_object["_systemList"]:
+            for p in s["_processorList"]:
+                temp_processor = Processor(name=p["_name"], description=p["_description"])
+                temp_processor.runs_rap_backbone = p["rap_backbone"]
+                temp_processor.ip = p["_IP"]
                 # processor bindings
-                for binding in p['_bindingList']:
+                for binding in p["_bindingList"]:
                     # find the system and append
                     for sys in self.systems:
                         if sys.name == s["_name"]:
                             for comp in sys.processes:
                                 if binding["_name"] == comp.name:
-                                    tempProcessor.addProcessorBinding(process=comp)
-                #processor properties
+                                    temp_processor.add_processor_binding(process=comp)
+                # processor properties
                 for prop in p["_propertyList"]:
-                    tempProp = ""
-                    #TODO: extend the AADLIL TO SUPPORT PROCESSOR PROPERTIES
+                    temp_prop = ""
+                    # TODO: extend the AADLIL TO SUPPORT PROCESSOR PROPERTIES
 
-                #processor features
-                for f in p['_featureList']:
+                # processor features
+                for f in p["_featureList"]:
                     _m = None
                     for m in self.messages:
-                        if f['_message'] is not None:
-                            if m.name == f['_message']['_name']:
+                        if f["_message"] is not None:
+                            if m.name == f["_message"]["_name"]:
                                 _m = m
-                    if f['_featureType'] == 'inport':
-                        tempF = inport(name=f['_name'], type=f['_type'], message=_m)
-                    elif f['_featureType'] == 'outport':
-                        tempF = outport(name=f['_name'], type=f['_type'], message=_m)
-                    elif f['_featureType'] == 'port':
-                        tempF = outport(name=f['_name'], type=f['_type'],initialValue=f["_initialValue"],valueReference=f["_valueReference"], message=_m)
+                    if f["_featureType"] == "inport":
+                        temp_f = InPort(name=f["_name"], type=f["_type"], message=_m)
+                    elif f["_featureType"] == "outport":
+                        temp_f = OutPort(name=f["_name"], type=f["_type"], message=_m)
+                    elif f["_featureType"] == "port":
+                        temp_f = OutPort(name=f["_name"], type=f["_type"], initial_value=f["_initialValue"], value_reference=f["_valueReference"], message=_m)
                     else:
-                        tempF = ''
-                    tempProcessor.addFeature(feature=tempF)
+                        temp_f = ""
+                    temp_processor.add_feature(feature=temp_f)
                 for _s in self.systems:
                     if _s.name == s["_name"]:
-                        _s.addProcessor(processor=tempProcessor)
+                        _s.add_processor(processor=temp_processor)
 
     def __eq__(self, other):
-        if not isinstance(other, system):
-            # don't attempt to compare against unrelated types
+        if not isinstance(other, System):
+            # Don't attempt to compare against unrelated types
             return NotImplemented
         return self.__dict__ == other.__dict__
