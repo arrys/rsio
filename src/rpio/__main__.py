@@ -1,3 +1,5 @@
+import logging
+import arklog
 import click
 
 from rpio.commands.version import version_commands
@@ -15,6 +17,15 @@ cli = click.CommandCollection(
 
 
 def main():
+    logger = logging.getLogger(__name__)
+    config = {
+        "version": 1, "incremental": False, "disable_existing_loggers": False,
+        "formatters": {"color": {"()": "arklog.ColorFormatter", "format": "%(message)s"}},
+        "handlers": {"console": {"class": "logging.StreamHandler", "level": "DEBUG", "formatter": "color"}},
+        "root": {"level": "INFO", "handlers": ["console"], "propagate": True},
+        "loggers": {__name__: {"level": "DEBUG", "handlers": ["console"], "propagate": False}},
+    }
+    arklog.set_config_logging(config)
     cli()
 
 
