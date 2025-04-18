@@ -1,4 +1,3 @@
-from rpio.launcher.pyLauncher import launch_docker_compose
+from rpio.launcher.launcher import launch_docker_compose
 
-
-launch_docker_compose(path='Realization/ManagingSystem/Platform/xeon1')
+launch_docker_compose(path="Realization/ManagingSystem/Platform/xeon1")
