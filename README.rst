@@ -24,15 +24,15 @@ By installing
 
 .. code-block:: bash
 
-    uv pip install .
-    rpio
+   uv pip install .
+   rpio
 
 Without installing
 ------------------
 
 .. code-block:: bash
 
-    uv run python -m rpio
+   uv run python -m rpio
 
 By building an executable
 -------------------------
@@ -41,4 +41,20 @@ To manually build ``rpio.exe``, execute the following command in the terminal:
 
 .. code-block:: bash
 
-    uvx pyinstaller src/rpio/__main__.py --onefile -n rpio
+   uvx pyinstaller src/rpio/__main__.py --onefile -n rpio
+
+Development
+===========
+
+You should grab all the requirements first.
+
+.. code-block:: bash
+
+   uv pip install -r pyproject.toml --extra dev --extra test --extra doc
+
+Don't forget to run the tests after making changes.
+
+.. code-block:: bash
+
+   uv pip install -e . # Optional
+   uv run pytest tests
