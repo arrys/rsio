@@ -19,3 +19,16 @@ def test_aadl_to_aadlil_transformation():
             messages=str(package_path / "Design/messages.aadl")
         ).aadl2aadlIl().object2json(fileName=str(package_path / "Design/design.json"))
         assert (package_path / "Design/design.json").is_file()
+
+# def test_aadl_to_py_transformation():
+#     """"""
+#     from rpio.transformations.transformations import swc2code_py,message2code_py
+#     from rpio.metamodels.aadl2_IL.examples.example1 import example
+#
+#     system = example()
+#     x=1
+#     try:
+#         message2code_py(system=system, path="output/generated/messages")
+#         swc2code_py(system=system,path="output/generated")
+#     except:
+#         print("Failed to generate")
