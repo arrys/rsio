@@ -1,5 +1,5 @@
+import logging
 import click
-import os
 import subprocess
 
 
@@ -11,16 +11,18 @@ def deploy_cmds():
 
 @deploy_cmds.command()
 @click.option("--verbose", "-v", is_flag=True, default=False, help="Enable debug information.")
-def deploy(verbose):
-    """Deploying standalone RoboSAPIENS Adaptive Platform application package on target."""
-    if verbose: print("Deploy command under construction")
+def deploy(verbose: bool):
+    """Deploying the standalone RoboSAPIENS Adaptive Platform application package on target."""
+    logger = logging.getLogger(__name__)
+    if verbose:
+        logger.setLevel(logging.DEBUG)
+    logger.debug("Deploy command under construction")
 
-    _directory = os.getcwd()
     run_file = "Realization/ManagingSystem/Actions/deploy.py"
     arguments = ""
-    if verbose: print(run_file)
+    logger.debug(run_file)
 
     try:
         subprocess.run(["py.exe", run_file, arguments])
     except:
-        print("FAIL - deploying standalone robosapiensIO application failed")
+        logger.fatal("FAIL - deploying standalone robosapiensIO application failed")

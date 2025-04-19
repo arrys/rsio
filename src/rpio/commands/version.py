@@ -12,6 +12,9 @@ def version_commands():
 def version():
     """Display the current version."""
     # TODO Check if this works on an installed package
-    data = tomllib.loads((Path(__file__).resolve().parent.parent.parent.parent / Path("pyproject.toml")).read_text())
+    try:
+        data = tomllib.loads((Path(__file__).resolve().parent.parent.parent.parent / Path("pyproject.toml")).read_text())
+    except FileNotFoundError:
+        data = {}
     project_version = data.get("project", {}).get("version", "0.0.0")
     click.echo(f"rpio v{project_version}")

@@ -1,5 +1,9 @@
+import logging
 import click
-from rpio.utils.auxiliary import *
+import yaml
+
+from rpio.utils.auxiliary import check_redis, check_mqtt, create_virtual_environment, parse_launch_xml, \
+    install_requirements, activate_virtual_environment
 
 
 @click.group()
@@ -14,22 +18,25 @@ def platform_cmds():
 @click.option("--set", is_flag=True, default=False, help="Setting up the prerequisites for running the adaptive application on this platform.")
 @click.option("--name", "-n", default="none", help="Specify the platform name, specified within the AADL.")
 @click.option("--force", "-f", default="none", help="Force the setup of this platform [native, virtualenv, containerized].")
-def platform(verbose, check, set, name, force):
+def platform(verbose: bool, check: bool, set: bool, name: str, force: str):
     """Checking the prerequisites for running the adaptive application on this platform."""
+    logger = logging.getLogger(__name__)
+    if verbose:
+        logger.setLevel(logging.DEBUG)
 
     if check:
-        if verbose: print("WARNING: platform check is not implemented yet.")
+        logging.debug("WARNING: platform check is not implemented yet.")
 
         if check_redis(config=None):
-            print("INFO: REDIS connection check is successful.")
+            logging.info("INFO: REDIS connection check is successful.")
         else:
-            print("ERROR: REDIS connection failed. Please check if the platform is connected to the host running the Redis")
+            logging.fatal("ERROR: REDIS connection failed. Please check if the platform is connected to the host running the Redis")
             exit()
 
         if check_mqtt(config=None):
-            print("INFO: MQTT connection check is successful.")
+            logging.info("INFO: MQTT connection check is successful.")
         else:
-            print("ERROR: MQTT connection failed. Please check if the platform is connected to the host running the MQTT broker")
+            logging.fatal("ERROR: MQTT connection failed. Please check if the platform is connected to the host running the MQTT broker")
             exit()
 
     if set:
@@ -49,19 +56,19 @@ def platform(verbose, check, set, name, force):
                 if type == "virtualenv":
                     try:
                         create_virtual_environment(venv_name="rpiovenv")
-                        launchDescription = parse_launch_xml("Realization/ManagingSystem/Platform/" + name + "/launch.xml")
-                        for component in launchDescription.components:
+                        launch_description = parse_launch_xml("Realization/ManagingSystem/Platform/" + name + "/launch.xml")
+                        for component in launch_description.components:
                             install_requirements(venv_name="rpiovenv", requirements_file=component.path + "/requirements.txt")
                         activate_virtual_environment(venv_name="rpiovenv")
                     except:
-                        if verbose: print("ERROR: Could not setup virtual environment for running the adaptive application on this platform.")
+                        logging.error("ERROR: Could not setup virtual environment for running the adaptive application on this platform.")
             elif formalism == "C++":
-                if verbose: print("WARNING: C++ platform setup is not implemented yet.")
+                logging.warning("WARNING: C++ platform setup is not implemented yet.")
 
         # FORCE FLOW, IGNORING THE AADL INFO
         if force == "virtualenv":
-            if verbose: print("INFO: Forcing to setup a virtual python environment for running the adaptive application on this platform.")
+            logging.info("INFO: Forcing to setup a virtual python environment for running the adaptive application on this platform.")
         elif force == "native":
-            if verbose: print("INFO: Forcing to setup a native python environment for running the adaptive application on this platform.")
+            logging.info("INFO: Forcing to setup a native python environment for running the adaptive application on this platform.")
         elif force == "containerized":
-            if verbose: print("INFO: Forcing to setup containerized environment for running the adaptive application on this platform.")
+            logging.info("INFO: Forcing to setup containerized environment for running the adaptive application on this platform.")

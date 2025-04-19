@@ -1,3 +1,4 @@
+import logging
 import click
 
 
@@ -11,6 +12,9 @@ def import_cmds():
 @click.option("--verbose", "-v", is_flag=True, default=False, help="Enable debug information.")
 @click.option("--generate", "-g", is_flag=True, default=False, help="Generate standalone packages.")
 @click.option("--RAADL", default="default.raadl", help="Input RAADL models.")
-def importer(verbose):
+def importer(verbose: bool):
     """Import standalone RoboSAPIENS Adaptive Platform application package."""
-    if verbose: print("Importing the standalone robosapiensIO application package")
+    logger = logging.getLogger(__name__)
+    if verbose:
+        logger.setLevel(logging.DEBUG)
+    logging.debug("Importing the standalone robosapiensIO application package")

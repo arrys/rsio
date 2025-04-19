@@ -1,3 +1,4 @@
+import logging
 import click
 import os
 import subprocess
@@ -16,39 +17,39 @@ def run_cmds():
 @click.option("--launchfile", is_flag=True, default=False, help="Specify the use of the launchfile to run the adaptive application.")
 @click.option("--docker", is_flag=True, default=False, help="Specify the use of docker to run the adaptive application.")
 def run(verbose, platform, launchfile, docker):
-    """Run standalone RoboSAPIENS Adaptive Platform application package."""
-    if verbose: print("Run command under construction...")
+    """Run the standalone RoboSAPIENS Adaptive Platform application package."""
+    logger = logging.getLogger(__name__)
+    if verbose:
+        logger.setLevel(logging.DEBUG)
+    logger.debug("Run command under construction...")
 
     if platform is None:
-        if verbose: print("Executing the run.py action (Realization/ManagingSystem/Actions/run.py)")
+        logger.debug("Executing the run.py action (Realization/ManagingSystem/Actions/run.py)")
         _directory = os.getcwd()
         run_file = "Realization/ManagingSystem/Actions/run.py"
         arguments = ""
-        if verbose: print(run_file)
+        logger.debug(run_file)
 
         try:
             subprocess.run(["py.exe", run_file, arguments])
         except:
-            print("FAIL - Running standalone robosapiensIO application failed")
+            logger.fatal("FAIL - Running standalone robosapiensIO application failed")
     else:
         if docker:
-            if verbose: print(
-                "Executing the adaptive application using the provided docker compose file for platform {}".format(platform))
+            logger.debug(f"Executing the adaptive application using the provided docker compose file for platform {platform}")
             try:
                 launch_docker_compose(path="Realization/ManagingSystem/Platform/" + platform)
             except:
-                print("FAIL - Launching the standalone robosapiensIO application failed")
+                logger.fatal("FAIL - Launching the standalone robosapiensIO application failed")
         elif launchfile:
-            if verbose: print(
-                "Executing the adaptive application using the provided launch file for platform {}".format(platform))
+            logger.debug(f"Executing the adaptive application using the provided launch file for platform {platform}")
             try:
                 launch("Realization/ManagingSystem/Platform/" + platform + "/launch.xml")
             except:
-                print("FAIL - Launching the standalone robosapiensIO application failed")
+                logger.fatal("FAIL - Launching the standalone robosapiensIO application failed")
         else:
-            if verbose: print(
-                "Executing the adaptive application using the provided main file for platform {}".format(platform))
+            logger.debug(f"Executing the adaptive application using the provided main file for platform {platform}")
             try:
                 launch_main("Resources/main_" + platform + ".py")
             except:
-                print("FAIL - Launching the standalone robosapiensIO application failed")
+                logger.fatal("FAIL - Launching the standalone robosapiensIO application failed")

@@ -1,3 +1,5 @@
+import logging
+
 import click
 import os
 import subprocess
@@ -11,16 +13,19 @@ def build_cmds():
 
 @build_cmds.command()
 @click.option("--verbose", "-v", is_flag=True, default=False, help="Enable debug information.")
-def build(verbose):
-    """Build standalone RoboSAPIENS Adaptive Platform application package."""
-    if verbose: print("Build command under construction")
+def build(verbose: bool):
+    """Build the standalone RoboSAPIENS Adaptive Platform application package."""
+    logger = logging.getLogger(__name__)
+    if verbose:
+        logger.setLevel(logging.DEBUG)
+    logging.debug("Build command under construction")
 
     _directory = os.getcwd()
     run_file = "Realization/ManagingSystem/Actions/build.py"
     arguments = ""
-    if verbose: print(run_file)
+    logging.debug(run_file)
 
     try:
         subprocess.run(["py.exe", run_file, arguments])
     except:
-        print("FAIL - building standalone robosapiensIO application failed")
+        logging.fatal("FAIL - building standalone robosapiensIO application failed")
