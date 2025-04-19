@@ -1,9 +1,12 @@
 import logging
+import sys
+
 import click
 import yaml
 
 from rpio.utils.auxiliary import check_redis, check_mqtt, create_virtual_environment, parse_launch_xml, \
     install_requirements, activate_virtual_environment
+from rpio.utils.exit import ExitCode
 
 
 @click.group()
@@ -31,13 +34,13 @@ def platform(verbose: bool, check: bool, set: bool, name: str, force: str):
             logging.info("INFO: REDIS connection check is successful.")
         else:
             logging.fatal("ERROR: REDIS connection failed. Please check if the platform is connected to the host running the Redis")
-            exit()
+            sys.exit(ExitCode.FAILURE)
 
         if check_mqtt(config=None):
             logging.info("INFO: MQTT connection check is successful.")
         else:
             logging.fatal("ERROR: MQTT connection failed. Please check if the platform is connected to the host running the MQTT broker")
-            exit()
+            sys.exit(ExitCode.FAILURE)
 
     if set:
         # NORMAL FLOW, USE AADL INFO FOR SETTING UP THE ENVIRONMENT
@@ -62,6 +65,7 @@ def platform(verbose: bool, check: bool, set: bool, name: str, force: str):
                         activate_virtual_environment(venv_name="rpiovenv")
                     except:
                         logging.error("ERROR: Could not setup virtual environment for running the adaptive application on this platform.")
+                        # TODO Should we exit?
             elif formalism == "C++":
                 logging.warning("WARNING: C++ platform setup is not implemented yet.")
 

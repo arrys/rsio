@@ -16,5 +16,5 @@ def version():
         data = tomllib.loads((Path(__file__).resolve().parent.parent.parent.parent / Path("pyproject.toml")).read_text())
     except FileNotFoundError:
         data = {}
-    project_version = data.get("project", {}).get("version", "0.0.0")
+    project_version = data.get("project", {}).get("version", " unknown")
     click.echo(f"rpio v{project_version}")

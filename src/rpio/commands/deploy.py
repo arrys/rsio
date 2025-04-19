@@ -1,6 +1,9 @@
 import logging
+import sys
 import click
 import subprocess
+
+from rpio.utils.exit import ExitCode
 
 
 @click.group()
@@ -26,3 +29,4 @@ def deploy(verbose: bool):
         subprocess.run(["py.exe", run_file, arguments])
     except:
         logger.fatal("FAIL - deploying standalone robosapiensIO application failed")
+        sys.exit(ExitCode.FAILURE)

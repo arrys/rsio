@@ -7,11 +7,6 @@ from rpio.transformations.transformations import message2code_py, swc2code_py, s
     add_backbone_config, update_robosapiens_io_ini
 
 
-# from rpio.transformations.transformations import *
-# from rpio.parsers.parsers import *
-# from rpio.metamodels.aadl2_IL import *
-
-
 @click.group()
 @click.pass_context
 def transformation_cmds():
@@ -32,6 +27,7 @@ def transformation(verbose: bool, roboarch2aadl: bool, aadl2aadlil: bool, aadlil
     if roboarch2aadl:
         logger.debug("WARNING: RoboArch2AADL transformation is not implemented yet.")
 
+    # TODO Should any of these errors force an exit?
     if aadl2aadlil:
         logger.debug("WARNING: AADL2AADLIL transformation is under development.")
 

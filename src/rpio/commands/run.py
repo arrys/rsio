@@ -1,8 +1,10 @@
 import logging
+import sys
 import click
 import os
 import subprocess
 from rpio.launcher.launcher import launch, launch_main, launch_docker_compose
+from rpio.utils.exit import ExitCode
 
 
 @click.group()
@@ -34,6 +36,7 @@ def run(verbose, platform, launchfile, docker):
             subprocess.run(["py.exe", run_file, arguments])
         except:
             logger.fatal("FAIL - Running standalone robosapiensIO application failed")
+            sys.exit(ExitCode.FAILURE)
     else:
         if docker:
             logger.debug(f"Executing the adaptive application using the provided docker compose file for platform {platform}")
@@ -41,15 +44,18 @@ def run(verbose, platform, launchfile, docker):
                 launch_docker_compose(path="Realization/ManagingSystem/Platform/" + platform)
             except:
                 logger.fatal("FAIL - Launching the standalone robosapiensIO application failed")
+                sys.exit(ExitCode.FAILURE)
         elif launchfile:
             logger.debug(f"Executing the adaptive application using the provided launch file for platform {platform}")
             try:
                 launch("Realization/ManagingSystem/Platform/" + platform + "/launch.xml")
             except:
                 logger.fatal("FAIL - Launching the standalone robosapiensIO application failed")
+                sys.exit(ExitCode.FAILURE)
         else:
             logger.debug(f"Executing the adaptive application using the provided main file for platform {platform}")
             try:
                 launch_main("Resources/main_" + platform + ".py")
             except:
                 logger.fatal("FAIL - Launching the standalone robosapiensIO application failed")
+                sys.exit(ExitCode.FAILURE)

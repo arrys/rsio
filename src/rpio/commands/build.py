@@ -1,8 +1,9 @@
 import logging
-
+import sys
 import click
-import os
 import subprocess
+
+from rpio.utils.exit import ExitCode
 
 
 @click.group()
@@ -20,7 +21,6 @@ def build(verbose: bool):
         logger.setLevel(logging.DEBUG)
     logging.debug("Build command under construction")
 
-    _directory = os.getcwd()
     run_file = "Realization/ManagingSystem/Actions/build.py"
     arguments = ""
     logging.debug(run_file)
@@ -29,3 +29,4 @@ def build(verbose: bool):
         subprocess.run(["py.exe", run_file, arguments])
     except:
         logging.fatal("FAIL - building standalone robosapiensIO application failed")
+        sys.exit(ExitCode.FAILURE)

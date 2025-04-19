@@ -1,6 +1,9 @@
 import logging
+import sys
+
 import click
 from rpio.package.manager import PackageManager
+from rpio.utils.exit import ExitCode
 
 
 @click.group()
@@ -20,8 +23,6 @@ def package(verbose: bool, check: bool, create: bool, name: str):
     if verbose:
         logger.setLevel(logging.DEBUG)
     logging.debug("Checking the standalone robosapiensIO application package")
-    if verbose:
-        print(logger.level)
 
     # TODO fix this as it's weird to have two flag with elifs
     if check:
@@ -31,7 +32,8 @@ def package(verbose: bool, check: bool, create: bool, name: str):
         if is_valid:
             logging.info("SUCCESS - Valid robosapiensIO application package")
         else:
-            logging.error("FAIL - Invalid robosapiensIO application package")
+            logging.info("FAIL - Invalid robosapiensIO application package")
+        sys.exit(ExitCode.SUCCESS) # SUCCESS because the app performs successfully
     elif create:
         m = PackageManager(verbose=verbose)
         m.create(name=name, standalone=True, path=None)

@@ -18,31 +18,31 @@ except ImportError:
     pass
 
 
-def get_custom_code(text, tag):
+def get_custom_code(text: str, tag: str) -> list | None:
     pattern = r"#<!-- cc_" + tag + " START--!>(.*?)#<!-- cc_" + tag + " END--!>"
     matches = re.findall(pattern, text, re.DOTALL)
     return matches if matches else None
 
 
-def replace_custom_code(text, tag, replacement):
+def replace_custom_code(text: str, tag: str, replacement: str) -> str:
     pattern = r"#<!-- cc_" + tag + " START--!>(.*?)#<!-- cc_" + tag + " END--!>"
     start_tag = "#<!-- cc_" + tag + " START--!>"
     end_tag = "#<!-- cc_" + tag + " END--!>"
     return re.sub(pattern, start_tag + replacement[0] + end_tag, text, flags=re.DOTALL)
 
 
-def run_command(command):
+def run_command(command: str):
     try:
         # result = subprocess.run(command[0][0], shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         process = Popen(command[0], shell=True, cwd=command[1])
         stdout, stderr = process.communicate()
         print(process.stdout)
     except subprocess.CalledProcessError as e:
-        print(f"Failed to run command. Error: {e}")  # decode('utf-8') possible source of exe being flagged as virus
-        # print(f"Command: {command}\nError: {e.stderr.decode('utf-8')}")
+        print(f"Failed to run command. Error: {e}")  # decode("utf-8") possible source of exe being flagged as virus
+        # print(f"Command: {command}\nError: {e.stderr.decode("utf-8")}")
 
 
-def execute_commands(commands):
+def execute_commands(commands: list[str]):
     """
     Execute multiple command line functions concurrently.
 
@@ -70,10 +70,10 @@ class Component:
     def __init__(self, name, path, formalism):
         self.name = name
         self.path = path
-        if formalism == 'python':
-            self.cmd = ['python', name + '.py']
-        if formalism == 'c++':
-            self.cmd = [path + '/' + name + '.exe']
+        if formalism == "python":
+            self.cmd = ["python", name + ".py"]
+        if formalism == "c++":
+            self.cmd = [path + "/" + name + ".exe"]
 
     def __repr__(self):
         return f"Swc(name='{self.name}', cmd='{self.cmd}')"
@@ -88,20 +88,20 @@ class Launch:
 
 
 def parse_launch_xml(file, formalism="python"):
-    with open(file, 'r') as f:
+    with open(file, "r") as f:
         data = f.read()
         root = ET.fromstring(data)
         components = []
-        for node_elem in root.findall('node'):
-            name = node_elem.get('name')
-            path = node_elem.get('path')
+        for node_elem in root.findall("node"):
+            name = node_elem.get("name")
+            path = node_elem.get("path")
             components.append(Component(name, path, formalism))
         return Launch(components)
 
 
 def decompress_folder(data, output_path):
     # Decompress the byte stream into the output folder
-    with zipfile.ZipFile(io.BytesIO(data), 'r') as zip_file:
+    with zipfile.ZipFile(io.BytesIO(data), "r") as zip_file:
         zip_file.extractall(output_path)
     print(f"Folder decompressed to '{output_path}'.")
 
@@ -109,7 +109,7 @@ def decompress_folder(data, output_path):
 def compress_folder(folder_path):
     # Compress the folder into a byte stream
     zip_buffer = io.BytesIO()
-    with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
+    with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zip_file:
         for root, _, files in os.walk(folder_path):
             for file in files:
                 file_path = os.path.join(root, file)
@@ -244,7 +244,7 @@ def build_docker_image(module_path, image_name):
     if not os.path.isdir(module_path):
         raise FileNotFoundError(f"The specified module path '{module_path}' does not exist or is not a directory.")
 
-    dockerfile_path = os.path.join(module_path, 'Dockerfile')
+    dockerfile_path = os.path.join(module_path, "Dockerfile")
     if not os.path.isfile(dockerfile_path):
         raise FileNotFoundError(f"No Dockerfile found in the specified module path '{module_path}'.")
 
@@ -309,12 +309,12 @@ def check_redis(host="localhost", port=6379, db=0, timeout=30, config=None):
 
     try:
         if config is None:
-            print('WARNING: configuration file not provided, checking Redis with default values (broker="localhost", port=6379, db=0)')
+            print("WARNING: configuration file not provided, checking Redis with default values (broker='localhost', port=6379, db=0)")
         else:
-            with open(config, 'r') as file:
+            with open(config, "r") as file:
                 configuration = yaml.safe_load(file)
-                host = configuration['redis_host']
-                port = configuration['redis_port']
+                host = configuration["redis_host"]
+                port = configuration["redis_port"]
 
         # Establish a connection with the specified timeout
         client = redis.Redis(host=host, port=port, db=db, socket_timeout=timeout)
@@ -346,14 +346,14 @@ def check_mqtt(broker="localhost", port=1883, timeout=30, config=None):
 
     # resolve the config file for checking the MQTT config
     if config is None:
-        print('WARNING: configuration file not provided, checking MQTT with default values (broker="localhost", port=1833)')
+        print("WARNING: configuration file not provided, checking MQTT with default values (broker='localhost', port=1833)")
     else:
-        with open(config, 'r') as file:
+        with open(config, "r") as file:
             configuration = yaml.safe_load(file)
-            broker = configuration['mqtt_broker']
-            port = configuration['mqtt_port']
+            broker = configuration["mqtt_broker"]
+            port = configuration["mqtt_port"]
 
-    # Attempt to connect with specified timeout
+    # Attempt to connect with a specified timeout
     try:
         client.connect(broker, port, timeout)
         client.loop_start()  # Start the loop to process callbacks
