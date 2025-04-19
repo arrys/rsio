@@ -1,9 +1,10 @@
+import logging
 import tkinter as tk
-from tkinter import messagebox
 from time import sleep
 from threading import Thread
-from rpio.utils.constants import *
-from rpio.logging.logger import *
+from tkinter import messagebox
+from rpio.utils.constants import StepStatus
+
 
 class ExecutorGui:
 
@@ -21,7 +22,7 @@ class ExecutorGui:
     }
 
     def __init__(self, tasks, name):
-        self.logger = Logger(name="Custom logger", path="../", verbose=False)
+        self.logger = logging.getLogger(__name__)
         self.name = name
         self.tasks = tasks
         self.root = tk.Tk()
@@ -104,7 +105,7 @@ class ExecutorGui:
 
     def start_workflow(self):
         self.start_button.config(state=tk.DISABLED)
-        self.logger.syslog(msg="Workflow --" + self.name + "-- started")
+        self.logger.info(msg=f"Workflow --{self.name}-- started")
         Thread(target=self.run_tasks).start()
 
     def run_tasks(self):
@@ -117,10 +118,10 @@ class ExecutorGui:
                 result = func()
                 if result:
                     self.update_status(task_name, StepStatus.PASSED)
-                    self.logger.syslog(msg="Task <<" + task_name + ">> successfully completed")
+                    self.logger.info(msg=f"Task <<{task_name}>> successfully completed")
                 else:
                     self.update_status(task_name, StepStatus.FAILED)
-                    self.logger.syslog(msg="Task <<" + task_name + ">> failed to complete")
+                    self.logger.info(msg=f"Task <<{task_name}>> failed to complete")
             except Exception as e:
                 self.update_status(task_name, StepStatus.FAILED)
                 messagebox.showerror("Error", f"Task '{task_name}' failed with error: {e}")
@@ -142,11 +143,11 @@ class ExecutorHeadless:
     def __init__(self, tasks,name):
         self.tasks = tasks
         self.name = name
-        self.logger = Logger(name="Custom logger", path="../", verbose=False)
+        self.logger = logging.getLogger(__name__)
 
 
     def start_workflow(self):
-        self.logger.syslog(msg="Workflow " + self.name + " started")
+        self.logger.info(msg=f"Workflow {self.name} started")
         Thread(target=self.run_tasks).start()
 
     def run_tasks(self):
@@ -154,12 +155,10 @@ class ExecutorHeadless:
             try:
                 result = func()
                 if result:
-                    print("Task '{}' succeeded".format(task_name))
-                    self.logger.syslog(msg="Task <<" + task_name + ">> successfully completed")
+                    self.logger.info(msg=f"Task <<{task_name}>> successfully completed")
                 else:
-                    print("Task '{}' failed".format(task_name))
-                    self.logger.syslog(msg="Task <<" + task_name + ">> failed to complete")
+                    self.logger.info(msg=f"Task <<{task_name}>> failed to complete")
             except Exception as e:
-                print("Error", f"Task '{task_name}' failed with error: {e}")
+                self.logger.debug("Error", f"Task '{task_name}' failed with error: {e}")
                 break
             sleep(1)  # Simulate delay between checks

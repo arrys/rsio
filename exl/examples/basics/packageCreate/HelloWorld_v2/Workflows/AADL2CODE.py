@@ -16,7 +16,7 @@ tasks = {
     "Generate swc launch files": t_generate_swc_launch,
     "Generate main file": t_generate_main,
     "Generate docker compose files": t_generate_docker,
-    "Update robosapiensIO.ini file": t_update_robosapiensIO_ini
+    "Update robosapiensIO.ini file": t_update_robosapiens_io_ini
 }
 
 # 2. Launch the graphical executer

@@ -1,15 +1,11 @@
-from rpio.transformations.transformations import swc2code_py, message2code_py, swc2launch, swc2main, swc2dockerCompose, update_robosapiensIO_ini, add_backbone_config, robochart2aadlmessages, robochart2logical
+from rpio.metamodels.aadl2_IL import System
+from rpio.parsers.parsers import RobochartParser
+from rpio.transformations.transformations import swc2code_py, message2code_py, swc2launch, swc2main, swc2docker_compose, update_robosapiens_io_ini, add_backbone_config, robochart2aadlmessages, robochart2logical
 from rpio.utils.auxiliary import *
-from rpio.parsers.parsers import *
-from rpio.metamodels.aadl2_IL import *
 
 import configparser
 import os
 
-
-# ------------------------------------------------------------------------------------
-# ------------------------------ CONSTANTS ------------------------------------------
-# ------------------------------------------------------------------------------------
 
 BASE_DIR = os.getcwd()
 
@@ -30,9 +26,7 @@ LEGITIMATE_RCT = os.path.join(CONCEPT_DIR, "Legitimate.rct")
 EXECUTE_RCT = os.path.join(CONCEPT_DIR, "Execute.rct")
 KNOWLEDGE_RCT = os.path.join(CONCEPT_DIR, "Knowledge.rct")
 
-# ------------------------------------------------------------------------------------
-# ------------------------------AADL2CODE TASKS --------------------------------------
-# ------------------------------------------------------------------------------------
+
 def t_load_design():
     # load name and description from ini
     config = configparser.ConfigParser()
@@ -41,7 +35,7 @@ def t_load_design():
         name = config['RoboSAPIENSIO']['name']
         description = config['RoboSAPIENSIO']['description']
         try:
-            design = system(name=name, description=description, JSONDescriptor=DESIGN_DIR)  # TODO: load AADL when AADL parser is complete
+            design = System(name=name, description=description, json_descriptor=DESIGN_DIR)  # TODO: load AADL when AADL parser is complete
         except:
             print("Design file not found. Please check the path.")
             design = None
@@ -85,11 +79,11 @@ def t_generate_main():
         config = configparser.ConfigParser()
         # use the constant for the ini file
         config.read(RPIO_INI_DIR)
-        packageName = config['PACKAGE']['name']
+        package_name = config['PACKAGE']['name']
         prefix = config['PACKAGE']['prefix']
         design = t_load_design()
-        # generate main launch file using RESOURCES_DIR instead of a literal "../Resources"
-        swc2main(system=design.systems[0], package=packageName, prefix=(prefix if prefix != "" else None), path=RESOURCES_DIR)
+        # generate the main launch file using RESOURCES_DIR instead of a literal "../Resources"
+        swc2main(system=design.systems[0], package=package_name, prefix=(prefix if prefix != "" else None), path=RESOURCES_DIR)
         return True
     except:
         print("Failed to generate the software component main file for the given platforms")
@@ -98,8 +92,8 @@ def t_generate_main():
 def t_generate_docker():
     try:
         design = t_load_design()
-        # generate docker compose file using constant for managing platform directory
-        swc2dockerCompose(system=design.systems[0], path=PLATFORM_DIR)
+        # generate a docker compose file using constant for managing platform directory
+        swc2docker_compose(system=design.systems[0], path=PLATFORM_DIR)
         # add backbone config using RESOURCES_DIR
         add_backbone_config(system=design, path=RESOURCES_DIR)
         return True
@@ -107,15 +101,15 @@ def t_generate_docker():
         print("Failed to generate the docker compose for the given platforms")
         return False
 
-def t_update_robosapiensIO_ini():
+def t_update_robosapiens_io_ini():
     try:
         config = configparser.ConfigParser()
         config.read(RPIO_INI_DIR)
-        packageName = config['PACKAGE']['name']
+        package_name = config['PACKAGE']['name']
         prefix = config['PACKAGE']['prefix']
         design = t_load_design()
-        # update ini file using the directory of RPIO_INI_DIR instead of a literal "../"
-        update_robosapiensIO_ini(system=design, package=packageName, prefix=prefix, path=os.path.dirname(RPIO_INI_DIR))
+        # update the ini file using the directory of RPIO_INI_DIR instead of a literal "../"
+        update_robosapiens_io_ini(system=design, package=package_name, prefix=prefix, path=os.path.dirname(RPIO_INI_DIR))
         return True
     except:
         print("Could not update robosapiensIO.ini")
@@ -128,14 +122,14 @@ def t_update_robosapiensIO_ini():
 def t_robochart_to_messages():
     try:
         # Parse RoboChart models using the defined constants
-        parser = robochart_parser(
-            MAPLEK=MAPLE_RCT,
-            Monitor=MONITOR_RCT,
-            Analysis=ANALYSIS_RCT,
-            Plan=PLAN_RCT,
-            Legitimate=LEGITIMATE_RCT,
-            Execute=EXECUTE_RCT,
-            Knowledge=KNOWLEDGE_RCT
+        parser = RobochartParser(
+            maplek=MAPLE_RCT,
+            monitor=MONITOR_RCT,
+            analysis=ANALYSIS_RCT,
+            plan=PLAN_RCT,
+            legitimate=LEGITIMATE_RCT,
+            execute=EXECUTE_RCT,
+            knowledge=KNOWLEDGE_RCT
         )
         # generate messages, here DESIGN_DIR is used if it represents the design folder;
         # alternatively
@@ -148,7 +142,15 @@ def t_robochart_to_messages():
 def t_robochart_to_logical():
     try:
         # Parse robochart models
-        models_parsed = robochart_parser(MAPLEK='../Concept/MAPLE-K.rct',Monitor='../Concept/Monitor.rct',Analysis='../Concept/Analysis.rct',Plan='../Concept/Plan.rct',Legitimate='../Concept/Legitimate.rct',Execute='../Concept/Execute.rct',Knowledge='../Concept/Knowledge.rct')
+        models_parsed = RobochartParser(
+            maplek='../Concept/MAPLE-K.rct',
+            monitor='../Concept/Monitor.rct',
+            analysis='../Concept/Analysis.rct',
+            plan='../Concept/Plan.rct',
+            legitimate='../Concept/Legitimate.rct',
+            execute='../Concept/Execute.rct',
+            knowledge='../Concept/Knowledge.rct'
+        )
         # generate logical architecture
         robochart2logical(parsed=models_parsed,path='../Design')
         print("RoboChart to AADL logical architecture is not implemented yet!")

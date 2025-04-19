@@ -10,7 +10,6 @@ import yaml
 import redis
 import importlib
 from subprocess import Popen
-
 # Only windoze supports CREATE_NEW_CONSOLE
 try:
     from subprocess import CREATE_NEW_CONSOLE
@@ -119,23 +118,18 @@ def compress_folder(folder_path):
 
 
 def get_activate_script_path(venv_name):
-    """
-    Returns the path to the activated script based on the operating system.
-    """
-    return os.path.join(venv_name, "Scripts", "activate.bat") if os.name == "nt" else os.path.join(venv_name, "bin",
-                                                                                                   "activate")
+    """Returns the path to the activated script based on the operating system."""
+    return os.path.join(venv_name, "Scripts", "activate.bat") if os.name == "nt" else os.path.join(venv_name, "bin", "activate")
 
 
 def get_pip_path(venv_name):
-    """
-    Returns the path to the pip executable based on the operating system.
-    """
+    """Returns the path to the pip executable based on the operating system."""
     return os.path.join(venv_name, "Scripts", "pip.exe") if os.name == "nt" else os.path.join(venv_name, "bin", "pip")
 
 
 def create_virtual_environment(venv_name="venv"):
     """
-    Creates a Python 3.10 virtual environment.
+    Creates a Python virtual environment.
 
     :param venv_name: The name of the virtual environment directory. Defaults to "venv".
     """
@@ -144,7 +138,7 @@ def create_virtual_environment(venv_name="venv"):
         return
 
     try:
-        # Check if Python 3.10 is installed
+        # Check if Python is installed
         python_version_check = subprocess.run(["python", "--version"], capture_output=True, text=True)
 
         # Install virtualenv package if not installed
