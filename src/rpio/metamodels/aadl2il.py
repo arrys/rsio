@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 
 
 class NamedObject(object):
@@ -353,7 +354,7 @@ class Bus(NamedObject):
 
 class System(NamedObject):
 
-    def __init__(self, name="tbd", description="tbd", verbose=False, system_list=None, process_list=None, feature_list=None, message_list=None, processor_list=None, package="", prefix="", json_descriptor=None):
+    def __init__(self, name="tbd", description="tbd", verbose=False, system_list=None, process_list=None, feature_list=None, message_list=None, processor_list=None, package="", prefix="", json_descriptor: Path | None = None):
         super().__init__(name=name, description=description, verbose=verbose)
 
         if feature_list is not None:
@@ -420,21 +421,18 @@ class System(NamedObject):
     def processors(self):
         return self._processor_list
 
-    def object2json(self, file_name):
+    def object2json(self, file_name: Path):
         """Generate a JSON file."""
         data = json.dumps(self, default=lambda o: o.__dict__, indent=4)
-        with open(file_name, "w", encoding="utf-8") as f:
-            f.write(data)
+        file_name.write_text(data, encoding="utf-8")
 
-    def json2object(self, json_descriptor="system.json"):
+    def json2object(self, json_descriptor: Path = Path("system.json")):
         """
-        Function to generate an AADLIL system from a JSON file
+        Function to generate an AADLIL system from a JSON file.
 
-        :param string json_descriptor: absolute path to the JSON file for the AADLIL system
+        :param json_descriptor: Path to the JSON file for the AADLIL system
         """
-        # --interpret JSON file--
-        with open(json_descriptor, "r") as read_file:
-            json_object = json.load(read_file)
+        json_object = json.loads(json_descriptor.read_text())
         # --setup object--
         self._name = json_object["_name"]
         self._description = json_object["_description"]
@@ -528,6 +526,5 @@ class System(NamedObject):
 
     def __eq__(self, other):
         if not isinstance(other, System):
-            # Don't attempt to compare against unrelated types
             return NotImplemented
         return self.__dict__ == other.__dict__
