@@ -1,4 +1,4 @@
-rpio package
+rsio package
 ============
 
 Subpackages
@@ -7,17 +7,17 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
-   rpio.client
-   rpio.commands
-   rpio.package
-   rpio.launcher
-   rpio.transformations
-   rpio.utils
+   rsio.client
+   rsio.commands
+   rsio.package
+   rsio.launcher
+   rsio.transformations
+   rsio.utils
 
 Module contents
 ---------------
 
-.. automodule:: rpio
+.. automodule:: rsio
    :members:
    :undoc-members:
    :show-inheritance:

@@ -1,13 +1,13 @@
-rpio.launcher package
+rsio.launcher package
 =====================
 
 Submodules
 ----------
 
-rpio.launcher.launcher module
+rsio.launcher.launcher module
 -------------------------------
 
-.. automodule:: rpio.launcher.launcher
+.. automodule:: rsio.launcher.launcher
    :members:
    :undoc-members:
    :show-inheritance:
@@ -15,7 +15,7 @@ rpio.launcher.launcher module
 Module contents
 ---------------
 
-.. automodule:: rpio.launcher
+.. automodule:: rsio.launcher
    :members:
    :undoc-members:
    :show-inheritance:

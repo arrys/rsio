@@ -2,8 +2,8 @@ import subprocess
 from pathlib import Path
 from subprocess import call
 
-from rpio.utils.auxiliary import parse_launch_xml, execute_commands, extract_commands
-from rpio.utils.constants import Formalism
+from rsio.utils.auxiliary import parse_launch_xml, execute_commands, extract_commands
+from rsio.utils.constants import Formalism
 
 
 def launch(launch_file: Path = Path("launch.xml")):

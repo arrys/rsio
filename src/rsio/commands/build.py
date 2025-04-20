@@ -3,7 +3,7 @@ import sys
 import click
 import subprocess
 
-from rpio.utils.exit import ExitCode
+from rsio.utils.exit import ExitCode
 
 
 @click.group()

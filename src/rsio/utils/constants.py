@@ -50,7 +50,7 @@ class ProjectDirectories: # TODO Make into two classes with one handling the tem
 
 RS_STRUCTURE = ProjectDirectories("package")
 
-VIRTUAL_ENVIRONMENT_NAME = "rpiovenv"
+VIRTUAL_ENVIRONMENT_NAME = "rsiovenv"
 
 
 class Formalism(Enum):

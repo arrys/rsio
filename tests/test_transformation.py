@@ -1,20 +1,20 @@
 from pathlib import Path
 
-import rpio.package.manager
-import rpio.parsers.parsers
-from rpio.metamodels.aadl2il import System
-from rpio.transformations.transformations import robochart2aadlmessages
+import rsio.package.manager
+import rsio.parsers.parsers
+from rsio.metamodels.aadl2il import System
+from rsio.transformations.transformations import robochart2aadlmessages
 from tests.utils import TemporaryTemplatedPath
 
 
 def test_aadl_to_aadlil_transformation():
     """"""
-    package_manager = rpio.package.manager.PackageManager()
+    package_manager = rsio.package.manager.PackageManager()
     # TODO Needs better testing with better package input
     with TemporaryTemplatedPath(Path(__file__).resolve().parent / Path("data/ntnu-package.zip"), Path.cwd() / "package") as package_path:
         package_manager.create(package_path.stem, standalone=True)
         # aadl -> aadlil
-        rpio.parsers.parsers.AadlParser(
+        rsio.parsers.parsers.AadlParser(
             logical_architecture=package_path / "Design/logicalArchitecture.aadl",
             physical_architecture=package_path / "Design/physicalArchitecture.aadl",
             messages=package_path / "Design/messages.aadl"
@@ -25,7 +25,7 @@ def test_aadl_to_aadlil_transformation():
 
 def test_aadl_to_aadlil_transformation_reload():
     with TemporaryTemplatedPath(Path(__file__).resolve().parent / Path("data/aadl_to_aadlil.zip"), Path.cwd() / "package") as package_path:
-        rpio.parsers.parsers.AadlParser(
+        rsio.parsers.parsers.AadlParser(
             logical_architecture= package_path / "logicalArchitecture.aadl",
             physical_architecture= package_path/ "PhysicalArchitecture.aadl",
             messages= package_path / "messages.aadl"

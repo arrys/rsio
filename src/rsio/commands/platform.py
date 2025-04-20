@@ -5,10 +5,10 @@ from pathlib import Path
 import click
 import yaml
 
-from rpio.utils.auxiliary import check_redis, check_mqtt, create_virtual_environment, parse_launch_xml, \
+from rsio.utils.auxiliary import check_redis, check_mqtt, create_virtual_environment, parse_launch_xml, \
     install_requirements, activate_virtual_environment
-from rpio.utils.constants import formalism_from_name, Formalism, deployment_from_name, Deployment
-from rpio.utils.exit import ExitCode
+from rsio.utils.constants import formalism_from_name, Formalism, deployment_from_name, Deployment
+from rsio.utils.exit import ExitCode
 
 
 @click.group()
@@ -59,11 +59,11 @@ def platform(verbose: bool, check: bool, set_flag: bool, name: str, force: str):
             if formalism == Formalism.PYTHON:
                 if type == "virtualenv": # TODO Where is this type coming from?
                     try:
-                        create_virtual_environment(venv_name="rpiovenv")
+                        create_virtual_environment(venv_name="rsiovenv")
                         launch_description = parse_launch_xml(Path("Realization/ManagingSystem/Platform") / name / "launch.xml")
                         for component in launch_description.components:
-                            install_requirements(venv_name="rpiovenv", requirements_file=component.path / "requirements.txt")
-                        activate_virtual_environment(venv_name="rpiovenv")
+                            install_requirements(venv_name="rsiovenv", requirements_file=component.path / "requirements.txt")
+                        activate_virtual_environment(venv_name="rsiovenv")
                     except:
                         logging.error("ERROR: Could not setup virtual environment for running the adaptive application on this platform.")
                         # TODO Should we exit?

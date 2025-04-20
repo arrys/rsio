@@ -4,10 +4,10 @@ from pathlib import Path
 
 import jinja2
 
-from rpio.metamodels.aadl2il import System
+from rsio.metamodels.aadl2il import System
 import datetime
 
-from rpio.utils.auxiliary import get_custom_code, replace_custom_code
+from rsio.utils.auxiliary import get_custom_code, replace_custom_code
 
 
 def _add_requirements_file(file_path: Path = Path("requirements.txt")):

@@ -16,23 +16,23 @@ By installing
 .. code-block:: bash
 
    uv pip install .
-   rpio
+   rsio
 
 Without installing
 ------------------
 
 .. code-block:: bash
 
-   uv run python -m rpio
+   uv run python -m rsio
 
 By building an executable
 -------------------------
 
-To manually build ``rpio.exe``, execute the following command in the terminal:
+To manually build ``rsio.exe``, execute the following command in the terminal:
 
 .. code-block:: bash
 
-   uvx pyinstaller src/rpio/__main__.py --onefile -n rpio
+   uvx pyinstaller src/rsio/__main__.py --onefile -n rsio
 
 Development
 ===========

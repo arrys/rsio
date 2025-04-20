@@ -5,8 +5,8 @@ from pathlib import Path
 import click
 import os
 import subprocess
-from rpio.launcher.launcher import launch, launch_main, launch_docker_compose
-from rpio.utils.exit import ExitCode
+from rsio.launcher.launcher import launch, launch_main, launch_docker_compose
+from rsio.utils.exit import ExitCode
 
 
 @click.group()

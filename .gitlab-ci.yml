@@ -18,7 +18,7 @@ before_script:
   - docker info
   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
 
-test-rpio:
+test-rsio:
   image: ghcr.io/astral-sh/uv:python3.13-alpine
   stage: test
   before_script:
@@ -44,7 +44,7 @@ test-rpio:
       when: manual
       allow_failure: true
 
-release-rpio:
+release-rsio:
   image: ghcr.io/astral-sh/uv:python3.13-alpine
   stage: release
   before_script:
@@ -70,14 +70,14 @@ release-rpio:
       when: manual
       allow_failure: true
 
-release-rpio-exe:
+release-rsio-exe:
   stage: release
   tags:
     - windows
   image: python:3.12-windowsservercore-ltsc2022
   script:
     - powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
-    - uvx pyinstaller src/rpio/__main__.py --onefile -n rpio
+    - uvx pyinstaller src/rsio/__main__.py --onefile -n rsio
   artifacts:
     paths:
       - dist/
@@ -93,7 +93,7 @@ release-rpio-exe:
   script:
     - echo "Uploading executable to release"
   dependencies:
-    - release-rpio-exe
+    - release-rsio-exe
   rules:
     - if: $CI_COMMIT_TAG
     - if: $CI_PIPELINE_SOURCE == "push"

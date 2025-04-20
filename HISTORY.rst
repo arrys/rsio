@@ -51,7 +51,7 @@ robosapiensIO Preview
 ~~~~~~~~~~~~~~~~~~~
 
 * Updated package generation to contain ROBOCHART2AADL transformation.
-* Changed rpio.exe to rpio-cli.exe (integration along with system-level pypi install).
+* Changed rsio.exe to rsio-cli.exe (integration along with system-level pypi install).
 
 
 0.3.21 (2024-12-10)
@@ -78,7 +78,7 @@ robosapiensIO Preview
 ~~~~~~~~~~~~~~~~~~~
 
 * Added deployment strategies {native python, virtual environment python, docker containerization}.
-* Updated rpio CLI ( run, platform, transformations).
+* Updated rsio CLI ( run, platform, transformations).
 * ADDED physical architecture and deployment to AADLIL.
 * robosapiensIO backbone generation (containerized).
 

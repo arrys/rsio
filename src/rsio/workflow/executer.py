@@ -3,7 +3,7 @@ import tkinter as tk
 from time import sleep
 from threading import Thread
 from tkinter import messagebox
-from rpio.utils.constants import StepStatus
+from rsio.utils.constants import StepStatus
 
 
 class ExecutorGui:

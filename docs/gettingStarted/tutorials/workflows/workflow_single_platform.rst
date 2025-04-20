@@ -23,7 +23,7 @@ Prerequisites
 -------------
 
 - **robosapiensio package**: Ensure that the `robosapiensio` python package is installed in your Python, either system-wide or in Python virtual environment. You can follow the `Pypi installation instructions <../../installation/methods/pypi.html>`_.
-- **[optional] rpio CLI**: Ensure that the `rpio` command-line tool is installed and available on your system.
+- **[optional] rsio CLI**: Ensure that the `rsio` command-line tool is installed and available on your system.
 
 Tasks
 -----
@@ -34,9 +34,9 @@ Tasks
 
    .. code-block:: bash
 
-        python -m rpio version
+        python -m rsio version
 
-   If the robosapiensio package is successfully installed, it will return the version of the robosapiensio framework, e.g. `rpio v0.3.24`.
+   If the robosapiensio package is successfully installed, it will return the version of the robosapiensio framework, e.g. `rsio v0.3.24`.
 
 1. **Run the Package Creation Command**
 
@@ -44,14 +44,14 @@ Tasks
 
    .. code-block:: bash
 
-        python -m rpio package --create -n "newPackage" --verbose
+        python -m rsio package --create -n "newPackage" --verbose
 
 
-   Alternatively, creating the package can also be done using the `rpio` command-line tool.
+   Alternatively, creating the package can also be done using the `rsio` command-line tool.
 
    .. code-block:: bash
 
-        rpio-cli package --create -n "newPackage" --verbose
+        rsio-cli package --create -n "newPackage" --verbose
 
 Here's what each argument in the command does:
 
@@ -75,13 +75,13 @@ Here's what each argument in the command does:
 
    .. code-block:: bash
 
-        python -m rpio package --check
+        python -m rsio package --check
 
-   Alternatively, checking the package can also be done using the `rpio` command-line tool.
+   Alternatively, checking the package can also be done using the `rsio` command-line tool.
 
    .. code-block:: bash
 
-     rpio-cli package --check
+     rsio-cli package --check
 
 
 Here's what each argument in the command does:
@@ -120,16 +120,16 @@ Here's what each argument in the command does:
       :width: 400
       :alt: aadl2code workflow
 
-   alternatively, the ``AADL2CODE transformation`` can also be triggered using the `rpio` command-line tool.
+   alternatively, the ``AADL2CODE transformation`` can also be triggered using the `rsio` command-line tool.
    Open a terminal in the folder ``newPackage`` and run:
 
    .. code-block:: bash
 
-     rpio-cli transformation --aadl2code
+     rsio-cli transformation --aadl2code
 
    .. warning::
 
-        rpio-cli aadl2code transformations under construction!
+        rsio-cli aadl2code transformations under construction!
 
    This will also pop-up the same window to run the ``AADL2CODE transformation``.
 
@@ -156,7 +156,7 @@ Here's what each argument in the command does:
 
    .. code-block:: python
 
-        from rpio.client.rpclpy.node import Node
+        from rsio.client.rpclpy.node import Node
         import time
 
         try:
@@ -369,5 +369,5 @@ Here's what each argument in the command does:
 Summary
 -------
 
-You have successfully created a new ``robosapiensIO`` package using the `rpio` command-line tool, added an AADL design, based on the hellow world example and generated code skeletons, configurations and deployment methods.
+You have successfully created a new ``robosapiensIO`` package using the `rsio` command-line tool, added an AADL design, based on the hellow world example and generated code skeletons, configurations and deployment methods.
 This package is now ready for further development. Please check the ``hello world`` example for an implemented example.

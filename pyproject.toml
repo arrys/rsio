@@ -3,7 +3,7 @@ requires = ["setuptools", "wheel", "uv_build"]
 build-backend = "uv_build"
 
 [project]
-name = "rpio"
+name = "rsio"
 version = "0.4.0"
 description = "robosapiensIO - your gateway to trustworthy self-adaptive robotics."
 authors = [
@@ -50,11 +50,12 @@ dev = [
 
 [project.urls]
 source = "https://github.com/BertVanAcker/rpio"
+mirror = "https://git.rys.one/phd/robosapiens/rsio"
 Homepage = "https://rpio.readthedocs.io/en/latest/index.html"
 
 [project.scripts]
-rpio = "rpio.__main__:main"
-hio = "rpio.__main__:main"
+rpio = "rsio.__main__:main"
+rsio = "rsio.__main__:main"
 
 [tool.uv]
 dev-dependencies = [
@@ -68,10 +69,10 @@ extra-index-url = ["https://pip:glpat-aq2VpazxthkoqZ9b3bDz@git.rys.one/api/v4/gr
 include-package-data = true
 
 [tool.setuptools.packages.find]
-include = ["rpio", "rpio.*"]
+include = ["rsio", "rsio.*"]
 
 [tool.setuptools.package-data]
-rpio = [
+rsio = [
     "transformations/templates/*.template",
 	"parsers/robochart/*.tx",
 ]

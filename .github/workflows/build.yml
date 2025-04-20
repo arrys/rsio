@@ -19,7 +19,7 @@ jobs:
       - name: Install uvx
         run: |
           curl -Ls https://astral.sh/uv/install.ps1 | iex
-          uvx create --python 3.10 rpio-env
+          uvx create --python 3.12 rsio-env
 
       - name: Install dependencies from pyproject.toml
         run: |
@@ -29,8 +29,8 @@ jobs:
         uses: sayyid5416/pyinstaller@v1
         with:
           python_ver: '3.10'
-          upload_exe_with_name: 'rpio-windows'
-          options: --onefile, --name "rpio-cli"
+          upload_exe_with_name: 'rsio-windows'
+          options: --onefile, --name "rsio-cli"
 
       - name: Upload binaries to release
         uses: softprops/action-gh-release@v1

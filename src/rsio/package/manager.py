@@ -11,7 +11,7 @@ class PackageManager:
         self._description = description
         self._verbose = verbose
 
-        self._package_name = "rpio_pkg"
+        self._package_name = "rsio_pkg"
         self.standalone_path = ""
         self._directory = Path.cwd()
         self.logger = logging.getLogger(__name__)
@@ -75,7 +75,7 @@ class PackageManager:
         self.logger.debug("DEBUG: Checking if directory is empty...")
         return len(os.listdir(self._directory)) == 0
 
-    def _populate_package(self, name="rpio_pkg", standalone=False):
+    def _populate_package(self, name="rsio_pkg", standalone=False):
         """Function to populate the empty package."""
         self._package_name = name
         if standalone:
@@ -180,8 +180,8 @@ class PackageManager:
             f.write("# * RAP R&D concepts can not be copied and/or distributed without the express\n")
             f.write("# * permission of Bert Van Acker\n")
             f.write("# **********************************************************************************\n")
-            f.write("from rpio.workflow.tasks import *\n")
-            f.write("from rpio.workflow.executer import Executer_GUI\n")
+            f.write("from rsio.workflow.tasks import *\n")
+            f.write("from rsio.workflow.executer import Executer_GUI\n")
             f.write("\n")
             f.write("# 1 . define the tasks\n")
             f.write("tasks = {\n")
@@ -206,8 +206,8 @@ class PackageManager:
             f.write("# * RAP R&D concepts can not be copied and/or distributed without the express\n")
             f.write("# * permission of Bert Van Acker\n")
             f.write("# **********************************************************************************\n")
-            f.write("from rpio.workflow.tasks import *\n")
-            f.write("from rpio.workflow.executer import Executer_GUI\n")
+            f.write("from rsio.workflow.tasks import *\n")
+            f.write("from rsio.workflow.executer import Executer_GUI\n")
             f.write("\n")
             f.write("\n")
             f.write("# 1 . define the tasks\n")

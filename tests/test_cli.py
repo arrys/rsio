@@ -1,7 +1,7 @@
 import logging
 
 from click.testing import CliRunner
-from rpio.__main__ import cli
+from rsio.__main__ import cli
 from tests.utils import TemporaryPath
 
 def test_cli_launch():
@@ -48,4 +48,4 @@ def test_cli_version():
     command = "version"
     runner = CliRunner()
     result = runner.invoke(cli, [command])
-    assert  "rpio v" in result.output
+    assert  "rsio v" in result.output

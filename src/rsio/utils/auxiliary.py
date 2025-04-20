@@ -13,7 +13,7 @@ import redis
 import importlib
 from subprocess import Popen
 
-from rpio.utils.constants import Formalism
+from rsio.utils.constants import Formalism
 
 # Only windoze supports CREATE_NEW_CONSOLE
 try:

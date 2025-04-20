@@ -2,8 +2,8 @@ import logging
 import sys
 
 import click
-from rpio.package.manager import PackageManager
-from rpio.utils.exit import ExitCode
+from rsio.package.manager import PackageManager
+from rsio.utils.exit import ExitCode
 
 
 @click.group()

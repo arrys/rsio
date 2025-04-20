@@ -1,10 +1,10 @@
-rpio.client package
+rsio.client package
 ===================
 
 Subpackages
 -----------
 
-.. automodule:: rpio.client.rpclpy
+.. automodule:: rsio.client.rpclpy
    :members:
    :undoc-members:
    :show-inheritance:
@@ -12,7 +12,7 @@ Subpackages
 Module contents
 ---------------
 
-.. automodule:: rpio.client
+.. automodule:: rsio.client
    :members:
    :undoc-members:
    :show-inheritance:

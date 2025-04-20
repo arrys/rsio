@@ -42,7 +42,7 @@ Tasks
    .. code-block:: bash
 
        git clone https://github.com/BertVanAcker/rpio-backend-docker.git
-       cd rpio-backend-docker
+       cd rsio-backend-docker
 
 2. **Start the services using Docker Compose**
 

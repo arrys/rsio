@@ -2,7 +2,7 @@
 Create robosapiensIO package Tutorial
 =====================================
 
-**Goal:** This tutorial will walk you through the steps create a new 'robosapiensIO' application package using the rpio CLI
+**Goal:** This tutorial will walk you through the steps create a new 'robosapiensIO' application package using the rsio CLI
 
 **Tutorial level:** Beginner
 
@@ -17,12 +17,12 @@ Background
 ----------
 
 To develop on top of the RoboSAPIENS Adaptive Platform, we use standalone application packages that contain everything needed to develop, build, deploy and run the adaptive application.
-Using the rpio command line tool, a new robosapiensIO package can be created, the starting point for each self-adaptive application using the RoboSAPIENS Adaptive Platform.
+Using the rsio command line tool, a new robosapiensIO package can be created, the starting point for each self-adaptive application using the RoboSAPIENS Adaptive Platform.
 
 Prerequisites
 -------------
 
-- **rpio CLI**: Ensure that the `rpio` command-line tool is installed and available on your system.
+- **rsio CLI**: Ensure that the `rsio` command-line tool is installed and available on your system.
 
 Tasks
 -----
@@ -33,7 +33,7 @@ Tasks
 
    .. code-block:: bash
 
-        rpio-cli package --create -n "newPackage" --verbose
+        rsio-cli package --create -n "newPackage" --verbose
 
 Here's what each argument in the command does:
 
@@ -57,7 +57,7 @@ Here's what each argument in the command does:
 
    .. code-block:: bash
 
-     rpio-cli package --check
+     rsio-cli package --check
 
 
 Here's what each argument in the command does:
@@ -67,4 +67,4 @@ Here's what each argument in the command does:
 Summary
 -------
 
-You have successfully created a new ``robosapiensIO`` package using the ``rpio`` CLI. The package is now ready for further development.
+You have successfully created a new ``robosapiensIO`` package using the ``rsio`` CLI. The package is now ready for further development.

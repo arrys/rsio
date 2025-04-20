@@ -17,4 +17,4 @@ def version():
     except FileNotFoundError:
         data = {}
     project_version = data.get("project", {}).get("version", " unknown")
-    click.echo(f"rpio v{project_version}")
+    click.echo(f"rsio v{project_version}")

@@ -1,7 +1,5 @@
 import yaml
 import logging
-from rpio.client.rpclpy.communication_manager import CommunicationManager
-from rpio.client.rpclpy.knowledge import KnowledgeManager
 import json
 import uuid
 from datetime import datetime

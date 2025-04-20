@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from rpio.metamodels.aadl2il import System
+from rsio.metamodels.aadl2il import System
 from tests.utils import TemporaryTemplatedPath
 
 

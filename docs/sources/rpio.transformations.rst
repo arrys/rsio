@@ -1,25 +1,25 @@
-rpio.transformations package
+rsio.transformations package
 ============================
 
 Submodules
 ----------
 
-rpio.transformations.transformations module
+rsio.transformations.transformations module
 -------------------------------------------
 
-.. automodule:: rpio.transformations.transformations
+.. automodule:: rsio.transformations.transformations
    :members:
    :undoc-members:
    :show-inheritance:
 
 ..
-   .. autofunction:: rpio.transformations.transformations.swc2code_py
-   .. autofunction:: rpio.transformations.transformations.message2code_py
+   .. autofunction:: rsio.transformations.transformations.swc2code_py
+   .. autofunction:: rsio.transformations.transformations.message2code_py
 
 Module contents
 ---------------
 
-.. automodule:: rpio.transformations
+.. automodule:: rsio.transformations
    :members:
    :undoc-members:
    :show-inheritance:

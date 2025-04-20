@@ -4,8 +4,8 @@ import sys
 from pathlib import Path
 from textx import metamodel_from_file
 
-from rpio.metamodels.aadl2il import System, Process, InPort, OutPort, Thread, Data, Message
-from rpio.utils.exit import ExitCode
+from rsio.metamodels.aadl2il import System, Process, InPort, OutPort, Thread, Data, Message
+from rsio.utils.exit import ExitCode
 
 
 class AadlParser:

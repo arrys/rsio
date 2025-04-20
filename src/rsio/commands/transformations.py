@@ -3,9 +3,9 @@ from pathlib import Path
 
 import click
 
-from rpio.metamodels.aadl2il import System
-from rpio.parsers.parsers import AadlParser
-from rpio.transformations.transformations import message2code_py, swc2code_py, swc2launch, swc2main, swc2docker_compose, \
+from rsio.metamodels.aadl2il import System
+from rsio.parsers.parsers import AadlParser
+from rsio.transformations.transformations import message2code_py, swc2code_py, swc2launch, swc2main, swc2docker_compose, \
     add_backbone_config, update_robosapiens_io_ini
 
 

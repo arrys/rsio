@@ -1,4 +1,4 @@
-.. _what_is_rpio:
+.. _what_is_rsio:
 
 What is robosapiensIO?
 ======================

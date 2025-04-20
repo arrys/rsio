@@ -1,5 +1,5 @@
 from pathlib import Path
-from rpio.launcher.launcher import launch
+from rsio.launcher.launcher import launch
 from tests.utils import TemporaryTemplatedPath
 
 

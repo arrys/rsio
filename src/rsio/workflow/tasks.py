@@ -1,7 +1,7 @@
-from rpio.metamodels.aadl2il import System
-from rpio.parsers.parsers import RobochartParser
-from rpio.transformations.transformations import swc2code_py, message2code_py, swc2launch, swc2main, swc2docker_compose, update_robosapiens_io_ini, add_backbone_config, robochart2aadlmessages, robochart2logical
-from rpio.utils.auxiliary import *
+from rsio.metamodels.aadl2il import System
+from rsio.parsers.parsers import RobochartParser
+from rsio.transformations.transformations import swc2code_py, message2code_py, swc2launch, swc2main, swc2docker_compose, update_robosapiens_io_ini, add_backbone_config, robochart2aadlmessages, robochart2logical
+from rsio.utils.auxiliary import *
 
 import configparser
 import os
@@ -10,7 +10,7 @@ import os
 BASE_DIR = os.getcwd()
 
 DESIGN_DIR = os.path.join(BASE_DIR, "Design", "design.json")
-RPIO_INI_DIR = os.path.join(BASE_DIR,"robosapiensIO.ini")
+RSIO_INI_DIR = os.path.join(BASE_DIR,"robosapiensIO.ini")
 
 MESSAGES_DIR = os.path.join(BASE_DIR, "Realization", "Messages")
 NODES_DIR = os.path.join(BASE_DIR,  "Realization", "Nodes")
@@ -31,7 +31,7 @@ def t_load_design():
     # load name and description from ini
     config = configparser.ConfigParser()
     try:
-        config.read(RPIO_INI_DIR)
+        config.read(RSIO_INI_DIR)
         name = config['RoboSAPIENSIO']['name']
         description = config['RoboSAPIENSIO']['description']
         try:
@@ -78,7 +78,7 @@ def t_generate_main():
     try:
         config = configparser.ConfigParser()
         # use the constant for the ini file
-        config.read(RPIO_INI_DIR)
+        config.read(RSIO_INI_DIR)
         package_name = config['PACKAGE']['name']
         prefix = config['PACKAGE']['prefix']
         design = t_load_design()
@@ -104,12 +104,12 @@ def t_generate_docker():
 def t_update_robosapiens_io_ini():
     try:
         config = configparser.ConfigParser()
-        config.read(RPIO_INI_DIR)
+        config.read(RSIO_INI_DIR)
         package_name = config['PACKAGE']['name']
         prefix = config['PACKAGE']['prefix']
         design = t_load_design()
         # update the ini file using the directory of RPIO_INI_DIR instead of a literal "../"
-        update_robosapiens_io_ini(system=design, package=package_name, prefix=prefix, path=os.path.dirname(RPIO_INI_DIR))
+        update_robosapiens_io_ini(system=design, package=package_name, prefix=prefix, path=os.path.dirname(RSIO_INI_DIR))
         return True
     except:
         print("Could not update robosapiensIO.ini")
