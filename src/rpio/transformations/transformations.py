@@ -1,219 +1,184 @@
 from os import mkdir
-from os.path import exists, dirname, join, isfile
+from os.path import exists, dirname, join
+from pathlib import Path
+
 import jinja2
-from rpio.utils.auxiliary import *
+
+from rpio.metamodels.aadl2il import System
 import datetime
 
+from rpio.utils.auxiliary import get_custom_code, replace_custom_code
 
-def _add_requirements_file(file="requirements.txt", path=None):
+
+def _add_requirements_file(file_path: Path = Path("requirements.txt")):
     """Function to add a requirement.txt to the provided path."""
-    f = open(path + "/" + file, "a")
-    f.write("robosapiensio==0.3.19\n")
-    f.write("jsonpickle==3.3.0\n")
-    f.write("paho-mqtt==2.1.0\n")
-    f.write("PyYAML==6.0.2\n")
-    f.close()
+    with file_path.open("a", encoding="utf-8") as f:
+        f.write(
+            "robosapiensio==0.3.19\n"
+            "jsonpickle==3.3.0\n"
+            "paho-mqtt==2.1.0\n"
+            "PyYAML==6.0.2\n"
+        )
 
 
-def _add_docker_file(file="Dockerfile", cmp_name="", path=None):
-    """Function to add a requirement.txt to the provided path."""
+def _add_docker_file(file: str = "Dockerfile", cmp_name: str = "", path: Path | None = None):
+    """Function to add a Dockerfile to the provided path."""
+    path = Path(path) if path is not None else Path(".")
+    dockerfile_path = path / file
+    # TODO Move this to template
+    content = f"""FROM python:3.10
+ENV PYTHONUNBUFFERED 1
 
-    f = open(path + "/" + file, "a")
+ADD . c:/src/app
+WORKDIR c:/src/app
+ENV PYTHONPATH c:/src/app:$PYTHONPATH
 
-    # --- custom file content ---
-    f.write("FROM python:3.10\n")
-    f.write("ENV PYTHONUNBUFFERED 1\n")
-    f.write("\n")
-    f.write("ADD . c:/src/app\n")
-    f.write("WORKDIR c:/src/app\n")
-    f.write("ENV PYTHONPATH c:/src/app:$PYTHONPATH\n")
-    f.write("\n")
-    f.write("COPY requirements.txt ./\n")
-    f.write("RUN pip3 install --no-cache-dir -r requirements.txt\n")
-    f.write("\n")
-    f.write("COPY config.yaml ./\n")
-    f.write("COPY messages.py ./\n")
-    f.write("COPY . .\n")
-    f.write("\n")
-    f.write('CMD ["python3", "' + cmp_name + '.py"]\n')
-    f.write("\n")
+COPY requirements.txt ./
+RUN pip3 install --no-cache-dir -r requirements.txt
 
-    f.close()
+COPY config.yaml ./
+COPY messages.py ./
+COPY . .
+
+CMD ["python3", "{cmp_name}.py"]
+
+"""
+    dockerfile_path.write_text(content)
 
 
-def swc2code_py(system=None, path="output/generated"):
+def swc2code_py(system: System | None = None, path: Path = Path("output/generated")):
     """
     Generate Python code from the system modeled within the AADL Intermediate Language (AADLIL).
 
     :param system: Adaptive system model within AADLIL, defaults to None
-    :type system: object, optional
-    :param path: Output directory for the generated code, defaults to "output/generated/messages"
-    :type path: str, optional
-    :return: None
-    :rtype: None
+    :param path: Output directory for the generated code, defaults to "output/generated"
     """
-
-    if not exists(path):
-        mkdir(path)
+    path.mkdir(parents=True, exist_ok=True)
 
     # Initialize the Templates engine.
-    this_folder = dirname(__file__)
+    this_folder = Path(__file__).resolve().parent
     jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(this_folder), trim_blocks=True, lstrip_blocks=True)
 
-    # Load the template
-    template = jinja_env.get_template('templates/swc_py.template')
-    template_config = jinja_env.get_template('templates/swc_config.template')
-    template_messages = jinja_env.get_template('templates/messages_py.template')
+    # Load templates
+    template = jinja_env.get_template("templates/swc_py.template")
+    template_config = jinja_env.get_template("templates/swc_config.template")
+    template_messages = jinja_env.get_template("templates/messages_py.template")
 
-    # Extract all processes from AADL system model
     managing_system = system.systems[0]
     for process in managing_system.processes:
+        swc_folder = path / process.name
+        swc_folder.mkdir(parents=True, exist_ok=True)
 
-        # 0. Generate folder for each AADL process
-        swc_folder = path + "/" + process.name
-        if not exists(swc_folder):
-            mkdir(swc_folder)
+        swc_file_path = swc_folder / f"{process.name}.py"
+        swc_exists = swc_file_path.is_file()
 
-        # 1. Check if SWC file exists
-        swc_exists = isfile(join(swc_folder, process.name + ".py"))
-
-        # 2. If swc exists, store custom code added by the user
         if swc_exists:
-            with open(join(swc_folder, process.name + ".py"), "r") as swc_file:
-                content = swc_file.read()
-                cc_include = get_custom_code(text=content, tag="include")
-                cc_code = get_custom_code(text=content, tag="code")
-                cc_init = get_custom_code(text=content, tag="init")
-                cc_thread_code = []
-                for thread in process.threads:
-                    _cc_code = get_custom_code(text=content, tag="code_" + thread.name)
-                    cc_thread_code.append(_cc_code)
+            content = swc_file_path.read_text()
+            cc_include = get_custom_code(text=content, tag="include")
+            cc_code = get_custom_code(text=content, tag="code")
+            cc_init = get_custom_code(text=content, tag="init")
+            cc_thread_code = [
+                get_custom_code(text=content, tag=f"code_{thread.name}")
+                for thread in process.threads
+            ]
 
-        # 2. Generate code from AADL processes
-        with open(join(swc_folder, process.name + ".py"), 'w') as f:
-            f.write(template.render(swc=process))
+        # Generate new SWC file
+        swc_file_path.write_text(template.render(swc=process))
 
-        # 3. If swc exists, replace custom code in generated template
+        # If SWC existed, restore custom code
         if swc_exists:
-            with open(join(swc_folder, process.name + ".py"), "r") as swc_file:
-                content = swc_file.read()
-                content = replace_custom_code(content, tag="include", replacement=cc_include)
-                content = replace_custom_code(content, tag="code", replacement=cc_code)
-                content = replace_custom_code(content, tag="init", replacement=cc_init)
-                for i in range(0, len(process.threads), 1):
-                    content = replace_custom_code(content, tag="code_" + process.threads[i].name, replacement=cc_thread_code[i])
+            content = swc_file_path.read_text()
+            content = replace_custom_code(content, tag="include", replacement=cc_include)
+            content = replace_custom_code(content, tag="code", replacement=cc_code)
+            content = replace_custom_code(content, tag="init", replacement=cc_init)
+            for i, thread in enumerate(process.threads):
+                content = replace_custom_code(content, tag=f"code_{thread.name}", replacement=cc_thread_code[i])
+            swc_file_path.write_text(content)
 
-            with open(join(swc_folder, process.name + ".py"), "w") as swc_file:
-                swc_file.write(content)
-
-        # 4. Generate config.yaml file from AADL processes
-
-        # determine the IP address of the platform running the process
-        _ip = "localhost"
+        # Generate config.yaml
+        ip = "localhost"
         for processor in managing_system.processors:
             if processor.runs_rap_backbone:
-                _ip = processor.ip
+                ip = processor.ip
+        (swc_folder / "config.yaml").write_text(template_config.render(swc=process, IP=ip))
 
-        with open(join(swc_folder, "config.yaml"), 'w') as f:
-            f.write(template_config.render(swc=process, IP=_ip))
+        # Generate messages.py
+        (swc_folder / "messages.py").write_text(template_messages.render(messages=system.messages))
 
-        # 5. Generate messages for standalone components
-        with open(join(swc_folder, "messages.py"), 'w') as f:
-            f.write(template_messages.render(messages=system.messages))
-
-        # 6. Add requirements.txt if swc does not exist
+        # Add requirements.txt and Dockerfile if not present before
         if not swc_exists:
             _add_requirements_file(path=swc_folder)
-
-        # 7. Add Docker file if swc does not exist
-        if not swc_exists:
             _add_docker_file(cmp_name=process.name, path=swc_folder)
 
 
-def message2code_py(system=None, path="output/generated/messages"):
+def message2code_py(system: System | None = None, path: Path = Path("output/generated/messages")):
     """
     Generate Python code from messages modeled within the AADL Intermediate Language (AADLIL).
 
     :param system: Adaptive system model within AADLIL, defaults to None
-    :type system: object, optional
     :param path: Output directory for the generated code, defaults to "output/generated/messages"
-    :type path: str, optional
-    :return: None
-    :rtype: None
     """
+    # Ensure output directory exists
+    path.mkdir(parents=True, exist_ok=True)
 
-    if not exists(path):
-        mkdir(path)
-
-    # Initialize the Templates engine.
-    this_folder = dirname(__file__)
+    # Initialize the Templates engine
+    this_folder = Path(__file__).resolve().parent
     jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(this_folder), trim_blocks=True, lstrip_blocks=True)
 
     # Load the template
-    template = jinja_env.get_template('templates/messages_py.template')
+    template = jinja_env.get_template("templates/messages_py.template")
 
-    # Extract all processes from AADL system model
-    with open(join(path, "messages.py"), 'w') as f:
-        f.write(template.render(messages=system.messages))
+    # Write the rendered template
+    output_file = path / "messages.py"
+    output_file.write_text(template.render(messages=system.messages))
 
 
-def swc2launch(system=None, path="output/generated/launch"):
+def swc2launch(system: System | None = None, path: Path = Path("output/generated/launch")):
     """
     Generate launch files for the given system deployment.
 
     :param system: Managing or managed system model within AADLIL, defaults to None
-    :type system: object, optional
     :param path: Output directory for the generated launch files, defaults to "output/generated/launch"
-    :type path: str, optional
-    :return: None
-    :rtype: None
     """
-    if not exists(path):
-        mkdir(path)
+    path.mkdir(parents=True, exist_ok=True)
 
     # Initialize the Templates engine.
-    this_folder = dirname(__file__)
+    this_folder = Path(__file__).resolve().parent
     jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(this_folder), trim_blocks=True, lstrip_blocks=True)
 
     # Load the template
-    template = jinja_env.get_template('templates/swc_launch.template')
+    template = jinja_env.get_template("templates/swc_launch.template")
 
     # Extract all processors of the managing system
     for processor in system.processors:
-        processor_path = join(path, processor.name)
-        if not exists(processor_path):
-            mkdir(processor_path)
+        processor_path = path / processor.name
+        processor_path.mkdir(parents=True, exist_ok=True)
 
-        with open(join(processor_path, "launch.xml"), 'w') as f:
-            f.write(template.render(processor=processor))
+        launch_file = processor_path / "launch.xml"
+        launch_file.write_text(template.render(processor=processor))
 
 
-def swc2main(system=None, package="", prefix=None, path="output/generated/main"):
+def swc2main(system: System | None = None, package: str = "", prefix = None, path: Path = Path("output/generated/main")):
     """
     Generate main files for the given system deployment.
 
     :param system: Managing or managed system model within AADLIL, defaults to None
-    :type system: object, optional
     :param package: Package name, defaults to an empty string
-    :type package: str, optional
-    :param path: Output directory for the generated main files, defaults to "output/generated/launch"
-    :type path: str, optional
-    :return: None
-    :rtype: None
+    :param path: Output directory for the generated main files, defaults to "output/generated/main"
     """
-    if not exists(path):
-        mkdir(path)
+    path.mkdir(parents=True, exist_ok=True)
 
     # Initialize the Templates engine.
-    this_folder = dirname(__file__)
+    this_folder = Path(__file__).parent
     jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(this_folder), trim_blocks=True, lstrip_blocks=True)
 
     # Load the template
-    template = jinja_env.get_template('templates/swc_launch_main.template')
+    template = jinja_env.get_template("templates/swc_launch_main.template")
 
     # Extract all processors of the managing system
     for processor in system.processors:
-        with open(join(path, "main_" + processor.name + ".py"), 'w') as f:
+        main_file = path / f"main_{processor.name}.py"
+        with main_file.open("w") as f:
             f.write(template.render(processor=processor, package=package, prefix=prefix))
 
 
@@ -237,43 +202,38 @@ def robochart2aadlmessages(maplek=None, path="output/generated/messages"):
     jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(this_folder), trim_blocks=True, lstrip_blocks=True)
 
     # Load the template
-    template = jinja_env.get_template('templates/aadl_messages.template')
+    template = jinja_env.get_template("templates/aadl_messages.template")
 
     # Extract all processes from AADL system model
-    with open(join(path, "messages.aadl"), 'w') as f:
+    with open(join(path, "messages.aadl"), "w") as f:
         f.write(template.render(types=maplek.types))
 
 
-def robochart2logical(parsed=None, path="output/generated/LogicalArchitecture"):
+def robochart2logical(parsed, path: Path=Path("output/generated/LogicalArchitecture")):
     """
     Generate AADL logical architecture from RoboChart models.
 
     :param path: Path to the output folder, defaults to "output/generated/messages"
-    :type path: str, optional
-    :return: None
-    :rtype: None
     """
+    path.mkdir(parents=True, exist_ok=True)
 
-    if not exists(path):
-        mkdir(path)
 
     # Initialize the Templates engine.
-    this_folder = dirname(__file__)
+    this_folder = Path(__file__).parent
     jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(this_folder), trim_blocks=True, lstrip_blocks=True)
 
     # Load the template
-    template = jinja_env.get_template('templates/aadl_logical.template')
+    template = jinja_env.get_template("templates/aadl_logical.template")
 
     # Prepare the parsed models for code generation
     elements = [parsed.monitor_model, parsed.analysis_model, parsed.plan_model, parsed.legitimate_model,
                 parsed.execute_model, parsed.knowledge_model]
 
     # Extract all processes from AADL system model
-    with open(join(path, "LogicalArchitecture.aadl"), 'w') as f:
-        f.write(template.render(elements=elements))
+    (path / "LogicalArchitecture.aadl").write_text(template.render(elements=elements))
 
 
-def swc2docker_compose(system=None, path="output/generated/docker"):
+def swc2docker_compose(system: System | None = None, path: Path = Path("output/generated/docker")):
     """
     Generate Docker Compose for the given system deployment.
 
@@ -281,92 +241,74 @@ def swc2docker_compose(system=None, path="output/generated/docker"):
     :type system: object, optional
     :param path: Path to the output directory, defaults to "output/generated/launch"
     :type path: str, optional
-    :return: None
-    :rtype: None
     """
-    if not exists(path):
-        mkdir(path)
+    path.mkdir(parents=True, exist_ok=True)
 
     # Initialize the Templates engine.
-    this_folder = dirname(__file__)
+    this_folder = Path(__file__).parent
     jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(this_folder), trim_blocks=True, lstrip_blocks=True)
 
     # Load the template
-    template = jinja_env.get_template('templates/swc_docker_compose.template')
+    template = jinja_env.get_template("templates/swc_docker_compose.template")
 
     # Extract all processors of the managing system
     for processor in system.processors:
-
-        processor_path = join(path, processor.name)
-        if not exists(processor_path):
-            mkdir(processor_path)
-
-        with open(join(processor_path, "compose.yaml"), 'w') as f:
-            f.write(template.render(processor=processor))
+        processor_path = path / processor.name
+        processor_path.mkdir(parents=True, exist_ok=True)
+        compose_file = processor_path / "compose.yaml"
+        compose_file.write_text(template.render(processor=processor))
 
 
-def update_robosapiens_io_ini(system=None, package="", prefix="", path="output/generated/docker"):
-    """
-    Update the RoboSapiensIO configuration.
+def update_robosapiens_io_ini(system: System | None = None, package: str = "", prefix: str = "", path: Path = Path.cwd()):
+    """Update the RoboSapiensIO configuration."""
+    path.mkdir(parents=True, exist_ok=True)
 
-    :param system: Managing or managed system model within AADLIL, either managing or managed system, defaults to None
-    :type system: object, optional
-    :param path: Path to the robosapiensIO.ini file, defaults to "output/generated/launch"
-    :type path: str, optional
-    :return: None
-    :rtype: None
-    """
-    if path is None:
-        path = os.getcwd()
-    else:
-        if not exists(path):
-            mkdir(path)
-
-    # Initialize the Templates engine.
-    this_folder = dirname(__file__)
-    jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(this_folder), trim_blocks=True, lstrip_blocks=True)
+    # Initialize the Templates engine
+    this_folder = Path(__file__).parent
+    jinja_env = jinja2.Environment(
+        loader=jinja2.FileSystemLoader(this_folder),
+        trim_blocks=True,
+        lstrip_blocks=True
+    )
 
     # Load the template
-    template = jinja_env.get_template('templates/robosapiensIO_ini.template')
+    template = jinja_env.get_template("templates/robosapiensIO_ini.template")
 
-    current_timestamp = datetime.datetime.now()
-    formatted_timestamp = current_timestamp.strftime('%Y-%m-%d %H:%M:%S')
-    managing_system = system.systems[0]
-    managed_system = system.systems[1]
+    formatted_timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    # Write to .ini file
+    (path / "robosapiensIO.ini").write_text(
+        template.render(
+            system=system,
+            package=package,
+            prefix=prefix,
+            timestamp=formatted_timestamp,
+            managingSystem=system.systems[0],
+            managedSystem=system.systems[1]
+        )
+    )
 
-    with open(join(path, "robosapiensIO.ini"), 'w') as f:
-        f.write(template.render(system=system, package=package, prefix=prefix, timestamp=formatted_timestamp.__str__(),
-                                managingSystem=managing_system, managedSystem=managed_system))
 
-
-def add_backbone_config(system=None, path='Resources'):
+def add_backbone_config(system: System | None = None, path : Path = Path.cwd()):
     """
     Add the RoboSAPIENS Adaptive Platform backbone configuration to the repository.
 
     :param system: Managing or managed system model within AADLIL, either managing or managed system, defaults to None
-    :type system: object, optional
     :param path: Path to the robosapiensIO.ini file, defaults to "Resources"
-    :type path: str, optional
-    :return: None
-    :rtype: None
     """
+    path.mkdir(parents=True, exist_ok=True)
 
-    if path is None:
-        path = os.getcwd()
-    else:
-        if not exists(path):
-            mkdir(path)
-
-    # Initialize the Templates engine.
-    this_folder = dirname(__file__)
-    jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(this_folder), trim_blocks=True, lstrip_blocks=True)
+    # Initialize the Templates engine
+    this_folder = Path(__file__).parent
+    jinja_env = jinja2.Environment(
+        loader=jinja2.FileSystemLoader(this_folder),
+        trim_blocks=True,
+        lstrip_blocks=True,
+    )
 
     # Load the templates
-    template_mqtt = jinja_env.get_template('templates/mqtt_config.template')
-    template_redis = jinja_env.get_template('templates/redis_config.template')
+    template_mqtt = jinja_env.get_template("templates/mqtt_config.template")
+    template_redis = jinja_env.get_template("templates/redis_config.template")
 
-    with open(join(path, "acl.conf"), 'w') as f:
-        f.write(template_mqtt.render(system=system))
-
-    with open(join(path, "redis.conf"), 'w') as f:
-        f.write(template_redis.render(system=system))
+    # Write configuration files
+    (path / "acl.conf").write_text(template_mqtt.render(system=system))
+    (path / "redis.conf").write_text(template_redis.render(system=system))

@@ -24,16 +24,19 @@ def package(verbose: bool, check: bool, create: bool, name: str):
         logger.setLevel(logging.DEBUG)
     logging.debug("Checking the standalone robosapiensIO application package")
 
-    # TODO fix this as it's weird to have two flag with elifs
-    if check:
-        m = PackageManager(verbose=verbose)
-        is_valid = m.check(path=None)
+    if check and create:
+        raise click.UsageError("Options --check and --create are mutually exclusive.")
 
-        if is_valid:
+    package_manager = PackageManager(verbose=verbose)
+
+    if create:
+        package_manager.create(name=name, standalone=True)
+        sys.exit(ExitCode.SUCCESS)
+
+    if check:
+        if package_manager.check():
             logging.info("SUCCESS - Valid robosapiensIO application package")
         else:
             logging.info("FAIL - Invalid robosapiensIO application package")
         sys.exit(ExitCode.SUCCESS) # SUCCESS because the app performs successfully
-    elif create:
-        m = PackageManager(verbose=verbose)
-        m.create(name=name, standalone=True, path=None)
+

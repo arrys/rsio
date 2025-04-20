@@ -1,8 +1,10 @@
 import logging
+from pathlib import Path
+
 import click
 
-from rpio.metamodels.aadl2_IL import System
-from rpio.parsers.parsers import AADL_parser
+from rpio.metamodels.aadl2il import System
+from rpio.parsers.parsers import AadlParser
 from rpio.transformations.transformations import message2code_py, swc2code_py, swc2launch, swc2main, swc2docker_compose, \
     add_backbone_config, update_robosapiens_io_ini
 
@@ -33,10 +35,10 @@ def transformation(verbose: bool, roboarch2aadl: bool, aadl2aadlil: bool, aadlil
 
         # 1. Setup the AADL parser
         try:
-            parser = AADL_parser(
-                logical_architecture="Design/logicalArchitecture.aadl",
-                physical_architecture="Design/physicalArchitecture.aadl",
-                messages="Design/messages.aadl"
+            parser = AadlParser(
+                logical_architecture=Path("Design/logicalArchitecture.aadl"),
+                physical_architecture=Path("Design/physicalArchitecture.aadl"),
+                messages=Path("Design/messages.aadl")
             )
         except:
             parser = None
@@ -51,7 +53,7 @@ def transformation(verbose: bool, roboarch2aadl: bool, aadl2aadlil: bool, aadlil
 
         # 3. dump to aadlil json
         try:
-            s.object2json(fileName="Design/design.json")
+            s.object2json(Path("Design/design.json"))
         except:
             logger.error("ERROR: AADLIL model could not be generated.")
 
@@ -60,47 +62,47 @@ def transformation(verbose: bool, roboarch2aadl: bool, aadl2aadlil: bool, aadlil
 
         # 1. LOAD THE AADL INTERMEDIATE LANGUAGE
         try:
-            design = System(name="adaptiveSystem", description="Design generated from the AADLIL file", json_descriptor="Design/design.json")
+            design = System(name="adaptiveSystem", description="Design generated from the AADLIL file", json_descriptor=Path("Design/design.json"))
         except:
             design = None
             logger.error("ERROR: The AADIL file could not be loaded, please check if it exists (Design/design.json).")
 
         # 2. GENERATE CUSTOM MESSAGES FROM AADL INTERMEDIATE LANGUAGE
         try:
-            message2code_py(system=design, path="Realization/ManagingSystem/Messages")
-            message2code_py(system=design, path="Realization/ManagedSystem/Messages")
+            message2code_py(design, Path("Realization/ManagingSystem/Messages"))
+            message2code_py(design, Path("Realization/ManagedSystem/Messages"))
         except:
             logger.error("ERROR: Messages could not be generated, no design loaded.")
 
         # 3. GENERATE SWC CODE FROM AADL INTERMEDIATE LANGUAGE
         try:
-            swc2code_py(system=design, path="Realization/ManagingSystem/Nodes")
+            swc2code_py(design, Path("Realization/ManagingSystem/Nodes"))
         except:
             logger.error("ERROR: Code could not be generated, no design loaded.")
 
         # 3. GENERATE PLATFORM LAUNCH FILES
         try:
-            swc2launch(system=design.systems[0], path="Realization/ManagingSystem/Platform")
-            swc2launch(system=design.systems[1], path="Realization/ManagedSystem/Platform")
+            swc2launch(design.systems[0], Path("Realization/ManagingSystem/Platform"))
+            swc2launch(design.systems[1], Path("Realization/ManagedSystem/Platform"))
         except:
             logger.error("ERROR: Platform-specific launch file could not be generated, no design loaded.")
 
         # 3. GENERATE PLATFORM MAIN FILES
         try:
-            current_folder_path, current_folder_name = os.path.split(os.getcwd())
-            swc2main(system=design.systems[0], package=current_folder_name, prefix=None, path="Resources")
+            current_folder_name = Path.cwd().name
+            swc2main(system=design.systems[0], package=current_folder_name, prefix=None, path=Path("Resources"))
         except:
             logger.error("ERROR: Platform(s) main file could not be generated.")
 
         # 4. GENERATE PLATFORM DOCKER COMPOSE
         try:
-            swc2docker_compose(system=design.systems[0], path="Realization/ManagingSystem/Platform")
-            add_backbone_config(system=design, path="Resources")
+            swc2docker_compose(system=design.systems[0], path=Path("Realization/ManagingSystem/Platform"))
+            add_backbone_config(system=design, path=Path("Resources"))
         except:
             logger.error("ERROR: Platform(s) docker compose file could not be generated.")
 
         # 8. update the roboSapiensIO.ini file based on the generation
         try:
-            update_robosapiens_io_ini(system=design, path=None)
+            update_robosapiens_io_ini(system=design)
         except:
             logger.error("ERROR: robosapiensIO.ini file could not be updated.")

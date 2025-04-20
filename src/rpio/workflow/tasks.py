@@ -1,4 +1,4 @@
-from rpio.metamodels.aadl2_IL import System
+from rpio.metamodels.aadl2il import System
 from rpio.parsers.parsers import RobochartParser
 from rpio.transformations.transformations import swc2code_py, message2code_py, swc2launch, swc2main, swc2docker_compose, update_robosapiens_io_ini, add_backbone_config, robochart2aadlmessages, robochart2logical
 from rpio.utils.auxiliary import *

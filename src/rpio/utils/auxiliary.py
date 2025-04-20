@@ -5,11 +5,16 @@ import io
 import zipfile
 import subprocess
 import xml.etree.ElementTree as ET
+from pathlib import Path
+
 import paho.mqtt.client as mqtt
 import yaml
 import redis
 import importlib
 from subprocess import Popen
+
+from rpio.utils.constants import Formalism
+
 # Only windoze supports CREATE_NEW_CONSOLE
 try:
     from subprocess import CREATE_NEW_CONSOLE
@@ -66,36 +71,34 @@ def extract_commands(launch_description):
 
 
 class Component:
-    def __init__(self, name, path, formalism):
+    def __init__(self, name: str, path: Path, formalism: Formalism):
         self.name = name
         self.path = path
-        if formalism == "python":
-            self.cmd = ["python", name + ".py"]
-        if formalism == "c++":
-            self.cmd = [path + "/" + name + ".exe"]
+        if formalism == Formalism.PYTHON:
+            self.cmd = ["python", f"{name}.py"]
+        if formalism == Formalism.CPP:
+            self.cmd = [str(path / f"{name}.exe")]
 
     def __repr__(self):
         return f"Swc(name='{self.name}', cmd='{self.cmd}')"
 
 
 class Launch:
-    def __init__(self, nodes):
+    def __init__(self, nodes: list[Component]):
         self.components = nodes
 
     def __repr__(self):
         return f"Launch(components={self.components})"
 
 
-def parse_launch_xml(file, formalism="python"):
-    with open(file, "r") as f:
-        data = f.read()
-        root = ET.fromstring(data)
-        components = []
-        for node_elem in root.findall("node"):
-            name = node_elem.get("name")
-            path = node_elem.get("path")
-            components.append(Component(name, path, formalism))
-        return Launch(components)
+def parse_launch_xml(file_path: Path, formalism: Formalism=Formalism.PYTHON):
+    root = ET.fromstring(file_path.read_text())
+    components = []
+    for node_elem in root.findall("node"):
+        name = node_elem.get("name")
+        path = node_elem.get("path")
+        components.append(Component(name, path, formalism))
+    return Launch(components)
 
 
 def decompress_folder(data, output_path):
@@ -122,10 +125,9 @@ def get_activate_script_path(venv_name):
     return os.path.join(venv_name, "Scripts", "activate.bat") if os.name == "nt" else os.path.join(venv_name, "bin", "activate")
 
 
-def get_pip_path(venv_name):
+def get_pip_path(venv_name: str) -> Path:
     """Returns the path to the pip executable based on the operating system."""
-    return os.path.join(venv_name, "Scripts", "pip.exe") if os.name == "nt" else os.path.join(venv_name, "bin", "pip")
-
+    return Path(venv_name) / "Scripts" / "pip.exe" if os.name == "nt" else Path(venv_name) / "bin" / "pip"
 
 def create_virtual_environment(venv_name="venv"):
     """
@@ -179,7 +181,7 @@ def deactivate_virtual_environment():
         subprocess.run("deactivate", shell=True, executable="/bin/bash")
 
 
-def install_requirements(venv_name="venv", requirements_file="requirements.txt"):
+def install_requirements(venv_name: str | None = "venv", requirements_file: Path = Path("requirements.txt")):
     """
     Installs packages listed in a requirements file into the virtual or native environment.
 
@@ -188,26 +190,25 @@ def install_requirements(venv_name="venv", requirements_file="requirements.txt")
     """
     if venv_name is not None:
         pip_path = get_pip_path(venv_name)
-        if not os.path.exists(pip_path):
+        if not pip_path.exists():
             print(f"Pip not found in the virtual environment '{venv_name}'. Make sure the virtual environment is created.")
             return
     else:
         pip_path = "pip"
-        print(f"Using pip of native python environment.")
+        print("Using pip of native python environment.")
 
-    if not os.path.isfile(requirements_file):
+    if not requirements_file.is_file():
         print(f"Requirements file '{requirements_file}' not found.")
         return
 
     try:
-        # Install requirements
-        subprocess.run([pip_path, "install", "-r", requirements_file], check=True)
+        subprocess.run([pip_path, "install", "-r", str(requirements_file)], check=True)
         print(f"Packages from '{requirements_file}' installed successfully.")
     except subprocess.CalledProcessError as e:
         print(f"Error occurred while installing requirements: {e}")
 
 
-def get_python_version():
+def get_python_version() -> str | None:
     """
     Checks and returns the current Python version installed on the system.
 
@@ -217,17 +218,15 @@ def get_python_version():
     try:
         # Run the command to get the Python version
         result = subprocess.run(["python", "--version"], capture_output=True, text=True, check=True)
-
         # Output is usually in the form of "Python X.Y.Z\n"
         version = result.stdout.strip()
-
         return version
     except subprocess.CalledProcessError as e:
         print(f"Error occurred while checking Python version: {e}")
         return None
 
 
-def build_docker_image(module_path, image_name):
+def build_docker_image(module_path: str, image_name: str):
     """
     Build a Docker image for a Python module at a given path.
 

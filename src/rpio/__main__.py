@@ -1,5 +1,3 @@
-import logging
-import arklog
 import click
 
 from rpio.commands.version import version_commands

@@ -20,13 +20,11 @@ def build(verbose: bool):
     if verbose:
         logger.setLevel(logging.DEBUG)
     logging.debug("Build command under construction")
-
     run_file = "Realization/ManagingSystem/Actions/build.py"
-    arguments = ""
     logging.debug(run_file)
 
     try:
-        subprocess.run(["py.exe", run_file, arguments])
+        subprocess.run(["py.exe", run_file])
     except:
         logging.fatal("FAIL - building standalone robosapiensIO application failed")
         sys.exit(ExitCode.FAILURE)

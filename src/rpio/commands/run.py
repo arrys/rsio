@@ -1,5 +1,7 @@
 import logging
 import sys
+from pathlib import Path
+
 import click
 import os
 import subprocess
@@ -41,21 +43,21 @@ def run(verbose, platform, launchfile, docker):
         if docker:
             logger.debug(f"Executing the adaptive application using the provided docker compose file for platform {platform}")
             try:
-                launch_docker_compose(path="Realization/ManagingSystem/Platform/" + platform)
+                launch_docker_compose(Path("Realization/ManagingSystem/Platform") / platform)
             except:
                 logger.fatal("FAIL - Launching the standalone robosapiensIO application failed")
                 sys.exit(ExitCode.FAILURE)
         elif launchfile:
             logger.debug(f"Executing the adaptive application using the provided launch file for platform {platform}")
             try:
-                launch("Realization/ManagingSystem/Platform/" + platform + "/launch.xml")
+                launch(Path("Realization/ManagingSystem/Platform") / platform / "launch.xml")
             except:
                 logger.fatal("FAIL - Launching the standalone robosapiensIO application failed")
                 sys.exit(ExitCode.FAILURE)
         else:
             logger.debug(f"Executing the adaptive application using the provided main file for platform {platform}")
             try:
-                launch_main("Resources/main_" + platform + ".py")
+                launch_main(Path(f"Resources/main_{platform}.py"))
             except:
                 logger.fatal("FAIL - Launching the standalone robosapiensIO application failed")
                 sys.exit(ExitCode.FAILURE)
