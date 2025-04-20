@@ -20,11 +20,14 @@ def deploy(verbose: bool):
     if verbose:
         logger.setLevel(logging.DEBUG)
     logger.debug("Deploy command under construction")
-    run_file = "Realization/ManagingSystem/Actions/deploy.py"
+    run_file = "Realization/ManagingSystem/Actions/deploy.py" # TODO Whys is this hardcoded?
     logger.debug(run_file)
 
     try:
-        subprocess.run(["py.exe", run_file])
-    except:
-        logger.fatal("FAIL - deploying standalone robosapiensIO application failed")
+        result = subprocess.run([sys.executable, run_file], capture_output=True, text=True)
+        if result.returncode != 0:
+            logging.fatal(result.stdout)
+            sys.exit(ExitCode.FAILURE)
+    except (FileNotFoundError, subprocess.SubprocessError, OSError) as e:
+        logging.fatal("FAIL - deploying standalone robosapiensIO application failed")
         sys.exit(ExitCode.FAILURE)
