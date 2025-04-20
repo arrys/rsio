@@ -30,6 +30,7 @@ robosapiensIO Preview
 * Clean up code.
 * Refactor logging.
 * Convert output to proper logs.
+* Rename rpio to rsio.
 
 0.4.0 (2025-04-16)
 ~~~~~~~~~~~~~~~~~~
