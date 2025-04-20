@@ -26,8 +26,8 @@ def deploy(verbose: bool):
     try:
         result = subprocess.run([sys.executable, run_file], capture_output=True, text=True)
         if result.returncode != 0:
-            logging.fatal(result.stdout)
+            logger.fatal(result.stdout)
             sys.exit(ExitCode.FAILURE)
     except (FileNotFoundError, subprocess.SubprocessError, OSError) as e:
-        logging.fatal("FAIL - deploying standalone robosapiensIO application failed")
+        logger.fatal("FAIL - deploying standalone robosapiensIO application failed")
         sys.exit(ExitCode.FAILURE)

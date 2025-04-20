@@ -163,5 +163,5 @@ def t_robochart_to_logical():
 # ------------------------------ CHECKING TASKS --------------------------------------
 # ------------------------------------------------------------------------------------
 def t_check_robosapiensio():
-    check = check_package_installation(package='robosapiensio')
+    check = is_python_package_installed(package='robosapiensio')
     return check

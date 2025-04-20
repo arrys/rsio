@@ -76,3 +76,9 @@ rsio = [
     "transformations/templates/*.template",
 	"parsers/robochart/*.tx",
 ]
+
+[tool.pytest.ini_options]
+markers = [
+    "long: marks tests as long-running (deselect with '-m \"not long\"')"
+]
+addopts = "-m 'not long'" # pytest -m "long or not long" to run all tests

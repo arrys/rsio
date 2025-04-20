@@ -1,5 +1,6 @@
 import logging
 
+import pytest
 from click.testing import CliRunner
 from rsio.__main__ import cli
 from rsio.utils.exit import ExitCode
@@ -24,6 +25,16 @@ def test_cli_deploy(caplog):
     result = runner.invoke(cli, [command])
     assert result.exit_code == ExitCode.FAILURE
 
+def test_cli_export(caplog):
+    runner = CliRunner()
+    command = "export"
+    result = runner.invoke(cli, [command])
+
+def test_cli_import(caplog):
+    runner = CliRunner()
+    command = "import"
+    result = runner.invoke(cli, [command])
+
 def test_cli_package(caplog):
     runner = CliRunner()
     command = "package"
@@ -45,6 +56,17 @@ def test_cli_package(caplog):
             assert result.exit_code == ExitCode.SUCCESS
             # assert "package created" in result.output
             assert "package created" in caplog.text
+
+@pytest.mark.long
+def test_cli_platform(caplog):
+    runner = CliRunner()
+    command = "platform"
+    result = runner.invoke(cli, [command, "--verbose"])
+    result = runner.invoke(cli, [command, "--verbose", "--check"])
+    result = runner.invoke(cli, [command, "--verbose", "--set"])
+    result = runner.invoke(cli, [command, "--verbose", "--name"])
+    result = runner.invoke(cli, [command, "--verbose", "--force"])
+
 
 def test_cli_transformation():
     command = "transformation"

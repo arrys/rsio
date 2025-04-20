@@ -1,19 +1,22 @@
+import logging
 import re
+import socket
+import sys
 import threading
 import os
 import io
 import zipfile
 import subprocess
 import xml.etree.ElementTree as ET
+from dataclasses import dataclass, asdict
 from pathlib import Path
 
 import paho.mqtt.client as mqtt
-import yaml
 import redis
 import importlib
 from subprocess import Popen
 
-from rsio.utils.constants import Formalism
+from rsio.utils.constants import Formalism, detect_operating_system, OperatingSystem
 
 # Only windoze supports CREATE_NEW_CONSOLE
 try:
@@ -120,11 +123,6 @@ def compress_folder(folder_path):
     return zip_buffer.read()
 
 
-def get_activate_script_path(venv_name):
-    """Returns the path to the activated script based on the operating system."""
-    return os.path.join(venv_name, "Scripts", "activate.bat") if os.name == "nt" else os.path.join(venv_name, "bin", "activate")
-
-
 def get_pip_path(venv_name: str) -> Path:
     """Returns the path to the pip executable based on the operating system."""
     return Path(venv_name) / "Scripts" / "pip.exe" if os.name == "nt" else Path(venv_name) / "bin" / "pip"
@@ -156,101 +154,86 @@ def create_virtual_environment(venv_name="venv"):
 def activate_virtual_environment(venv_name="venv"):
     """
     Activates the virtual environment.
-
     :param venv_name: The name of the virtual environment directory. Defaults to "venv".
     """
-    activate_script = get_activate_script_path(venv_name)
-    if not os.path.exists(activate_script):
-        print(
-            f"Activate script not found in the virtual environment '{venv_name}'. Make sure the virtual environment is created.")
-        return
-
-    if os.name == "nt":
-        subprocess.run(activate_script, shell=True)
+    operating_system = detect_operating_system()
+    if operating_system == OperatingSystem.WINDOWS:
+        subprocess.run(str(Path(venv_name) / "Scripts" / "activate.bat"), shell=True)
+    elif operating_system == OperatingSystem.UNIX:
+        subprocess.run(["source", str(Path(venv_name) / "bin" / "activate")], shell=True, executable="/bin/bash")
     else:
-        subprocess.run(["source", activate_script], shell=True, executable="/bin/bash")
+        raise RuntimeError("Unsupported operating system.")
 
-
+# TODO Do we need this?
 def deactivate_virtual_environment():
-    """
-    Deactivates the virtual environment.
-    """
-    if os.name == "nt":
+    """Deactivates the virtual environment."""
+    operating_system = detect_operating_system()
+    if operating_system == OperatingSystem.WINDOWS:
         subprocess.run("deactivate", shell=True)
-    else:
+    elif operating_system == OperatingSystem.UNIX:
         subprocess.run("deactivate", shell=True, executable="/bin/bash")
+    else:
+        raise RuntimeError("Unsupported operating system.")
 
-
-def install_requirements(venv_name: str | None = "venv", requirements_file: Path = Path("requirements.txt")):
+def install_python_packages_from_requirements_file(requirements_file: Path, venv_name: str | None = "venv") -> bool:
     """
-    Installs packages listed in a requirements file into the virtual or native environment.
+    Installs packages listed in a requirements.txt file into the virtual or native environment.
 
     :param venv_name: The name of the virtual environment directory. Defaults to "venv".
     :param requirements_file: The path to the requirements.txt file. Defaults to "requirements.txt".
     """
-    if venv_name is not None:
+    if not requirements_file.is_file():
+        raise FileNotFoundError(f"File '{requirements_file}' does not exist.")
+
+    logger = logging.getLogger(__name__)
+    if isinstance(venv_name, str):
         pip_path = get_pip_path(venv_name)
         if not pip_path.exists():
-            print(f"Pip not found in the virtual environment '{venv_name}'. Make sure the virtual environment is created.")
-            return
+            logger.warning(f"Pip not found in the virtual environment '{venv_name}'. Make sure the virtual environment is created.")
+            return False
     else:
         pip_path = "pip"
-        print("Using pip of native python environment.")
-
-    if not requirements_file.is_file():
-        print(f"Requirements file '{requirements_file}' not found.")
-        return
+        logger.info("Using pip of native python environment.")
 
     try:
-        subprocess.run([pip_path, "install", "-r", str(requirements_file)], check=True)
-        print(f"Packages from '{requirements_file}' installed successfully.")
+        subprocess.run([pip_path, "install", "-r", str(requirements_file)], check=True, capture_output=True, text=True)
+        logger.info(f"Packages from '{requirements_file}' installed successfully.")
+        return True
     except subprocess.CalledProcessError as e:
-        print(f"Error occurred while installing requirements: {e}")
+        logger.error(f"Error occurred while installing requirements: {e}")
+        return False
 
 
-def get_python_version() -> str | None:
+def get_python_version() -> str:
     """
-    Checks and returns the current Python version installed on the system.
-
-    :return: A string representing the Python version, or None if an error occurs.
+    Check and return the current Python version installed on the system.
+    :return: string representing the Python version.
     :rtype: str or None
     """
-    try:
-        # Run the command to get the Python version
-        result = subprocess.run(["python", "--version"], capture_output=True, text=True, check=True)
-        # Output is usually in the form of "Python X.Y.Z\n"
-        version = result.stdout.strip()
-        return version
-    except subprocess.CalledProcessError as e:
-        print(f"Error occurred while checking Python version: {e}")
-        return None
+    version_info = sys.version_info
+    return f"{version_info.major}.{version_info.minor}.{version_info.micro}"
 
 
-def build_docker_image(module_path: str, image_name: str):
+def build_docker_image(docker_file_path: Path, image_name: str) -> bool:
     """
     Build a Docker image for a Python module at a given path.
 
-    :param module_path: Path to the module (should contain Dockerfile)
+    :param docker_file_path: Path Dockerfile
     :param image_name: Name of the Docker image to be created
-    :return: None
     """
-    if not os.path.isdir(module_path):
-        raise FileNotFoundError(f"The specified module path '{module_path}' does not exist or is not a directory.")
-
-    dockerfile_path = os.path.join(module_path, "Dockerfile")
-    if not os.path.isfile(dockerfile_path):
-        raise FileNotFoundError(f"No Dockerfile found in the specified module path '{module_path}'.")
-
+    if not docker_file_path.is_file():
+        raise FileNotFoundError(f"No Dockerfile found in the specified module path '{docker_file_path}'.")
+    command = ["docker", "build", "-t", image_name, str(docker_file_path)]
+    logger = logging.getLogger(__name__)
     try:
-        # Build the Docker image using the specified Dockerfile
-        command = ["docker", "build", "-t", image_name, module_path]
-        subprocess.run(command, check=True)
-        print(f"Successfully built Docker image '{image_name}' from '{module_path}'.")
+        subprocess.run(command, check=True, capture_output=True, text=True)
+        logger.info(f"Successfully built Docker image '{image_name}' from '{docker_file_path}'.")
+        return True
     except subprocess.CalledProcessError as e:
-        print(f"Failed to build Docker image. Error: {e}")
+        logger.error(f"Failed to build Docker image. Error: {e}")
+        return False
 
-
-def run_docker_container(image_name, container_name=None, ports=None):
+def run_docker_container(image_name: str, container_name: str | None = None, ports: dict[int, int] | None=None) -> bool:
     """
     Run a Docker container from an existing image.
 
@@ -259,106 +242,75 @@ def run_docker_container(image_name, container_name=None, ports=None):
     :param ports: Optional dictionary mapping container ports to host ports (e.g., {"8080": "8080"})
     :return: None
     """
+    command = ["docker", "run", "-d"]
+    if container_name:
+        command.extend(["--name", container_name])
+    if ports:
+        for host_port, container_port in ports.items():
+            command.extend(["-p", f"{host_port}:{container_port}"])
+    command.append(image_name)
+    logger = logging.getLogger(__name__)
     try:
-        # Prepare the docker run command
-        command = ["docker", "run", "-d"]
-
-        if container_name:
-            command.extend(["--name", container_name])
-
-        if ports:
-            for host_port, container_port in ports.items():
-                command.extend(["-p", f"{host_port}:{container_port}"])
-
-        command.append(image_name)
-
-        # Run the Docker container
-        subprocess.run(command, check=True)
-        print(f"Successfully started container from image '{image_name}'.")
+        subprocess.run(command, check=True, capture_output=True, text=True)
+        logger.info(f"Successfully started container from image '{image_name}'.")
+        return True
     except subprocess.CalledProcessError as e:
-        print(f"Failed to run Docker container. Error: {e}")
+        logger.error(f"Failed to run Docker container. Error: {e}")
+        return False
 
-
-def get_docker_version():
+def get_docker_version() -> str | bool:
     """
     Check if Docker is installed on the system
-
-    :return: String with docker version if Docker is installed, False otherwise
+    :return: String with the docker version if Docker is installed, False otherwise
     """
     try:
         result = subprocess.run(["docker", "--version"], capture_output=True, text=True, check=True)
-        version = result.stdout.strip()
-        return version
+        return result.stdout.strip()
     except (subprocess.CalledProcessError, FileNotFoundError):
         return False
 
+@dataclass
+class RedisConfiguration:
+    host: str = "localhost"
+    port: int = 6379
+    db: int = 0
+    socket_timeout: int = 5
 
-def check_redis(host="localhost", port=6379, db=0, timeout=30, config=None):
+def is_redis_reachable(redis_configuration: RedisConfiguration=RedisConfiguration()) -> bool:
     """
     Check if Redis is running and reachable
-
     :return: True if Redis is running and reachable, False otherwise
-        """
-
+    """
     try:
-        if config is None:
-            print("WARNING: configuration file not provided, checking Redis with default values (broker='localhost', port=6379, db=0)")
-        else:
-            with open(config, "r") as file:
-                configuration = yaml.safe_load(file)
-                host = configuration["redis_host"]
-                port = configuration["redis_port"]
-
-        # Establish a connection with the specified timeout
-        client = redis.Redis(host=host, port=port, db=db, socket_timeout=timeout)
-
-        # Ping the server to test connectivity
+        client = redis.Redis(**asdict(redis_configuration))
         if client.ping():
             return True  # Redis is reachable
     except redis.exceptions.ConnectionError:
-        pass  # Connection failed
+        pass
+    return False
 
-    return False  # Redis is not reachable
+@dataclass
+class MqttConfiguration:
+    host: str = "localhost"
+    port: int = 1883
+    keepalive: int = 5
 
-
-def check_mqtt(broker="localhost", port=1883, timeout=30, config=None):
+def is_mqtt_reachable(mqtt_configuration: MqttConfiguration=MqttConfiguration()) -> bool:
     """
     Check if MQTT is running and reachable
-
     :return: True if MQTT broker is running and reachable, False otherwise
-        """
+    """
+    client = mqtt.Client(protocol=mqtt.MQTTv5, callback_api_version=mqtt.CallbackAPIVersion.VERSION2)
 
-    def on_connect(client, userdata, flags, rc):
-        # If rc (return code) is 0, connection was successful
-        client.reachable = (rc == 0)
-        client.disconnect()
-
-    client = mqtt.Client()
-    client.reachable = False  # Initial assumption: not reachable
-    client.on_connect = on_connect
-
-    # resolve the config file for checking the MQTT config
-    if config is None:
-        print("WARNING: configuration file not provided, checking MQTT with default values (broker='localhost', port=1833)")
-    else:
-        with open(config, "r") as file:
-            configuration = yaml.safe_load(file)
-            broker = configuration["mqtt_broker"]
-            port = configuration["mqtt_port"]
-
-    # Attempt to connect with a specified timeout
     try:
-        client.connect(broker, port, timeout)
-        client.loop_start()  # Start the loop to process callbacks
-        client.loop(timeout)  # Wait for connection
-        client.loop_stop()  # Stop the loop
-    except Exception as e:
-        print(f"Could not connect to MQTT broker: {e}")
-
-    return client.reachable
+        client.connect(**asdict(mqtt_configuration))
+        client.disconnect()
+        return True
+    except (ConnectionRefusedError, TimeoutError, OSError, socket.error):
+        return False
 
 
-def check_package_installation(package="robosapiensio"):
+def is_python_package_installed(package: str) -> bool:
     try:
         importlib.import_module(package)
         return True

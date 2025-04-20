@@ -1,12 +1,11 @@
 import logging
 import sys
 from pathlib import Path
-
 import click
 import yaml
 
-from rsio.utils.auxiliary import check_redis, check_mqtt, create_virtual_environment, parse_launch_xml, \
-    install_requirements, activate_virtual_environment
+from rsio.utils.auxiliary import is_redis_reachable, is_mqtt_reachable, create_virtual_environment, parse_launch_xml, \
+    install_python_packages_from_requirements_file, activate_virtual_environment
 from rsio.utils.constants import formalism_from_name, Formalism, deployment_from_name, Deployment
 from rsio.utils.exit import ExitCode
 
@@ -32,13 +31,13 @@ def platform(verbose: bool, check: bool, set_flag: bool, name: str, force: str):
     if check:
         logging.debug("WARNING: platform check is not implemented yet.")
 
-        if check_redis():
+        if is_redis_reachable():
             logging.info("INFO: REDIS connection check is successful.")
         else:
             logging.fatal("ERROR: REDIS connection failed. Please check if the platform is connected to the host running the Redis.")
             sys.exit(ExitCode.FAILURE)
 
-        if check_mqtt():
+        if is_mqtt_reachable():
             logging.info("INFO: MQTT connection check is successful.")
         else:
             logging.fatal("ERROR: MQTT connection failed. Please check if the platform is connected to the host running the MQTT broker.")
@@ -62,7 +61,7 @@ def platform(verbose: bool, check: bool, set_flag: bool, name: str, force: str):
                         create_virtual_environment(venv_name="rsiovenv")
                         launch_description = parse_launch_xml(Path("Realization/ManagingSystem/Platform") / name / "launch.xml")
                         for component in launch_description.components:
-                            install_requirements(venv_name="rsiovenv", requirements_file=component.path / "requirements.txt")
+                            install_python_packages_from_requirements_file(venv_name="rsiovenv", requirements_file=component.path / "requirements.txt")
                         activate_virtual_environment(venv_name="rsiovenv")
                     except:
                         logging.error("ERROR: Could not setup virtual environment for running the adaptive application on this platform.")

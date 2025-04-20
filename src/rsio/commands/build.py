@@ -19,15 +19,15 @@ def build(verbose: bool):
     logger = logging.getLogger(__name__)
     if verbose:
         logger.setLevel(logging.DEBUG)
-    logging.debug("Build command under construction")
+    logger.debug("Build command under construction")
     run_file = "Realization/ManagingSystem/Actions/build.py" # TODO Whys is this hardcoded?
-    logging.debug(run_file)
+    logger.debug(run_file)
 
     try:
         result = subprocess.run([sys.executable, run_file], capture_output=True, text=True)
         if result.returncode != 0:
-            logging.fatal(result.stdout)
+            logger.fatal(result.stdout)
             sys.exit(ExitCode.FAILURE)
     except (FileNotFoundError, subprocess.SubprocessError, OSError) as e:
-        logging.fatal("FAIL - building standalone robosapiensIO application failed")
+        logger.fatal("FAIL - building standalone robosapiensIO application failed")
         sys.exit(ExitCode.FAILURE)
