@@ -3,9 +3,9 @@ import sys
 sys.path.append(str(Path('..').resolve()))
 
 project = "RoboSAPIENS IO Project"
-copyright = "2024, Sahar Nasimi Nezhad & Bert Van Acker"
-author = "Sahar Nasimi Nezhad & Bert Van Acker"
-release = "0.1"
+copyright = "2025"
+author = "Sahar Nasimi Nezhad, Bert Van Acker, Arkadiusz Ryś"
+release = "0.4.0"
 
 extensions = [
     "sphinx.ext.autodoc",
