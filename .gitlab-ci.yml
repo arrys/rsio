@@ -10,6 +10,9 @@ variables:
   DOCKER_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
   DOCKER_LATEST: $CI_REGISTRY_IMAGE:latest
 
+services:
+  - docker:28-dind # Needed when building docker images, like the build-docker job
+
 stages:
   - test
   - release
@@ -18,7 +21,7 @@ before_script:
   - docker info
   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
 
-test-rsio:
+test-package:
   image: ghcr.io/astral-sh/uv:python3.13-alpine
   stage: test
   before_script:
@@ -44,7 +47,7 @@ test-rsio:
       when: manual
       allow_failure: true
 
-release-rsio:
+release-package:
   image: ghcr.io/astral-sh/uv:python3.13-alpine
   stage: release
   before_script:
@@ -70,7 +73,7 @@ release-rsio:
       when: manual
       allow_failure: true
 
-release-rsio-exe:
+release-package-exe:
   stage: release
   tags:
     - windows
