@@ -5,7 +5,7 @@ sys.path.append(str(Path('..').resolve()))
 project = "RoboSAPIENS IO Project"
 copyright = "2025"
 author = "Sahar Nasimi Nezhad, Bert Van Acker, Arkadiusz Ryś"
-release = "0.4.2"
+release = "0.4.3"
 
 extensions = [
     "sphinx.ext.autodoc",
