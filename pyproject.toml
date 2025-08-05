@@ -4,7 +4,7 @@ build-backend = "uv_build"
 
 [project]
 name = "rsio"
-version = "0.4.2"
+version = "0.4.3"
 description = "robosapiensIO - your gateway to trustworthy self-adaptive robotics."
 authors = [
     {name = "Arkadiusz Michał Ryś", email = "Arkadiusz.Michal.Rys@gmail.com"},
