@@ -1,7 +1,6 @@
 Hello world
 ===========
 
-
 **Repository:** `link <https://github.com/BertVanAcker/rpio-examples/tree/main/HelloWorld>`_
 
 This project illustrates a distributed MAPLE-K loop for anomaly detection and compensation in a simulated TurtleBot 4 environment. The simulation demonstrates handling lidar occlusion and adjusting the robot's navigation dynamically.
@@ -34,6 +33,7 @@ Running the Simulation
 
 2. **Run the Robot Simulator**:
    - Start the simulation using:
+
      .. code-block:: bash
 
         python Realization/ManagingSystem/Simulator/Turtlebotsim.py
@@ -42,6 +42,7 @@ Running the Simulation
 
 3. **Initialize MAPLE-K Components**:
    - Launch the MAPLE-K loop by running:
+
      .. code-block:: bash
 
         python Resources/main.py

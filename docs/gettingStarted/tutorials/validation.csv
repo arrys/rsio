@@ -9,19 +9,19 @@ Level,Group,Feature,hello world,hello worldv2 ,hello worldv3, NTNU
 ,,ROS support,|nok|,|nok|,|nok|,|nok|
 ,**Trustworthiness**,ET monitoring,|nok|,|nok|,|nok|,|nok|
 ,,STL support,|nok|,|nok|,|ok|,|ok|
-**rpio**,**Transformations**,roboArch2aadl,|nok|,|nok|,|ok|,|ok|
+**rsio**,**Transformations**,roboArch2aadl,|nok|,|nok|,|ok|,|ok|
 ,,aadl2aadl_il,|nok|,|ok|,|ok|,|ok|
 ,,aadl_il2codeskeletons,|ok|,|nok|,|ok|,|ok|
 ,,aadl_il2messages,|ok|,|ok|,|ok|,|ok|
 ,,aadl_il2actions,|nok|,|ok|,|ok|,|ok|
 ,,aadl_il2workflows,|nok|,|ok|,|ok|,|ok|
-,**PyLauncher**,launch python swc,|nok|,|ok|,|ok|,|ok|
+,**launcher**,launch python swc,|nok|,|ok|,|ok|,|ok|
 ,**Command Line Interface (CLI)**,run transformations,|nok|,|ok|,|ok|,|ok|
 ,,build,|nok|,|ok|,|ok|,|ok|
 ,,deploy,|nok|,|nok|,|ok|,|nok|
 ,,run,|nok|,|ok|,|ok|,|ok|
-,,create rpio package,|nok|,|ok|,|ok|,|nok|
-,,Check rpio package,|nok|,|nok|,|nok|,|nok|
+,,create rsio package,|nok|,|ok|,|ok|,|nok|
+,,Check rsio package,|nok|,|nok|,|nok|,|nok|
 ,**Remote agent**,remote commands,|nok|,|ok|,|ok|,|nok|
 ,,remote status,|nok|,|nok|,|nok|,|nok|
 ,,Over the Air Update (OTA),|nok|,|nok|,|nok|,|nok|
@@ -33,4 +33,4 @@ Level,Group,Feature,hello world,hello worldv2 ,hello worldv3, NTNU
 ,,r/w historical data,|nok|,|ok|,|ok|,|ok|
 ,,signal status,|nok|,|ok|,|ok|,|ok|
 ,,Health check,|nok|,|nok|,|nok|,|nok|
-**Used rpio version**, , ,**v0.3.0**,**v0.3.21**,**v0.3.24**,**v0.3.21**
+**Used rsio version**, , ,**v0.3.0**,**v0.3.21**,**v0.3.24**,**v0.3.21**

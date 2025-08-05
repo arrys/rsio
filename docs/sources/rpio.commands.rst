@@ -1,61 +1,61 @@
-rpio.commands package
+rsio.commands package
 =====================
 
 Submodules
 ----------
 
-rpio.commands.build module
+rsio.commands.build module
 --------------------------
 
-.. automodule:: rpio.commands.build
+.. automodule:: rsio.commands.build
    :members:
    :undoc-members:
    :show-inheritance:
 
-rpio.commands.deploy module
+rsio.commands.deploy module
 ---------------------------
 
-.. automodule:: rpio.commands.deploy
+.. automodule:: rsio.commands.deploy
    :members:
    :undoc-members:
    :show-inheritance:
 
-rpio.commands.exporter module
+rsio.commands.exporter module
 -----------------------------
 
-.. automodule:: rpio.commands.exporter
+.. automodule:: rsio.commands.exporter
    :members:
    :undoc-members:
    :show-inheritance:
 
-rpio.commands.importer module
+rsio.commands.importer module
 -----------------------------
 
-.. automodule:: rpio.commands.importer
+.. automodule:: rsio.commands.importer
    :members:
    :undoc-members:
    :show-inheritance:
 
-rpio.commands.package module
+rsio.commands.package module
 ----------------------------
 
-.. automodule:: rpio.commands.package
+.. automodule:: rsio.commands.package
    :members:
    :undoc-members:
    :show-inheritance:
 
-rpio.commands.run module
+rsio.commands.run module
 ------------------------
 
-.. automodule:: rpio.commands.run
+.. automodule:: rsio.commands.run
    :members:
    :undoc-members:
    :show-inheritance:
 
-rpio.commands.version module
+rsio.commands.version module
 ----------------------------
 
-.. automodule:: rpio.commands.version
+.. automodule:: rsio.commands.version
    :members:
    :undoc-members:
    :show-inheritance:
@@ -63,7 +63,7 @@ rpio.commands.version module
 Module contents
 ---------------
 
-.. automodule:: rpio.commands
+.. automodule:: rsio.commands
    :members:
    :undoc-members:
    :show-inheritance:

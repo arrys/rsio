@@ -1,21 +1,21 @@
-rpio.utils package
+rsio.utils package
 ==================
 
 Submodules
 ----------
 
-rpio.utils.auxiliary module
+rsio.utils.auxiliary module
 ---------------------------
 
-.. automodule:: rpio.utils.auxiliary
+.. automodule:: rsio.utils.auxiliary
    :members:
    :undoc-members:
    :show-inheritance:
 
-rpio.utils.constants module
+rsio.utils.constants module
 ---------------------------
 
-.. automodule:: rpio.utils.constants
+.. automodule:: rsio.utils.constants
    :members:
    :undoc-members:
    :show-inheritance:
@@ -23,7 +23,7 @@ rpio.utils.constants module
 Module contents
 ---------------
 
-.. automodule:: rpio.utils
+.. automodule:: rsio.utils
    :members:
    :undoc-members:
    :show-inheritance:

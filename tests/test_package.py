@@ -1,10 +1,10 @@
-import rpio.package.manager
+import rsio.package.manager
 from tests.utils import TemporaryPath
 
 
 def test_package():
     """"""
-    package_manager = rpio.package.manager.PackageManager()
+    package_manager = rsio.package.manager.PackageManager()
 
     package_name = "package"
     with TemporaryPath(package_name) as package_path:

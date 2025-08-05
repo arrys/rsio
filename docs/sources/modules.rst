@@ -1,7 +1,7 @@
-rpio
+rsio
 ====
 
 .. toctree::
    :maxdepth: 4
 
-   rpio
+   rsio

@@ -1,13 +1,13 @@
-rpio.package package
+rsio.package package
 ====================
 
 Submodules
 ----------
 
-rpio.package.manager module
+rsio.package.manager module
 ---------------------------
 
-.. automodule:: rpio.package.manager
+.. automodule:: rsio.package.manager
    :members:
    :undoc-members:
    :show-inheritance:
@@ -15,7 +15,7 @@ rpio.package.manager module
 Module contents
 ---------------
 
-.. automodule:: rpio.package
+.. automodule:: rsio.package
    :members:
    :undoc-members:
    :show-inheritance:

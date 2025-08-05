@@ -1,8 +1,8 @@
-Command Line tool (rpio)
+Command Line tool (rsio)
 ========================
 
 .. toctree::
    :maxdepth: 1
 
-   create_rpio_package
+   create_rsio_package
    transformations

@@ -1,0 +1,87 @@
+[build-system]
+requires = ["setuptools", "wheel", "uv_build"]
+build-backend = "uv_build"
+
+[project]
+name = "rsio"
+version = "0.4.1"
+description = "robosapiensIO - your gateway to trustworthy self-adaptive robotics."
+authors = [
+    {name = "Arkadiusz Michał Ryś", email = "Arkadiusz.Michal.Rys@gmail.com"},
+	{name = "Bert Van Acker", email = "Bert.VanAcker@uantwerpen.be"},
+	{name = "Sahar Nasimi Nezhad", email = "Sahar.NasimiNezhad@uantwerpen.be"},
+]
+readme = "README.rst"
+requires-python = ">=3.12"
+classifiers = [
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Development Status :: 2 - Pre-Alpha",
+    "Intended Audience :: Developers",
+    "Natural Language :: English",
+]
+license = {file = "LICENSE"}
+keywords = ["robotics", "trustworthiness", "self-adaptive", "model-based"]
+
+dependencies = [
+    "arklog>=0.5.3",
+    "click>=8.1.8",
+    "jinja2>=3.1.4",
+    "paho-mqtt>=2.1.0",
+    "pyyaml>=6.0.2",
+    "redis>=5.2.1",
+    "textx>=4.1.0",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest",
+]
+doc = [
+    "sphinx",
+    "sphinx-rtd-theme",
+]
+dev = [
+    "ruff",
+    "invoke",
+    "pyinstaller",
+]
+
+[project.urls]
+source = "https://github.com/BertVanAcker/rpio"
+mirror = "https://git.rys.one/phd/robosapiens/rsio"
+Homepage = "https://rpio.readthedocs.io/en/latest/index.html"
+
+[project.scripts]
+rpio = "rsio.__main__:main"
+rsio = "rsio.__main__:main"
+
+[tool.uv]
+dev-dependencies = [
+    "ruff",
+    "invoke",
+    "pyinstaller",
+]
+extra-index-url = [
+    "https://pip:rys-Rps1D5WhCGDzRDAXyz2b@git.rys.one/api/v4/groups/phd/-/packages/pypi/simple", # Expires 2026-08
+    "https://pip:glpat-aq2VpazxthkoqZ9b3bDz@git.rys.one/api/v4/groups/phd/-/packages/pypi/simple", # Expires 2025-08
+]
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+include = ["rsio", "rsio.*"]
+
+[tool.setuptools.package-data]
+rsio = [
+    "transformations/templates/*.template",
+	"parsers/robochart/*.tx",
+]
+
+[tool.pytest.ini_options]
+markers = [
+    "long: marks tests as long-running (deselect with '-m \"not long\"')"
+]
+addopts = "-m 'not long'" # pytest -m "long or not long" to run all tests

@@ -1,4 +1,5 @@
 .. _aadl_instructions_logical:
+
 # README: Defining the Logical Architecture using AADL for the MAPLE-K Loop
 
 ========================================
@@ -58,8 +59,8 @@ Each MAPLE component, **represented as an AADL process** follows a common modeli
             outputEvent: out event port;
 
         properties
-			rpio::formalism => Python;
-			rpio::Containerized => true;
+			rsio::formalism => Python;
+			rsio::Containerized => true;
 
     end ComponentName;
 
@@ -79,8 +80,8 @@ Each MAPLE component, **represented as an AADL process** follows a common modeli
     - **Input/Output Data**: Represent structured data exchange.
 
 **Features**:
-    - **rpio::formalism**: Indicate the desired formalism for the given software component
-    - **rpio::Containerized**: Indicate whether or not the software component can be deployed and executed as containerized application.
+    - **rsio::formalism**: Indicate the desired formalism for the given software component
+    - **rsio::Containerized**: Indicate whether or not the software component can be deployed and executed as containerized application.
 
 
 .. note::
@@ -255,11 +256,11 @@ This can be achieved by modeling the backend as a **AADL system** and bind it to
     -- robosapiensio backend configuration
 	system robosapiensio_backend
 		properties
-			rpio::Storage_type => global;
-			rpio::Redis_port => 6379;
-			rpio::Redis_Database => 0;
-			rpio::MQTT_port => 1883;
-			rpio::Quality_of_Service => AtLeastOnce;
+			rsio::Storage_type => global;
+			rsio::Redis_port => 6379;
+			rsio::Redis_Database => 0;
+			rsio::MQTT_port => 1883;
+			rsio::Quality_of_Service => AtLeastOnce;
 
 	end robosapiensio_backend;
 
@@ -270,12 +271,12 @@ This can be achieved by modeling the backend as a **AADL system** and bind it to
     ...
 
     -- robosapiens backend
-    Actual_Processor_Binding => ( reference( companion.cpu) ) applies to rpio_backend;
+    Actual_Processor_Binding => ( reference( companion.cpu) ) applies to rsio_backend;
 
 
 .. warning::
 
-    Please note that two AADL extensions are used to add RoboSAPIENS specific properties, **rpio.aadl** (:download:`download<files/rpio.aadl>`) and **mbed.aadl** (:download:`download<files/mbed.aadl>`).
+    Please note that two AADL extensions are used to add RoboSAPIENS specific properties, **rsio.aadl** (:download:`download<files/rsio.aadl>`) and **mbed.aadl** (:download:`download<files/mbed.aadl>`).
     They can be downloaded here for testing purposes. They are still under construction!
 
 
@@ -352,7 +353,7 @@ Below an example of the logical architecture of the NTNU case:
 
     package LogicalArchitecture
     public
-        with messages,Base_Types,rpio;
+        with messages,Base_Types,rsio;
 
         -- ****************************** KNOWLEDGE component ****************************** --
         process knowledge
@@ -382,8 +383,8 @@ Below an example of the logical architecture of the NTNU case:
                 pathEstimate: out event data port messages::predictedPath;
 
             properties
-                rpio::formalism => Python;
-                rpio::Containerized => true;
+                rsio::formalism => Python;
+                rsio::Containerized => true;
 
         end monitor;
 
@@ -421,8 +422,8 @@ Below an example of the logical architecture of the NTNU case:
                 pathAnomaly: out event data port Base_Types::Boolean;
 
             properties
-                rpio::formalism => Python;
-                rpio::Containerized => true;
+                rsio::formalism => Python;
+                rsio::Containerized => true;
 
         end analysis;
 
@@ -458,8 +459,8 @@ Below an example of the logical architecture of the NTNU case:
                 plan: out event data port messages::predictedPath;
 
             properties
-                rpio::formalism => Python;
-                rpio::Containerized => true;
+                rsio::formalism => Python;
+                rsio::Containerized => true;
 
         end plan;
 
@@ -497,8 +498,8 @@ Below an example of the logical architecture of the NTNU case:
                 planAccepted: out event port;
 
             properties
-                rpio::formalism => Python;
-                rpio::Containerized => true;
+                rsio::formalism => Python;
+                rsio::Containerized => true;
 
         end legitimate;
 
@@ -572,8 +573,8 @@ Below an example of the logical architecture of the NTNU case:
                 pathEstimate: out event data port messages::predictedPath;
 
             properties
-                rpio::formalism => Python;
-                rpio::Containerized => true;
+                rsio::formalism => Python;
+                rsio::Containerized => true;
 
         end execute;
 
@@ -610,8 +611,8 @@ Below an example of the logical architecture of the NTNU case:
                 dataIn: in event data port messages::predictedPath;
 
             properties
-                rpio::formalism => Python;
-                rpio::Containerized => true;
+                rsio::formalism => Python;
+                rsio::Containerized => true;
 
         end controlSoftware;
 
@@ -789,7 +790,7 @@ Below an example of the mapping architecture of the NTNU case:
 
     package NTNU_CASE
     public
-        with PhysicalArchitecture,LogicalArchitecture,messages,rpio;
+        with PhysicalArchitecture,LogicalArchitecture,messages,rsio;
 
         -- self-adaptive system model containing the managing and managed system and interconnections
         system adaptiveSystem
@@ -805,7 +806,7 @@ Below an example of the mapping architecture of the NTNU case:
                 companion: system PhysicalArchitecture::LattePanda_Delta_3.impl;
                 shipCompute: system PhysicalArchitecture::Ship_computer.impl;
                 -- robosapiens backend
-                rpio_backend : system robosapiensio_backend.impl;
+                rsio_backend : system robosapiensio_backend.impl;
 
             connections
                 c1: port managedSystem.weatherConditions -> managingSystem.weatherConditions;
@@ -825,7 +826,7 @@ Below an example of the mapping architecture of the NTNU case:
                 Actual_Processor_Binding => ( reference( shipCompute.cpu) ) applies to managedSystem.controlSoftware;
 
                 -- robosapiens backend
-                Actual_Processor_Binding => ( reference( companion.cpu) ) applies to rpio_backend ;
+                Actual_Processor_Binding => ( reference( companion.cpu) ) applies to rsio_backend ;
 
         end adaptiveSystem.impl;
 
@@ -856,38 +857,38 @@ Below an example of the mapping architecture of the NTNU case:
             features
                 weatherConditions: in event data port messages::weatherConditions
                 {
-                    rpio::Port_Protocol => MQTT;
-                    rpio::Port_Dataformat => Message;
-                    rpio::Port_MQTT_Override_Topic => true;
-                    rpio::Port_MQTT_Topic => "/weather_condition";
-                    rpio::Port_Dispatch_Protocol => Periodic;
-                    rpio::Port_Frequency => 10.0 Hz; -- Publish every 100ms
+                    rsio::Port_Protocol => MQTT;
+                    rsio::Port_Dataformat => Message;
+                    rsio::Port_MQTT_Override_Topic => true;
+                    rsio::Port_MQTT_Topic => "/weather_condition";
+                    rsio::Port_Dispatch_Protocol => Periodic;
+                    rsio::Port_Frequency => 10.0 Hz; -- Publish every 100ms
                 };
                 shipPose: in event data port messages::shipPose
                 {
-                    rpio::Port_Protocol => MQTT;
-                    rpio::Port_Dataformat => Message;
-                    rpio::Port_MQTT_Override_Topic => true;
-                    rpio::Port_MQTT_Topic => "/ship_status";
-                    rpio::Port_Dispatch_Protocol => Periodic;
-                    rpio::Port_Frequency => 10.0 Hz; -- Publish every 100ms
+                    rsio::Port_Protocol => MQTT;
+                    rsio::Port_Dataformat => Message;
+                    rsio::Port_MQTT_Override_Topic => true;
+                    rsio::Port_MQTT_Topic => "/ship_status";
+                    rsio::Port_Dispatch_Protocol => Periodic;
+                    rsio::Port_Frequency => 10.0 Hz; -- Publish every 100ms
                 };
                 shipAction: in event data port messages::shipAction
                 {
-                    rpio::Port_Protocol => MQTT;
-                    rpio::Port_Dataformat => Message;
-                    rpio::Port_MQTT_Override_Topic => false;
-                    rpio::Port_Dispatch_Protocol => Periodic;
-                    rpio::Port_Frequency => 10.0 Hz; -- Publish every 100ms
+                    rsio::Port_Protocol => MQTT;
+                    rsio::Port_Dataformat => Message;
+                    rsio::Port_MQTT_Override_Topic => false;
+                    rsio::Port_Dispatch_Protocol => Periodic;
+                    rsio::Port_Frequency => 10.0 Hz; -- Publish every 100ms
                 };
 
                 predictedPath: out event data port messages::predictedPath
                 {
-                    rpio::Port_Protocol => MQTT;
-                    rpio::Port_Dataformat => Message;
-                    rpio::Port_MQTT_Override_Topic => true;
-                    rpio::Port_MQTT_Topic => "/new_model";
-                    rpio::Port_Dispatch_Protocol => Sporadic;
+                    rsio::Port_Protocol => MQTT;
+                    rsio::Port_Dataformat => Message;
+                    rsio::Port_MQTT_Override_Topic => true;
+                    rsio::Port_MQTT_Topic => "/new_model";
+                    rsio::Port_Dispatch_Protocol => Sporadic;
                 };
 
         end managingSystem;
@@ -938,11 +939,11 @@ Below an example of the mapping architecture of the NTNU case:
         -- robosapiensio backend configuration
         system robosapiensio_backend
             properties
-                rpio::Storage_type => global;
-                rpio::Redis_port => 6379;
-                rpio::Redis_Database => 0;
-                rpio::MQTT_port => 1883;
-                rpio::Quality_of_Service => AtLeastOnce;
+                rsio::Storage_type => global;
+                rsio::Redis_port => 6379;
+                rsio::Redis_Database => 0;
+                rsio::MQTT_port => 1883;
+                rsio::Quality_of_Service => AtLeastOnce;
 
         end robosapiensio_backend;
 

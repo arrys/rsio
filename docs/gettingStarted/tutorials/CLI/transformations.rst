@@ -2,7 +2,7 @@
 RoboSAPIENS Model Transformation and Code Generation Guide
 ==========================================================
 
-**Goal:** This guide provides instructions to perform model-to-model and model-to-code transformations using the `rpio` CLI for the RoboSAPIENS Adaptive Platform.
+**Goal:** This guide provides instructions to perform model-to-model and model-to-code transformations using the `rsio` CLI for the RoboSAPIENS Adaptive Platform.
 
 **Tutorial level:** Intermediate
 
@@ -25,7 +25,7 @@ The RoboSAPIENS Adaptive Platform supports a structured workflow for transformin
 Prerequisites
 -------------
 
-- **rpio CLI**: Ensure that the `rpio` command-line tool is installed and available on your system.
+- **rsio CLI**: Ensure that the `rsio` command-line tool is installed and available on your system.
 - **RoboChart Model**: Have your initial RoboChart models prepared in the Concept directory.
 
 
@@ -48,7 +48,7 @@ To transform the collection of RoboChart models into AADL format, open a termina
 
    .. code-block:: bash
 
-        rpio-cli transformation --roboarch2aadl --verbose
+        rsio-cli transformation --roboarch2aadl --verbose
 
 Here's what each argument in the command does:
 
@@ -69,7 +69,7 @@ To transform the AADL models into AADL IL format, open a terminal in the robosap
 
    .. code-block:: bash
 
-        rpio-cli transformation --aadl2aadlil --verbose
+        rsio-cli transformation --aadl2aadlil --verbose
 
 Here's what each argument in the command does:
 
@@ -87,7 +87,7 @@ To transform the AADLIL model into code skeletons and configuration, open a term
 
    .. code-block:: bash
 
-        rpio-cli transformation --aadlil2code --verbose
+        rsio-cli transformation --aadlil2code --verbose
 
 Here's what each argument in the command does:
 
@@ -101,7 +101,7 @@ After this transformation process, the code skeletons for the adaptive applicati
 Summary
 -------
 
-This guide has provided the steps to perform the key transformation using the ``rpio`` command line tool:
+This guide has provided the steps to perform the key transformation using the ``rsio`` command line tool:
 1. Transform a RoboChart models to AADL.
 2. Transform the AADL models to AADL Intermediate Language (IL).
 3. Generate code skeletons from the AADLIL.

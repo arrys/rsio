@@ -1,6 +1,0 @@
-<launch>
-    <node name="Monitor" path="Realization/ManagingSystem/Nodes/Monitor"/>
-    <node name="Analysis" path="Realization/ManagingSystem/Nodes/Analysis"/>
-    <node name="Plan" path="Realization/ManagingSystem/Nodes/Plan"/>
-    <node name="Execute" path="Realization/ManagingSystem/Nodes/Execute"/>
-</launch>

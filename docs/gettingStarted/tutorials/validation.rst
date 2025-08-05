@@ -5,11 +5,11 @@ Validation matrix
 
 .. _validation_matrix:
 
-.. |ok| image:: ../../assets/ok.png
+.. |ok| image:: /static/images/ok.png
    :height: 2ex
-.. |nok| image:: ../../assets/_nok.png
+.. |nok| image:: /static/images/_nok.png
    :height: 2ex
-.. |uk| image:: ../../assets/thinking.png
+.. |uk| image:: /static/images/thinking.png
    :height: 2ex
 
 .. csv-table:: features

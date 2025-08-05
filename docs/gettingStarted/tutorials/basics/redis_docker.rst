@@ -1,6 +1,6 @@
-===============================
+================================
 Redis Stack with Docker Tutorial
-===============================
+================================
 
 **Goal:** This tutorial will walk you through the steps to set up Redis Stack in a Docker container.
 
