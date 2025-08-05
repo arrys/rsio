@@ -63,7 +63,10 @@ dev-dependencies = [
     "invoke",
     "pyinstaller",
 ]
-extra-index-url = ["https://pip:glpat-aq2VpazxthkoqZ9b3bDz@git.rys.one/api/v4/groups/phd/-/packages/pypi/simple"]
+extra-index-url = [
+    "https://pip:rys-Rps1D5WhCGDzRDAXyz2b@git.rys.one/api/v4/groups/phd/-/packages/pypi/simple", # Expires 2026-08
+    "https://pip:glpat-aq2VpazxthkoqZ9b3bDz@git.rys.one/api/v4/groups/phd/-/packages/pypi/simple", # Expires 2025-08
+]
 
 [tool.setuptools]
 include-package-data = true
