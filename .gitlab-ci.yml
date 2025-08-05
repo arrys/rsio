@@ -1,4 +1,4 @@
-image: docker:27.3.1-dind
+image: docker:28
 
 variables:
   DOCKER_DRIVER: overlay2
@@ -9,6 +9,10 @@ variables:
   DOCKER_BRANCH: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
   DOCKER_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
   DOCKER_LATEST: $CI_REGISTRY_IMAGE:latest
+
+services:
+  - docker:28-dind # Needed when building docker images, like the build-docker job
+
 
 stages:
   - test
