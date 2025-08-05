@@ -254,7 +254,7 @@ def run_docker_container(image_name: str, container_name: str | None = None, por
         subprocess.run(command, check=True, capture_output=True, text=True)
         logger.info(f"Successfully started container from image '{image_name}'.")
         return True
-    except subprocess.CalledProcessError as e:
+    except (subprocess.CalledProcessError, FileNotFoundError) as e:
         logger.error(f"Failed to run Docker container. Error: {e}")
         return False
 
