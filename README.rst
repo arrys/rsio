@@ -41,7 +41,7 @@ You should grab all the requirements first.
 
 .. code-block:: bash
 
-   uv pip install -r pyproject.toml --extra dev --extra test --extra doc
+   uv pip install -r pyproject.toml --all-extras
 
 Don't forget to run the tests after making changes.
 
