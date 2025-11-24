@@ -1,7 +1,7 @@
 from rsio.metamodels.aadl2il import System
-from rsio.parsers.parsers import RobochartParser
-from rsio.transformations.transformations import swc2code_py, message2code_py, swc2launch, swc2main, swc2docker_compose, update_robosapiens_io_ini, add_backbone_config, robochart2aadlmessages, robochart2logical
+from rsio.transformations.transformations import swc2code_py, message2code_py, swc2launch, swc2main, swc2docker_compose, update_robosapiens_io_ini, add_backbone_config
 from rsio.utils.auxiliary import *
+from robotransform import Store, dump_messages, dump_logical
 
 import configparser
 import os
@@ -35,7 +35,7 @@ def t_load_design():
         name = config['RoboSAPIENSIO']['name']
         description = config['RoboSAPIENSIO']['description']
         try:
-            design = System(name=name, description=description, json_descriptor=DESIGN_DIR)  # TODO: load AADL when AADL parser is complete
+            design = System(name=name, description=description, json_descriptor=Path(DESIGN_DIR))  # TODO: load AADL when AADL parser is complete
         except:
             print("Design file not found. Please check the path.")
             design = None
@@ -121,39 +121,25 @@ def t_update_robosapiens_io_ini():
 
 def t_robochart_to_messages():
     try:
-        # Parse RoboChart models using the defined constants
-        parser = RobochartParser(
-            maplek=MAPLE_RCT,
-            monitor=MONITOR_RCT,
-            analysis=ANALYSIS_RCT,
-            plan=PLAN_RCT,
-            legitimate=LEGITIMATE_RCT,
-            execute=EXECUTE_RCT,
-            knowledge=KNOWLEDGE_RCT
-        )
-        # generate messages, here DESIGN_DIR is used if it represents the design folder;
-        # alternatively
-        robochart2aadlmessages(maplek=parser.maplek_model, path=DESIGN_DIR)
+        store = Store((Path(d) for d in (MAPLE_RCT, MONITOR_RCT, ANALYSIS_RCT, PLAN_RCT, LEGITIMATE_RCT, EXECUTE_RCT, KNOWLEDGE_RCT)))
+        dump_messages(store, DESIGN_DIR)
         return True
     except:
         print("Failed to generate AADL messages from provided RoboChart models")
         return False
 
+
 def t_robochart_to_logical():
     try:
-        # Parse robochart models
-        models_parsed = RobochartParser(
-            maplek='../Concept/MAPLE-K.rct',
-            monitor='../Concept/Monitor.rct',
-            analysis='../Concept/Analysis.rct',
-            plan='../Concept/Plan.rct',
-            legitimate='../Concept/Legitimate.rct',
-            execute='../Concept/Execute.rct',
-            knowledge='../Concept/Knowledge.rct'
-        )
-        # generate logical architecture
-        robochart2logical(parsed=models_parsed,path='../Design')
-        print("RoboChart to AADL logical architecture is not implemented yet!")
+        maplek = Path('../Concept/MAPLE-K.rct')
+        monitor = Path('../Concept/Monitor.rct')
+        analysis = Path('../Concept/Analysis.rct')
+        plan = Path('../Concept/Plan.rct')
+        legitimate = Path('../Concept/Legitimate.rct')
+        execute = Path('../Concept/Execute.rct')
+        knowledge = Path('../Concept/Knowledge.rct')
+        store = Store((maplek, monitor, analysis, plan, legitimate, execute, knowledge))
+        dump_logical(store, Path('../Design/logicalArchitecture.aadl'))
         return True
     except:
         print("Failed to generate AADL logical architecture from provided RoboChart models")

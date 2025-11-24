@@ -1,5 +1,3 @@
-from os import mkdir
-from os.path import exists, dirname, join
 from pathlib import Path
 
 import jinja2
@@ -180,57 +178,6 @@ def swc2main(system: System | None = None, package: str = "", prefix = None, pat
         main_file = path / f"main_{processor.name}.py"
         with main_file.open("w") as f:
             f.write(template.render(processor=processor, package=package, prefix=prefix))
-
-
-def robochart2aadlmessages(maplek=None, path="output/generated/messages"):
-    """
-    Generate AADL messages from RoboChart models.
-
-    :param MAPLEK: MAPLE-K modeled within RoboChart, defaults to None
-    :type MAPLEK: object, optional
-    :param path: Path to the output folder, defaults to "output/generated/messages"
-    :type path: str, optional
-    :return: None
-    :rtype: None
-    """
-
-    if not exists(path):
-        mkdir(path)
-
-    # Initialize the Templates engine.
-    this_folder = dirname(__file__)
-    jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(this_folder), trim_blocks=True, lstrip_blocks=True)
-
-    # Load the template
-    template = jinja_env.get_template("templates/aadl_messages.template")
-
-    # Extract all processes from AADL system model
-    with open(join(path, "messages.aadl"), "w") as f:
-        f.write(template.render(types=maplek.types))
-
-
-def robochart2logical(parsed, path: Path=Path("output/generated/LogicalArchitecture")):
-    """
-    Generate AADL logical architecture from RoboChart models.
-
-    :param path: Path to the output folder, defaults to "output/generated/messages"
-    """
-    path.mkdir(parents=True, exist_ok=True)
-
-
-    # Initialize the Templates engine.
-    this_folder = Path(__file__).parent
-    jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(this_folder), trim_blocks=True, lstrip_blocks=True)
-
-    # Load the template
-    template = jinja_env.get_template("templates/aadl_logical.template")
-
-    # Prepare the parsed models for code generation
-    elements = [parsed.monitor_model, parsed.analysis_model, parsed.plan_model, parsed.legitimate_model,
-                parsed.execute_model, parsed.knowledge_model]
-
-    # Extract all processes from AADL system model
-    (path / "LogicalArchitecture.aadl").write_text(template.render(elements=elements))
 
 
 def swc2docker_compose(system: System | None = None, path: Path = Path("output/generated/docker")):

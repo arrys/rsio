@@ -20,6 +20,10 @@ robosapiensIO Preview
 
 **robosapiensIO 0.x.x - active development and internal experimental use**
 
+0.5.1 (2025-mm-dd)
+~~~~~~~~~~~~~~~~~~
+* Replace model2model transformations with robotransform.
+
 0.5.0 (2025-04-21)
 ~~~~~~~~~~~~~~~~~~
 * Replace generic exit codes.
