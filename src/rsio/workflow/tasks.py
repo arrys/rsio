@@ -48,7 +48,7 @@ def t_generate_messages():
     try:
         design = t_load_design()
         # generate messages using the constants for managing systems
-        message2code_py(system=design, path=MESSAGES_DIR)
+        message2code_py(system=design, path=Path(MESSAGES_DIR))
         return True
     except:
         print("Failed to generate the messages")
@@ -58,7 +58,7 @@ def t_generate_swc_skeletons():
     try:
         design = t_load_design()
         # generate swc code skeletons using the constant for nodes directory
-        swc2code_py(system=design, path=NODES_DIR)
+        swc2code_py(system=design, path=Path(NODES_DIR))
         return True
     except:
         print("Failed to generate the software components")
@@ -68,7 +68,7 @@ def t_generate_swc_launch():
     try:
         design = t_load_design()
         # generate launch files using constants for platform directories
-        swc2launch(system=design.systems[0], path=PLATFORM_DIR)
+        swc2launch(system=design.systems[0], path=Path(PLATFORM_DIR))
         return True
     except:
         print("Failed to generate the software component launch files")
@@ -83,7 +83,7 @@ def t_generate_main():
         prefix = config['PACKAGE']['prefix']
         design = t_load_design()
         # generate the main launch file using RESOURCES_DIR instead of a literal "../Resources"
-        swc2main(system=design.systems[0], package=package_name, prefix=(prefix if prefix != "" else None), path=RESOURCES_DIR)
+        swc2main(system=design.systems[0], package=package_name, prefix=(prefix if prefix != "" else None), path=Path(RESOURCES_DIR))
         return True
     except:
         print("Failed to generate the software component main file for the given platforms")
@@ -93,9 +93,9 @@ def t_generate_docker():
     try:
         design = t_load_design()
         # generate a docker compose file using constant for managing platform directory
-        swc2docker_compose(system=design.systems[0], path=PLATFORM_DIR)
+        swc2docker_compose(system=design.systems[0], path=Path(PLATFORM_DIR))
         # add backbone config using RESOURCES_DIR
-        add_backbone_config(system=design, path=RESOURCES_DIR)
+        add_backbone_config(system=design, path=Path(RESOURCES_DIR))
         return True
     except:
         print("Failed to generate the docker compose for the given platforms")
@@ -109,7 +109,7 @@ def t_update_robosapiens_io_ini():
         prefix = config['PACKAGE']['prefix']
         design = t_load_design()
         # update the ini file using the directory of RPIO_INI_DIR instead of a literal "../"
-        update_robosapiens_io_ini(system=design, package=package_name, prefix=prefix, path=os.path.dirname(RSIO_INI_DIR))
+        update_robosapiens_io_ini(system=design, package=package_name, prefix=prefix, path=Path(os.path.dirname(RSIO_INI_DIR)))
         return True
     except:
         print("Could not update robosapiensIO.ini")

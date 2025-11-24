@@ -2,8 +2,6 @@ import logging
 import re
 import sys
 from pathlib import Path
-from textx import metamodel_from_file
-
 from rsio.metamodels.aadl2il import System, Process, InPort, OutPort, Thread, Data, Message
 from rsio.utils.exit import ExitCode
 
