@@ -77,7 +77,6 @@ include = ["rsio", "rsio.*"]
 [tool.setuptools.package-data]
 rsio = [
     "transformations/templates/*.template",
-	"parsers/robochart/*.tx",
 ]
 
 [tool.pytest.ini_options]
