@@ -9,6 +9,7 @@ variables:
   DOCKER_BRANCH: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
   DOCKER_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
   DOCKER_LATEST: $CI_REGISTRY_IMAGE:latest
+  UV_LINK_MODE: copy
 
 services:
   - docker:28-dind # Needed when building docker images, like the build-docker job
@@ -18,8 +19,8 @@ stages:
   - release
 
 before_script:
-  - docker info
-  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  - docker info || echo "docker not available"
+  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY || echo "login skipped"
 
 .test-package:
   image: ghcr.io/astral-sh/uv:python3.13-alpine
@@ -32,7 +33,7 @@ before_script:
     - uv cache prune --ci
     - uv venv .venv
     - source .venv/bin/activate
-    - uv pip install -r pyproject.toml --extra dev --extra test
+    - uv pip install -r pyproject.toml --all-extras
     - uv pip install -e .
     - uv run pytest tests
   cache:

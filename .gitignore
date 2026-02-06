@@ -7,8 +7,10 @@ __pycache__/
 # Docs
 /public
 
-# Jetbrains
+# Editor
 .idea/
+.vscode
 
 # Arkadiusz' cruft
 /tasks.py
+

@@ -35,17 +35,29 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-test = [
+cli = []
+[dependency-groups]
+dev = [
+    "rys",
+    "ruff",
     "pytest",
+    "invoke",
+    "vermin",
+    "restview",
+    "pyinstaller",
+    {include-group = "doc"},
 ]
 doc = [
     "sphinx",
+    "matplotlib",
+    "myst-parser",
+    "sphinx-tabs",
+    "sphinx-toolbox",
     "sphinx-rtd-theme",
-]
-dev = [
-    "ruff",
-    "invoke",
-    "pyinstaller",
+    "sphinxext-opengraph",
+    "sphinx-notfound-page",
+    "sphinxcontrib-drawio",
+    "readthedocs-sphinx-search",
 ]
 
 [project.urls]
@@ -58,11 +70,6 @@ rpio = "rsio.__main__:main"
 rsio = "rsio.__main__:main"
 
 [tool.uv]
-dev-dependencies = [
-    "ruff",
-    "invoke",
-    "pyinstaller",
-]
 extra-index-url = [
     "https://pip:rys-Rps1D5WhCGDzRDAXyz2b@git.rys.one/api/v4/groups/phd/-/packages/pypi/simple", # Expires 2026-08
     "https://pip:glpat-aq2VpazxthkoqZ9b3bDz@git.rys.one/api/v4/groups/phd/-/packages/pypi/simple", # Expires 2025-08
@@ -79,6 +86,13 @@ rsio = [
     "transformations/templates/*.template",
 	"parsers/robochart/*.tx",
 ]
+
+[tool.ruff]
+line-length = 120
+extend-exclude = ["build", "dist", ".venv", "./tasks.py"]
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "B", "C4", "SIM", "TID", "ARG", "RUF"]
+ignore = ["E501"] # Ignore line length
 
 [tool.pytest.ini_options]
 markers = [
