@@ -3,7 +3,6 @@ from pathlib import Path
 import rsio.package.manager
 import rsio.parsers.parsers
 from rsio.metamodels.aadl2il import System
-from rsio.transformations.transformations import robochart2aadlmessages
 from tests.utils import TemporaryTemplatedPath
 
 
@@ -32,19 +31,6 @@ def test_aadl_to_aadlil_transformation_reload():
         ).aadl2aadl_il().object2json(file_name=package_path / "system.json")
         loaded_system = System(name="adaptiveSystem", description="Generated from AADL models", json_descriptor=package_path / "system.json")
         loaded_system.object2json(file_name=package_path / "loaded.json")
-
-
-# def test_robochart_to_aadl_transformation():
-#     parser = rpio.RobochartParser(
-#         maplek='input/MAPLE-K.rct',
-#         monitor='input/Monitor.rct',
-#         analysis='input/Analysis.rct',
-#         plan='input/Plan.rct',
-#         legitimate='input/Legitimate.rct',
-#         execute='input/Execute.rct',
-#         knowledge='input/Knowledge.rct'
-#     )
-#     x = robochart2aadlmessages(maplek=parser.maplek_model,path='output/')
 
 
 # def test_aadl_to_py_transformation():

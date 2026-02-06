@@ -20,7 +20,7 @@ def build(verbose: bool):
     if verbose:
         logger.setLevel(logging.DEBUG)
     logger.debug("Build command under construction")
-    run_file = "Realization/ManagingSystem/Actions/build.py" # TODO Whys is this hardcoded?
+    run_file = "Realization/ManagingSystem/Actions/build.py" # TODO Why is this hardcoded?
     logger.debug(run_file)
 
     try:

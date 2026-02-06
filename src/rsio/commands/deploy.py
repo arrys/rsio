@@ -20,7 +20,7 @@ def deploy(verbose: bool):
     if verbose:
         logger.setLevel(logging.DEBUG)
     logger.debug("Deploy command under construction")
-    run_file = "Realization/ManagingSystem/Actions/deploy.py" # TODO Whys is this hardcoded?
+    run_file = "Realization/ManagingSystem/Actions/deploy.py" # TODO Why is this hardcoded?
     logger.debug(run_file)
 
     try:

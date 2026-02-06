@@ -2,7 +2,6 @@ import logging
 import re
 import sys
 from pathlib import Path
-from textx import metamodel_from_file
 
 from rsio.metamodels.aadl2il import System, Process, InPort, OutPort, Thread, Data, Message
 from rsio.utils.exit import ExitCode
@@ -153,77 +152,3 @@ class AadlParser:
             m = Message(name=name, features=feature_list)
             self.messages.append(m)
         return self.messages
-
-
-class RobochartParser:
-    """This is a parser that parses multiple robochart files, as input for the AADL code generator."""
-
-    def __init__(self, maplek: Path, monitor: Path, analysis: Path, plan: Path, legitimate: Path, execute: Path, knowledge: Path):
-        current_dir = Path(__file__).resolve().parent
-        metamodel_path = current_dir / "robochart" / "robochart.tx"
-        self.robochart_meta = metamodel_from_file(str(metamodel_path))
-
-        self.maplek_model = None
-        self.monitor_model = None
-        self.analysis_model = None
-        self.plan_model = None
-        self.legitimate_model = None
-        self.execute_model = None
-        self.knowledge_model = None
-        self.logger = logging.getLogger(__name__)
-
-        # Read the MAPLE-K robochart model
-        try:
-            self.maplek_model = self.robochart_meta.model_from_file(str(maplek))
-        except FileNotFoundError:
-            self.maplek_model = None
-            self.logger.fatal(f"Error: File '{maplek}' not found.")
-            sys.exit(ExitCode.DATA_ERROR)
-
-        # Read the Monitor robochart model
-        try:
-            self.monitor_model = self.robochart_meta.model_from_file(str(monitor))
-        except FileNotFoundError:
-            self.monitor_model = None
-            self.logger.fatal(f"Error: File '{monitor}' not found.")
-            sys.exit(ExitCode.DATA_ERROR)
-
-        # Read the Analysis robochart model
-        try:
-            self.analysis_model = self.robochart_meta.model_from_file(str(analysis))
-        except FileNotFoundError:
-            self.analysis_model = None
-            self.logger.fatal(f"Error: File '{analysis}' not found.")
-            sys.exit(ExitCode.DATA_ERROR)
-
-        # Read the Plan robochart model
-        try:
-            self.plan_model = self.robochart_meta.model_from_file(str(plan))
-        except FileNotFoundError:
-            self.plan_model = None
-            self.logger.fatal(f"Error: File '{plan}' not found.")
-            sys.exit(ExitCode.DATA_ERROR)
-
-        # Read the Legitimate robochart model
-        try:
-            self.legitimate_model = self.robochart_meta.model_from_file(str(legitimate))
-        except FileNotFoundError:
-            self.legitimate_model = None
-            self.logger.fatal(f"Error: File '{legitimate}' not found.")
-            sys.exit(ExitCode.DATA_ERROR)
-
-        # Read the Execute robochart model
-        try:
-            self.execute_model = self.robochart_meta.model_from_file(str(execute))
-        except FileNotFoundError:
-            self.execute_model = None
-            self.logger.fatal(f"Error: File '{execute}' not found.")
-            sys.exit(ExitCode.DATA_ERROR)
-
-        # Read the Knowledge robochart model
-        try:
-            self.knowledge_model = self.robochart_meta.model_from_file(str(knowledge))
-        except FileNotFoundError:
-            self.knowledge_model = None
-            self.logger.fatal(f"Error: File '{knowledge}' not found.")
-            sys.exit(ExitCode.DATA_ERROR)

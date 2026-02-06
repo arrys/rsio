@@ -25,13 +25,13 @@ license = {file = "LICENSE"}
 keywords = ["robotics", "trustworthiness", "self-adaptive", "model-based"]
 
 dependencies = [
-    "arklog>=0.5.3",
-    "click>=8.1.8",
-    "jinja2>=3.1.4",
-    "paho-mqtt>=2.1.0",
-    "pyyaml>=6.0.2",
-    "redis>=5.2.1",
-    "textx>=4.1.0",
+    "click     >= 8.1.8",
+    "redis     >= 5.2.1",
+    "arklog    >= 0.5.3",
+    "jinja2    >= 3.1.4",
+    "pyyaml    >= 6.0.2",
+    "arkfast   >= 0.2.0",
+    "paho-mqtt >= 2.1.0",
 ]
 
 [project.optional-dependencies]

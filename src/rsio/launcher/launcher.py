@@ -8,9 +8,7 @@ from rsio.utils.constants import Formalism
 
 def launch(launch_file: Path = Path("launch.xml")):
     """Launch one or more Python software components using a launch description file."""
-    # 0. interpret launch file
     launch_description = parse_launch_xml(file_path=launch_file, formalism=Formalism.PYTHON)
-    # 1. launch all commands at once
     execute_commands(extract_commands(launch_description))
 
 def launch_main(main_file: Path = Path("main.py")):
